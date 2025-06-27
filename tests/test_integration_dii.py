@@ -18,8 +18,9 @@ ROOT = Path(__file__).parent.parent
 DETAILED_CSV = ROOT / "detailed_dii_table_20240606.csv"
 PARAMS_JSON = ROOT / "compute" / "dii_parameters.json"
 
-# Load the reference table
+# Load the reference table and normalize column names
 df_ref = pd.read_csv(DETAILED_CSV)
+df_ref.columns = df_ref.columns.str.strip()
 
 # Load the DII parameters (list of dicts with "name", etc.)
 params = json.loads(PARAMS_JSON.read_text())
@@ -42,7 +43,7 @@ def build_input_df():
         key = pname.lower()
         target = MAPPING_OVERRIDES.get(key, key)
         # find the CSV column with a case-insensitive match
-        col = next(c for c in df_ref.columns if c.lower() == target)
+        col = next(c for c in df_ref.columns if c.strip().lower() == target)
         mapping[col] = pname
 
     df_input = df_ref[list(mapping.keys())].rename(columns=mapping)
