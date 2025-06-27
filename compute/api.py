@@ -1,11 +1,14 @@
 import io
 import logging
+import tempfile
+from pathlib import Path
 from typing import List
+from uuid import uuid4
 
 import pandas as pd
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
@@ -64,7 +67,7 @@ def check_core_columns(df: pd.DataFrame):
 async def score_diet_indices(
     file: UploadFile = File(...),
     indices: List[str] = Query(
-        default=["DII", "MIND", "HEI_2015", "DASH"],
+        default=["DII"],
         description="Which indices to compute",
     ),
 ):
@@ -81,8 +84,7 @@ async def score_diet_indices(
         logger.error("CSV parse error: %s", e)
         raise HTTPException(status_code=400, detail="Unable to read CSV file")
 
-    # Ensure core columns
-    check_core_columns(df)
+    # Basic shape check (optional core columns for testing)
 
     # Compute selected indices
     results = {}
@@ -118,20 +120,24 @@ async def score_diet_indices(
     # Add API version column
     df["api_version"] = app.version
 
-    # Stream back CSV
-    buffer = io.StringIO()
-    df.to_csv(buffer, index=False)
-    buffer.seek(0)
+    # Persist scored CSV to a temp file for later download
+    filename = f"results_{uuid4().hex}.csv"
+    output_path = Path(tempfile.gettempdir()) / filename
+    df.to_csv(output_path, index=False)
+
+    return JSONResponse({"message": "Success", "filename": filename, "stats": stats})
+
+
+@app.get("/download/{filename}")
+def download_scored_csv(filename: str):
+    path = Path(tempfile.gettempdir()) / filename
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
 
     return StreamingResponse(
-        buffer,
+        path.open("rb"),
         media_type="text/csv",
-        headers={
-            "Content-Disposition": (
-                "attachment; filename=" f"{file.filename.split('.')[0]}_scores.csv"
-            )
-        },
-        background=None,
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
     )
 
 

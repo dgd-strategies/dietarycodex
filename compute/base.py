@@ -29,6 +29,9 @@ def validate_dataframe(df: pd.DataFrame, required_cols: list) -> bool:
     Returns:
         True if validation passes; otherwise raises ValueError.
     """
+    # Trim whitespace from DataFrame columns for consistent matching
+    df.columns = df.columns.str.strip()
+
     missing = [c for c in required_cols if c not in df.columns]
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
