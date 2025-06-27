@@ -21,7 +21,7 @@
     "effect": -0.365
   },
   {
-    "name": "b-Carotene",
+    "name": "Beta-carotene",
     "unit": "mg",
     "mean": 3718,
     "sd": 1720,
@@ -42,7 +42,7 @@
     "effect": 0.097
   },
   {
-    "name": "Cholesterol",
+    "name": "Cholesterol ",
     "unit": "mg",
     "mean": 279.4,
     "sd": 51.2,
@@ -70,7 +70,7 @@
     "effect": 0.298
   },
   {
-    "name": "Fibre",
+    "name": "Fiber",
     "unit": "g",
     "mean": 18.8,
     "sd": 4.9,
@@ -98,14 +98,14 @@
     "effect": -0.453
   },
   {
-    "name": "Fe",
+    "name": "Iron",
     "unit": "mg",
     "mean": 13.35,
     "sd": 3.71,
     "effect": 0.032
   },
   {
-    "name": "Mg",
+    "name": "Magnesium",
     "unit": "mg",
     "mean": 310.1,
     "sd": 139.4,
@@ -126,14 +126,14 @@
     "effect": -0.246
   },
   {
-    "name": "n-3 Fatty acids",
+    "name": "n-3 fatty acid",
     "unit": "g",
     "mean": 1.06,
     "sd": 1.06,
     "effect": -0.436
   },
   {
-    "name": "n-6 Fatty acids",
+    "name": "n-6 fatty acid",
     "unit": "g",
     "mean": 10.8,
     "sd": 7.5,
@@ -182,7 +182,7 @@
     "effect": 0.373
   },
   {
-    "name": "Se",
+    "name": "Selenium",
     "unit": "mg",
     "mean": 67.0,
     "sd": 25.1,
@@ -238,7 +238,7 @@
     "effect": -0.419
   },
   {
-    "name": "Zn",
+    "name": "Zinc",
     "unit": "mg",
     "mean": 9.84,
     "sd": 2.19,
@@ -273,7 +273,7 @@
     "effect": -0.467
   },
   {
-    "name": "Flavanones",
+    "name": "Flavonones",
     "unit": "mg",
     "mean": 11.7,
     "sd": 3.82,

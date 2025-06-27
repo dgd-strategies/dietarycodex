@@ -25,6 +25,9 @@ _MIND_COMPONENTS = [
     {"col": "fried_food_servings", "type": "unhealthy", "high": 1, "med": 3},
 ]
 
+# Export just the column names for API validation
+MIND_COMPONENT_KEYS = [c["col"] for c in _MIND_COMPONENTS]
+
 
 def calculate_mind(df: pd.DataFrame) -> pd.Series:
     """
