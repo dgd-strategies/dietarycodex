@@ -1,3 +1,6 @@
+import math
+
+import numpy as np
 import pandas as pd
 
 from compute.base import load_parameters, validate_dataframe
@@ -6,6 +9,11 @@ from compute.base import load_parameters, validate_dataframe
 dii_params = load_parameters("dii_parameters.json")
 # Expose parameter keys for API validation
 DII_PARAMETER_KEYS = [p["name"] for p in dii_params]
+
+
+def get_dii_parameters() -> list:
+    """Return the loaded DII parameter definitions."""
+    return dii_params
 
 
 def calculate_dii(df: pd.DataFrame) -> pd.Series:
@@ -38,9 +46,9 @@ def calculate_dii(df: pd.DataFrame) -> pd.Series:
         sd = param.get("sd")
         effect = param.get("effect")
 
-        x = df[name]
+        x = df[name].fillna(mean)
         z = (x - mean) / sd
-        pct = z.rank(pct=True)
+        pct = 0.5 * (1 + np.vectorize(math.erf)(z / math.sqrt(2)))
         cp = 2 * pct - 1
         score += cp * effect
 
