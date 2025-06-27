@@ -1,0 +1,10 @@
+# Configuration for Codex agent to understand project structure
+project: dietary-index-web
+language: python
+entrypoints:
+  - frontend/index.html
+  - compute/api.py
+tests:
+  - tests/test_scoring.py
+sample_data:
+  - assets/template.csv

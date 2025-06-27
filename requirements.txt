@@ -4,4 +4,4 @@ pytest
 pyodide-http
 fastapi
 uvicorn
-python-multipart 
+python-multipart

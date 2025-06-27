@@ -1,19 +1,29 @@
-.PHONY: dev lint test clean run
+.PHONY: install dev clean format lint test ci
 
-dev:  # Local run
-	python3 -m http.server 8000 --directory frontend
+# Install Python dependencies and set up environment
+install:
+	./setup.sh
 
-lint:  # Format + lint
-	black compute/ tests/
-	isort compute/ tests/
-	flake8 compute/ tests/
+# Start FastAPI backend (with reload) and static frontend server
+dev:
+	./setup.sh --dev
 
+# Format code with Black and sort imports with isort
+format:
+	black compute tests frontend
+	isort compute tests
+
+# Run linter (flake8)
+lint:
+	flake8 compute tests
+
+# Run unit tests with coverage
 test:
-	pytest
+	pytest tests --cov=compute
 
+# Clean up Python caches and temporary files
 clean:
-	find . -name "__pycache__" -type d -exec rm -r {} +
-	rm -rf .venv
+	rm -rf __pycache__ .pytest_cache .venv
 
-run:
-	source .venv/bin/activate && python3 -m http.server 8000 --directory frontend
+# Continuous integration target: format, lint, and test
+ci: format lint test

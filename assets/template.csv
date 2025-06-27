@@ -1,11 +1,1 @@
-id,energy_kcal,protein_g,fat_g,carb_g,fiber_g,vit_c_mg
-001,1800,70,65,220,18,90
-002,2000,85,70,250,22,120
-003,1600,60,50,210,25,75
-004,2500,100,90,300,28,110
-005,1900,65,60,230,20,80
-006,1750,68,58,215,19,85
-007,2200,90,80,280,30,95
-008,2100,72,67,260,24,88
-009,1950,66,59,240,23,92
-010,1850,64,55,225,21,78
+id,energy_kcal,protein_g,fat_g,carb_g,fiber_g,vit_c_mg,Alcohol,Vitamin B12,Vitamin B6,b-Carotene,Caffeine,Carbohydrate,Cholesterol,Energy,Eugenol,Total fat,Fibre,Folic acid,Garlic,Ginger,Fe,Mg,MUFA,Niacin,n-3 Fatty acids,n-6 Fatty acids,Onion,Protein,PUFA,Riboflavin,Saffron,Saturated fat,Se,Thiamin,Trans fat,Turmeric,Vitamin A,Vitamin C,Vitamin D,Vitamin E,Zn,Green/black tea,Flavan-3-ol,Flavones,Flavonols,Flavanones,Anthocyanidins,Isoflavones,Pepper,Thyme/oregano,Rosemary,total_fruit_cup,whole_fruit_cup,total_veg_cup,greens_beans_cup,whole_grains_oz,dairy_cup,protein_oz,seafood_plant_oz,monounsaturated_fat_g,polyunsaturated_fat_g,saturated_fat_g,refined_grains_oz,sodium_mg,added_sugars_g,leafy_green_veg_servings,other_veg_servings,nut_servings,berry_servings,bean_servings,whole_grains_servings,fish_servings,poultry_servings,olive_oil_daily_use,wine_servings,red_meat_servings,butter_servings,cheese_servings,pastry_sweets_servings,fried_food_servings,fruits_g,vegetables_g,whole_grains_g,low_fat_dairy_g,nuts_legumes_g,sodium_mg,red_processed_meats_g,sweetened_beverages_g

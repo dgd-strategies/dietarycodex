@@ -1,6 +1,6 @@
 [tool.black]
 line-length = 88
-target-version = ['py312']
+target-version = ["py312"]
 exclude = '''
 /(
     \.git
@@ -16,3 +16,7 @@ profile = "black"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v"
+
+[tool.mypy]
+ignore_missing_imports = true
+strict = true

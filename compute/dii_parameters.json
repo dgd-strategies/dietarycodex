@@ -1,0 +1,317 @@
+[
+  {
+    "name": "Alcohol",
+    "unit": "g",
+    "mean": 13.98,
+    "sd": 3.72,
+    "effect": -0.278
+  },
+  {
+    "name": "Vitamin B12",
+    "unit": "mg",
+    "mean": 5.15,
+    "sd": 2.7,
+    "effect": 0.106
+  },
+  {
+    "name": "Vitamin B6",
+    "unit": "mg",
+    "mean": 1.47,
+    "sd": 0.74,
+    "effect": -0.365
+  },
+  {
+    "name": "b-Carotene",
+    "unit": "mg",
+    "mean": 3718,
+    "sd": 1720,
+    "effect": -0.584
+  },
+  {
+    "name": "Caffeine",
+    "unit": "g",
+    "mean": 8.05,
+    "sd": 6.67,
+    "effect": -0.11
+  },
+  {
+    "name": "Carbohydrate",
+    "unit": "g",
+    "mean": 272.2,
+    "sd": 40.0,
+    "effect": 0.097
+  },
+  {
+    "name": "Cholesterol",
+    "unit": "mg",
+    "mean": 279.4,
+    "sd": 51.2,
+    "effect": 0.11
+  },
+  {
+    "name": "Energy",
+    "unit": "kcal",
+    "mean": 2056,
+    "sd": 338,
+    "effect": 0.18
+  },
+  {
+    "name": "Eugenol",
+    "unit": "mg",
+    "mean": 0.01,
+    "sd": 0.08,
+    "effect": -0.14
+  },
+  {
+    "name": "Total fat",
+    "unit": "g",
+    "mean": 71.4,
+    "sd": 19.4,
+    "effect": 0.298
+  },
+  {
+    "name": "Fibre",
+    "unit": "g",
+    "mean": 18.8,
+    "sd": 4.9,
+    "effect": -0.663
+  },
+  {
+    "name": "Folic acid",
+    "unit": "mg",
+    "mean": 273.0,
+    "sd": 70.7,
+    "effect": -0.19
+  },
+  {
+    "name": "Garlic",
+    "unit": "g",
+    "mean": 4.35,
+    "sd": 2.9,
+    "effect": -0.412
+  },
+  {
+    "name": "Ginger",
+    "unit": "g",
+    "mean": 59.0,
+    "sd": 63.2,
+    "effect": -0.453
+  },
+  {
+    "name": "Fe",
+    "unit": "mg",
+    "mean": 13.35,
+    "sd": 3.71,
+    "effect": 0.032
+  },
+  {
+    "name": "Mg",
+    "unit": "mg",
+    "mean": 310.1,
+    "sd": 139.4,
+    "effect": -0.484
+  },
+  {
+    "name": "MUFA",
+    "unit": "g",
+    "mean": 27.0,
+    "sd": 6.1,
+    "effect": -0.009
+  },
+  {
+    "name": "Niacin",
+    "unit": "mg",
+    "mean": 25.9,
+    "sd": 11.77,
+    "effect": -0.246
+  },
+  {
+    "name": "n-3 Fatty acids",
+    "unit": "g",
+    "mean": 1.06,
+    "sd": 1.06,
+    "effect": -0.436
+  },
+  {
+    "name": "n-6 Fatty acids",
+    "unit": "g",
+    "mean": 10.8,
+    "sd": 7.5,
+    "effect": -0.159
+  },
+  {
+    "name": "Onion",
+    "unit": "g",
+    "mean": 35.9,
+    "sd": 18.4,
+    "effect": -0.301
+  },
+  {
+    "name": "Protein",
+    "unit": "g",
+    "mean": 79.4,
+    "sd": 13.9,
+    "effect": 0.021
+  },
+  {
+    "name": "PUFA",
+    "unit": "g",
+    "mean": 13.88,
+    "sd": 3.76,
+    "effect": -0.337
+  },
+  {
+    "name": "Riboflavin",
+    "unit": "mg",
+    "mean": 1.7,
+    "sd": 0.79,
+    "effect": -0.068
+  },
+  {
+    "name": "Saffron",
+    "unit": "g",
+    "mean": 0.37,
+    "sd": 1.78,
+    "effect": -0.14
+  },
+  {
+    "name": "Saturated fat",
+    "unit": "g",
+    "mean": 28.6,
+    "sd": 8.0,
+    "effect": 0.373
+  },
+  {
+    "name": "Se",
+    "unit": "mg",
+    "mean": 67.0,
+    "sd": 25.1,
+    "effect": -0.191
+  },
+  {
+    "name": "Thiamin",
+    "unit": "mg",
+    "mean": 1.7,
+    "sd": 0.66,
+    "effect": -0.098
+  },
+  {
+    "name": "Trans fat",
+    "unit": "g",
+    "mean": 3.15,
+    "sd": 3.75,
+    "effect": 0.229
+  },
+  {
+    "name": "Turmeric",
+    "unit": "mg",
+    "mean": 533.6,
+    "sd": 754.3,
+    "effect": -0.785
+  },
+  {
+    "name": "Vitamin A",
+    "unit": "RE",
+    "mean": 983.9,
+    "sd": 518.6,
+    "effect": -0.401
+  },
+  {
+    "name": "Vitamin C",
+    "unit": "mg",
+    "mean": 118.2,
+    "sd": 43.46,
+    "effect": -0.424
+  },
+  {
+    "name": "Vitamin D",
+    "unit": "mg",
+    "mean": 6.26,
+    "sd": 2.21,
+    "effect": -0.446
+  },
+  {
+    "name": "Vitamin E",
+    "unit": "mg",
+    "mean": 8.73,
+    "sd": 1.49,
+    "effect": -0.419
+  },
+  {
+    "name": "Zn",
+    "unit": "mg",
+    "mean": 9.84,
+    "sd": 2.19,
+    "effect": -0.313
+  },
+  {
+    "name": "Green/black tea",
+    "unit": "g",
+    "mean": 1.69,
+    "sd": 1.53,
+    "effect": -0.536
+  },
+  {
+    "name": "Flavan-3-ol",
+    "unit": "mg",
+    "mean": 95.8,
+    "sd": 85.9,
+    "effect": -0.415
+  },
+  {
+    "name": "Flavones",
+    "unit": "mg",
+    "mean": 1.55,
+    "sd": 0.07,
+    "effect": -0.616
+  },
+  {
+    "name": "Flavonols",
+    "unit": "mg",
+    "mean": 17.7,
+    "sd": 6.79,
+    "effect": -0.467
+  },
+  {
+    "name": "Flavanones",
+    "unit": "mg",
+    "mean": 11.7,
+    "sd": 3.82,
+    "effect": -0.25
+  },
+  {
+    "name": "Anthocyanidins",
+    "unit": "mg",
+    "mean": 18.05,
+    "sd": 21.14,
+    "effect": -0.131
+  },
+  {
+    "name": "Isoflavones",
+    "unit": "mg",
+    "mean": 1.2,
+    "sd": 0.2,
+    "effect": -0.593
+  },
+  {
+    "name": "Pepper",
+    "unit": "g",
+    "mean": 10.0,
+    "sd": 7.07,
+    "effect": -0.131
+  },
+  {
+    "name": "Thyme/oregano",
+    "unit": "mg",
+    "mean": 0.33,
+    "sd": 0.99,
+    "effect": -0.102
+  },
+  {
+    "name": "Rosemary",
+    "unit": "mg",
+    "mean": 1.0,
+    "sd": 15.0,
+    "effect": -0.013
+  }
+]

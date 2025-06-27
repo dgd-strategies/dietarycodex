@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Dietary Index Web Calculator API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /ping:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /score:
+    post:
+      summary: Upload a CSV and compute diet‐quality scores
+      parameters:
+        - name: indices
+          in: query
+          description: |
+            Optional comma-separated list of indices to compute.
+            Valid values: DII, MIND, HEI_2015, DASH.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            style: form
+            explode: false
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Scoring results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Success
+                  filename:
+                    type: string
+                    example: results_20250627.csv
+                  stats:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        mean:
+                          type: number
+                          format: float
+                          example: 10.5
+                        std:
+                          type: number
+                          format: float
+                          example: 2.3
+                        min:
+                          type: number
+                          format: float
+                          example: 5.0
+                        max:
+                          type: number
+                          format: float
+                          example: 15.0
+                        median:
+                          type: number
+                          format: float
+                          example: 10.0
+                        quintiles:
+                          type: array
+                          items:
+                            type: number
+                          example: [8.0, 9.0, 10.0, 11.0]
+
+  /download/{filename}:
+    get:
+      summary: Download the scored CSV file
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: CSV file download
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: File not found
