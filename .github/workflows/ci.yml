@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install deps
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          pip install black flake8 isort pytest
+
+      - name: 🧹 Lint & Format
+        run: |
+          black --check compute tests
+          isort --check-only compute tests
+          flake8 compute tests
+
+      - name: 🧪 Run tests
+        run: |
+          pytest tests
+
+      - name: 🐳 Build Docker
+        run: docker build -t dietary-index-web .

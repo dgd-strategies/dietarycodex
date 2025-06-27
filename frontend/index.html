@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dietary Index Web Calculator</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      max-width: 600px;
+      margin: 3em auto;
+      padding: 2em;
+      background-color: #f4f7fa;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin: 1em 0;
+    }
+
+    button {
+      padding: 0.6em 1.5em;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    button:hover {
+      background-color: #1a252f;
+    }
+
+    #result {
+      margin-top: 2em;
+      padding: 1em;
+      background-color: #eef3f7;
+      border-left: 4px solid #3498db;
+      border-radius: 6px;
+    }
+
+    ul {
+      padding-left: 1.2em;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 1em;
+      color: #2c3e50;
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Dietary Index Calculator</h1>
+
+  <p>Select a pre-formatted nutrition CSV to score dietary indices (DII, MIND, HEI‑2015, DASH).</p>
+
+  <input type="file" id="csvFile" accept=".csv" />
+  <button onclick="handleUpload()">Submit</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function handleUpload() {
+      const input = document.getElementById("csvFile");
+      const resultBox = document.getElementById("result");
+      resultBox.innerHTML = "";
+
+      if (!input.files.length) {
+        resultBox.innerHTML = "<div class='error'>Please choose a CSV file.</div>";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", input.files[0]);
+
+      resultBox.innerHTML = "⏳ Scoring in progress...";
+
+      try {
+        const res = await fetch("http://localhost:8000/score", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          resultBox.innerHTML = `<div class='error'>Error: ${err.detail}</div>`;
+          return;
+        }
+
+        const { filename, stats } = await res.json();
+
+        let summary = "<h3>Summary Statistics:</h3><ul>";
+        for (const [index, values] of Object.entries(stats)) {
+          summary += `<li><b>${index}</b> – Mean: ${values.mean}, SD: ${values.std}, Quintiles: ${values.quintiles.join(", ")}</li>`;
+        }
+        summary += "</ul>";
+
+        const dlUrl = `http://localhost:8000/download/${filename}`;
+        summary += `<a href="${dlUrl}" download>⬇️ Download Results CSV</a>`;
+
+        resultBox.innerHTML = summary;
+
+      } catch (err) {
+        console.error(err);
+        resultBox.innerHTML = "<div class='error'>Unexpected error occurred. Check server logs.</div>";
+      }
+    }
+  </script>
+
+</body>
+</html>
