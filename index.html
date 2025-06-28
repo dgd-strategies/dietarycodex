@@ -166,7 +166,7 @@
     });
 
     const apiUrl = (path) =>
-      (apiBaseInput.value || 'http://localhost:8000').replace(/\/+$/, '') + path;
+      (apiBaseInput.value || location.origin).replace(/\/+$/, '') + path;
 
     function quantile(arr, q) {
       const sorted = arr.slice().sort((a, b) => a - b);
@@ -212,7 +212,7 @@
 
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
-      console.log('Using API', apiBaseInput.value || 'http://localhost:8000');
+      console.log('Using API', apiBaseInput.value || location.origin);
       try {
         const ping = await fetch(apiUrl('/ping'));
         console.log('API ping', ping.status);
@@ -310,7 +310,7 @@
         if (msg.includes('Failed to fetch')) {
           msg = `Failed to reach ${apiUrl('/score')} – the server may be down or CORS blocked.`;
         }
-        resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || 'http://localhost:8000'}</small></div>`;
+        resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || location.origin}</small></div>`;
       } finally {
         loading.style.display = 'none';
       }
