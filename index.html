@@ -17,15 +17,17 @@
         <style>
     :root {
       --bg: #ffffff;
-      --text: #212529;
-      --primary: #0057d9;
+      --text: #0021a5;
+      --primary: #1f77b4;
+      --accent: #fa4616;
       --border: #e5e5e5;
     }
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #111316;
         --text: #e9ecef;
-        --primary: #339af0;
+        --primary: #1f77b4;
+        --accent: #fa4616;
         --border: #333;
       }
     }
@@ -44,7 +46,7 @@
     }
     header.hero {
       padding: 3rem 1rem 2rem;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 2px solid var(--primary);
       background: var(--bg);
     }
     header.hero img {
@@ -70,14 +72,15 @@
       gap: 0.25rem;
       font-weight: 600;
       cursor: pointer;
+      border-radius: 0.25rem;
     }
     #dropzone {
       border: 2px dashed var(--primary);
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 2rem;
       text-align: center;
-      background: rgba(13,110,253,0.05);
-      transition: background 0.2s;
+      background: rgba(31,119,180,0.05);
+      transition: background 0.2s, border-color 0.2s;
       cursor: pointer;
       min-height: 6rem;
       display: flex;
@@ -85,13 +88,16 @@
       justify-content: center;
     }
     #dropzone.hover {
-      background: rgba(13,110,253,0.15);
+      background: rgba(31,119,180,0.15);
+      border-color: var(--accent);
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 0.5rem;
       font-size: 0.9rem;
+      border-radius: 0.25rem;
+      overflow: hidden;
     }
     #previewContainer {
       overflow-x: auto;
@@ -110,20 +116,34 @@
     a {
       color: var(--primary);
     }
+    a:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background-color: var(--accent);
+      border-color: var(--accent);
+    }
     #loading {
       display: none;
       text-align: center;
       margin-top: 1rem;
       font-weight: 600;
     }
-    .error { color: #d9534f; font-weight: bold; }
+    .error { color: var(--accent); font-weight: bold; }
         </style>
     </head>
     <body>
         <header class="hero text-center">
-            <img src="https://raw.githubusercontent.com/dgd-strategies/dietarycodex/main/assets/UFLogo.png"
-                 alt="UF Logo"
-                 class="img-fluid" />
+            <a href="https://hobi.med.ufl.edu/" target="_blank" rel="noopener">
+                <img src="https://raw.githubusercontent.com/dgd-strategies/dietarycodex/main/assets/UFLogo.png"
+                     alt="UF Logo"
+                     class="img-fluid" />
+            </a>
             <h1 class="display-5 fw-semibold mt-3">Dietary Index Calculator</h1>
             <p class="lead">Compute diet quality scores right in your browser.</p>
         </header>
