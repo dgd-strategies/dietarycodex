@@ -6,11 +6,12 @@ This file provides guidance and context to the AI Codex agent when contributing 
 ## Project Overview
 DietaryCodex is a browser-first tool for computing multiple diet-quality indices
 (DII, MIND, HEI‑2015, DASH). The GitHub Pages site runs the Python scoring
-modules through **Pyodide**, so users can upload a CSV and get results with no
-server required. The same modules under `compute/` double as a Python library
-for offline or programmatic use. A minimal FastAPI backend exists only for
-automated tests. Pre-commit checks (`black`, `isort`, `flake8`) and pytest
-provide quality assurance.
+modules through **Pyodide**, so users can upload a CSV and get results entirely
+client side. The same modules under `compute/` double as a Python library for
+offline or programmatic use. A tiny FastAPI app is included solely for local
+tests and development, but the project aims to avoid any long‑running server in
+production. Pre-commit checks (`black`, `isort`, `flake8`) and pytest provide
+quality assurance.
 
 ## Directory Structure
 ```
