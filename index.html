@@ -251,11 +251,10 @@
       pyStatus.textContent = 'Local compute ready';
       pyStatus.className = 'ms-auto small text-success';
       try {
-        const res = await fetch('./assets/template.json');
+        const res = await fetch('./assets/template.csv');
         if (!res.ok) throw new Error(`template load ${res.status}`);
-        const data = await res.json();
-        const csv = jsonToCsv(data);
-        const file = new File([csv], 'template.csv', { type: 'text/csv' });
+        const text = await res.text();
+        const file = new File([text], 'template.csv', { type: 'text/csv' });
         console.log('Loaded default template');
         handleFile(file);
       } catch (err) {
@@ -292,6 +291,7 @@
     async function computeFile(data, name) {
       loading.style.display = 'block';
       const selected = Array.from(document.querySelectorAll('.controls input:checked')).map(cb => cb.value);
+      console.log('Scoring started', { file: name, indices: selected });
       try {
         const py = await loadPy();
         const jsonData = JSON.stringify(data).replace(/'/g, "\\'");
@@ -323,11 +323,11 @@ json.dumps(out)
 `);
         const info = JSON.parse(pyRes);
         const csvText = info.csv;
-        const data = csvText.trim().split('\n').map(r => r.split(','));
-        const idx = data[0].reduce((m,h,i) => (m[h]=i,m), {});
+        const rows = csvText.trim().split('\n').map(r => r.split(','));
+        const idx = rows[0].reduce((m,h,i) => (m[h]=i,m), {});
         let summary = '<h3>Summary Statistics:</h3><ul>';
         selected.forEach(name => {
-          const vals = data.slice(1).map(r => parseFloat(r[idx[name]])).filter(v => !isNaN(v));
+          const vals = rows.slice(1).map(r => parseFloat(r[idx[name]])).filter(v => !isNaN(v));
           const s = info.stats[name];
           summary += `<li><b>${name}</b> – mean: ${parseFloat(s.mean).toFixed(2)}, std: ${parseFloat(s.std).toFixed(2)}, min: ${parseFloat(s.min).toFixed(2)}, max: ${parseFloat(s.max).toFixed(2)}, median: ${parseFloat(s.median).toFixed(2)}, quintiles: ${s.quintiles.map(q=>parseFloat(q).toFixed(2)).join(', ')}</li>`;
           const chartDiv = document.createElement('div');
