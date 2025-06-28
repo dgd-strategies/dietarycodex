@@ -67,3 +67,9 @@ When the AI agent runs, reference this file to:
 - Adhere to coding standards and pre-commit configuration
 - Follow the development workflow and commands
 - Verify API endpoint signatures in `compute/api.py`
+
+## Current OKRs
+- Keep scoring fully client side using Pyodide.
+- Ship a default CSV template that loads automatically.
+- Document calculations and validation steps clearly.
+- Enforce code quality via pre-commit and pytest in CI.
