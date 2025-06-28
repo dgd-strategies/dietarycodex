@@ -134,6 +134,8 @@
     const previewTitle = document.getElementById('previewTitle');
     const loading = document.getElementById('loading');
     const apiBaseInput = document.getElementById('apiBase');
+    const paramsQP = new URLSearchParams(location.search);
+    if (paramsQP.get('api')) apiBaseInput.value = paramsQP.get('api');
 
     const apiUrl = (path) => apiBaseInput.value.replace(/\/+$/, '') + path;
 
