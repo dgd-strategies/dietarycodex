@@ -8,15 +8,14 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/<your‑fork>/dietary-index-web.git
-d
+git clone https://github.com/<your-fork>/dietary-index-web.git
 # Change directory
 cd dietary-index-web
 
-# Start static site locally
+# Install dependencies and start the local frontend
 ./setup.sh
 
-# OR full dev mode with FastAPI backend
+# OR run with the FastAPI backend in dev mode
 ./setup.sh --dev
 ```
 
@@ -24,7 +23,8 @@ cd dietary-index-web
 - API documentation (Swagger) at: [http://localhost:8000/docs](http://localhost:8000/docs) when in `--dev` mode.
 - The web UI defaults to this local address. Use the "API URL" field in the page to point to a different backend when hosted elsewhere. You can also append `?api=https://yourserver` to the page URL to pre-fill this field.
 - Your chosen API URL is remembered in local storage so you only set it once.
-- The web UI defaults to this local address. Use the "API URL" field in the page to point to a different backend when hosted elsewhere.
+- Running `./setup.sh` installs all Python requirements (including `pandas`, `numpy`)
+  and sets up the `pre-commit` tool for linting.
 ---
 
 ## Repository Structure
