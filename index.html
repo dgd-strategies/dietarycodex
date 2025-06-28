@@ -17,22 +17,25 @@
         <style>
     :root {
       --bg: #ffffff;
-      --text: #212529;
-      --primary: #0057d9;
+      --text: #0021a5;
+      --primary: #0063be;
+      --accent: #fa4616;
       --border: #e5e5e5;
+      --muted-bg: #f7f9fa;
     }
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #111316;
         --text: #e9ecef;
         --primary: #339af0;
+        --accent: #f28c6c;
         --border: #333;
       }
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -46,6 +49,8 @@
       padding: 3rem 1rem 2rem;
       border-bottom: 1px solid var(--border);
       background: var(--bg);
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     header.hero img {
       max-width: 320px;
@@ -54,16 +59,19 @@
     }
     .container {
       max-width: 960px;
-      padding: 1rem;
+      padding: 1rem 1.5rem;
       margin: auto;
     }
-    .controls {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  background: var(--muted-bg);
+  padding: 0.75rem;
+  border-radius: 8px;
+}
     .controls label {
       display: flex;
       align-items: center;
@@ -73,19 +81,20 @@
     }
     #dropzone {
       border: 2px dashed var(--primary);
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 2rem;
       text-align: center;
-      background: rgba(13,110,253,0.05);
+      background: var(--muted-bg);
       transition: background 0.2s;
       cursor: pointer;
       min-height: 6rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     #dropzone.hover {
-      background: rgba(13,110,253,0.15);
+      background: rgba(0,99,190,0.1);
     }
     table {
       width: 100%;
@@ -96,6 +105,8 @@
     #previewContainer {
       overflow-x: auto;
       margin-top: 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
     }
     #previewTable {
       min-width: 600px;
@@ -105,25 +116,40 @@
       border: 1px solid var(--border);
     }
     th {
-      background: rgba(0,0,0,0.04);
+      background: var(--muted-bg);
     }
     a {
       color: var(--primary);
+      text-decoration: none;
+    }
+    a:hover {
+      color: var(--accent);
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background-color: #004c94;
+      border-color: #004c94;
     }
     #loading {
       display: none;
       text-align: center;
       margin-top: 1rem;
       font-weight: 600;
+      color: var(--primary);
     }
     .error { color: #d9534f; font-weight: bold; }
         </style>
     </head>
     <body>
         <header class="hero text-center">
-            <img src="https://raw.githubusercontent.com/dgd-strategies/dietarycodex/main/assets/UFLogo.png"
-                 alt="UF Logo"
-                 class="img-fluid" />
+            <a href="https://hobi.med.ufl.edu/" target="_blank" rel="noopener">
+                <img src="https://raw.githubusercontent.com/dgd-strategies/dietarycodex/main/assets/UFLogo.png"
+                     alt="UF Logo"
+                     class="img-fluid" />
+            </a>
             <h1 class="display-5 fw-semibold mt-3">Dietary Index Calculator</h1>
             <p class="lead">Compute diet quality scores right in your browser.</p>
         </header>
