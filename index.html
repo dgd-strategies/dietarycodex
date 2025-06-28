@@ -296,6 +296,7 @@
           msg = `Failed to reach ${apiUrl('/score')}. Is the API running?`;
         }
         resultBox.innerHTML = `<div class='error'>${msg}</div>`;
+        resultBox.innerHTML = `<div class='error'>${err.message}. Check API at ${apiBaseInput.value}</div>`;
       } finally {
         loading.style.display = 'none';
       }
