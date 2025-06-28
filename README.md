@@ -83,6 +83,13 @@ Detailed scoring methods, formulas, and reference citations are in [docs/validat
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on branching, testing, and PRs.
 
+## Roadmap & OKRs
+These lightweight objectives keep development focused while ensuring the tool remains fully client side:
+
+- **Objective 1** – reliable scoring from a default template and drag‑and‑drop uploads across modern browsers.
+- **Objective 2** – clear documentation; methods live in [`validation.md`](validation.md) and [`docs/validation_detailed.md`](docs/validation_detailed.md).
+- **Objective 3** – code quality with pre‑commit and pytest enforced in CI.
+
 ---
 
 **License:** MIT

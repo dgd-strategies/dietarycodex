@@ -8,3 +8,6 @@ tests:
   - tests/test_scoring.py
 sample_data:
   - assets/template.csv
+docs:
+  - docs/index.md
+  - docs/okrs.md

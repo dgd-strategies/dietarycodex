@@ -18,6 +18,7 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 - [CSV Template](#csv-template)
 - [Development Workflow](#development-workflow)
 - [Contributing](#contributing)
+- [Roadmap & OKRs](okrs.md)
 - [License](#license)
 
 ---
@@ -122,3 +123,6 @@ See the [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on reporting issues
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
+
+## Roadmap & OKRs
+See [okrs.md](okrs.md) for the current objectives and key results guiding development.
