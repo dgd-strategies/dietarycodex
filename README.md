@@ -4,34 +4,11 @@
 
 ---
 
-## Quick Start
+## Using the Web App
 
-```bash
-# Clone the repo
-git clone https://github.com/<your-fork>/dietarycodex.git
-# Change directory
-cd dietarycodex
+Just open [https://dgd-strategies.github.io/dietarycodex](https://dgd-strategies.github.io/dietarycodex) or `index.html` locally. The page works fully client side and registers a service worker providing a demo endpoint `/api/time`.
 
-# Install dependencies and start the local frontend
-./setup.sh
-
-# OR run with the FastAPI backend in dev mode
-./setup.sh --dev
-```
-
-- Static UI served at: [http://localhost:8000](http://localhost:8000)
-- API documentation (Swagger) at: [http://localhost:8000/docs](http://localhost:8000/docs) when in `--dev` mode.
-- The web UI defaults to this local address. Use the "API URL" field in the page to point to a different backend when hosted elsewhere. You can also append `?api=https://yourserver` to the page URL to pre-fill this field.
-- Your chosen API URL is remembered in local storage so you only set it once.
-- The UI shows the API ping status (HTTP code and reason) next to this field on page load.
-- Running `./setup.sh` installs all Python requirements (including `pandas`, `numpy`)
-  and sets up the `pre-commit` tool for linting. The script also installs
-  `shellcheck-py` so the ShellCheck hook works even when Docker is unavailable.
-- Error messages now include HTTP status details when API calls fail.
-
-### GitHub Pages Usage
-
-The live site at [https://dgd-strategies.github.io/dietarycodex](https://dgd-strategies.github.io/dietarycodex) runs entirely in your browser using Pyodide. No server setup is required—just open the link and start scoring CSV files. The local setup script remains available for development or running your own FastAPI backend.
+The optional `setup.sh` script only installs dependencies for tests and the Python library.
 
 ---
 
@@ -39,9 +16,9 @@ The live site at [https://dgd-strategies.github.io/dietarycodex](https://dgd-str
 
 ```
 ├── Dockerfile               # Production Docker image (static frontend)
-├── Dockerfile.dev           # Dev Docker image (FastAPI + reload)
-├── docker-compose.yml       # Mounts code + runs FastAPI / frontend together
-├── setup.sh                 # Local setup script with `--dev` flag
+├── Dockerfile.dev           # Optional dev image for the test API
+├── docker-compose.yml       # Local orchestration for API tests
+├── setup.sh                 # Installs deps and optional API for tests
 ├── requirements.txt         # Python dependencies
 ├── pyproject.toml           # black, isort, flake8, pytest config
 ├── .pre-commit-config.yaml  # Git pre-commit hooks

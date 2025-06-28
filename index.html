@@ -12,6 +12,7 @@
               rel="stylesheet" />
         <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+        <script>if ("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
         <style>
     :root {
       --bg: #f9fafb;
@@ -123,11 +124,7 @@
                     <input class="form-check-input" type="checkbox" value="DASH" checked />
                     DASH
                 </label>
-                <input id="apiBase"
-                       class="form-control form-control-sm ms-auto"
-                       style="max-width:240px"
-                       placeholder="http://localhost:8000" />
-                <div id="apiStatus" class="small ms-2"></div>
+                <span id="pyStatus" class="ms-auto small text-info">Loading Pyodide...</span>
             </div>
             <div id="dropzone" class="mb-3">Drag & drop CSV here, or click to select file</div>
             <div id="previewContainer">
@@ -142,6 +139,7 @@
                 <table id="previewTable">
                 </table>
             </div>
+            <button id="scoreBtn" class="btn btn-primary mb-2" disabled>Score & Download</button>
             <div id="loading">⏳ Scoring in progress...</div>
             <div id="result"></div>
             <div id="charts"></div>
@@ -153,20 +151,9 @@
     const previewTitle = document.getElementById('previewTitle');
     const clearBtn = document.getElementById('clearBtn');
     const loading = document.getElementById('loading');
-    const apiBaseInput = document.getElementById('apiBase');
-    const apiStatus = document.getElementById('apiStatus');
-    const paramsQP = new URLSearchParams(location.search);
-    const storedApi = localStorage.getItem('apiBase');
-    if (paramsQP.get('api')) {
-      apiBaseInput.value = paramsQP.get('api');
-    } else if (storedApi) {
-      apiBaseInput.value = storedApi;
-    }
-    apiBaseInput.addEventListener('change', () => {
-      localStorage.setItem('apiBase', apiBaseInput.value);
-    });
-
-    const isGH = location.hostname.endsWith('github.io');
+    const pyStatus = document.getElementById('pyStatus');
+    const scoreBtn = document.getElementById('scoreBtn');
+    let currentFile = null;
     let pyReady = null;
     async function loadPy() {
       if (!pyReady) {
@@ -188,10 +175,6 @@
       return pyReady;
     }
 
-    function apiUrl(path) {
-      const base = apiBaseInput.value || (!location.hostname.endsWith('github.io') ? location.origin : '');
-      return base.replace(/\/+$/, '') + path;
-    }
 
     function quantile(arr, q) {
       const sorted = arr.slice().sort((a, b) => a - b);
@@ -235,32 +218,15 @@
       if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
     });
 
+    scoreBtn.addEventListener('click', () => {
+      if (currentFile) computeFile(currentFile);
+    });
+
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
-      console.log('Using API', apiBaseInput.value || location.origin);
-      if (isGH && !apiBaseInput.value) {
-        apiStatus.textContent = 'Loading Pyodide...';
-        apiStatus.className = 'small ms-2 text-info';
-        await loadPy();
-        apiStatus.textContent = 'Local compute ready';
-        apiStatus.className = 'small ms-2 text-success';
-      } else {
-        try {
-          const ping = await fetch(apiUrl('/ping'));
-          console.log('API ping', ping.status, ping.statusText);
-          apiStatus.textContent = `API ${ping.status} ${ping.statusText}`;
-          apiStatus.className = 'small ms-2 ' + (ping.ok ? 'text-success' : 'text-danger');
-          if (!ping.ok) {
-            console.warn('API ping not OK', ping.status, ping.statusText);
-          }
-
-        } catch (err) {
-          console.warn('API ping failed', err);
-          const msg = err instanceof Error ? err.message : String(err);
-          apiStatus.textContent = `API ping failed: ${msg}`;
-          apiStatus.className = 'small ms-2 text-danger';
-        }
-      }
+      await loadPy();
+      pyStatus.textContent = 'Local compute ready';
+      pyStatus.className = 'ms-auto small text-success';
       try {
         const res = await fetch('./assets/template.csv');
         if (!res.ok) throw new Error(`template load ${res.status}`);
@@ -279,14 +245,13 @@
       previewTitle.style.display = 'none';
       document.getElementById('charts').innerHTML = '';
       clearBtn.style.display = 'none';
-      loading.style.display = 'block';
-      console.log('Processing file', file.name);
+      loading.style.display = 'none';
+      console.log('Loaded file', file.name);
       if (!file.name.toLowerCase().endsWith('.csv')) {
         resultBox.innerHTML = "<div class='error'>Only CSV files are supported.</div>";
-        loading.style.display = 'none';
         return;
       }
-      // Show preview
+      currentFile = file;
       const text = await file.text();
       const rows = text.trim().split('\n').map(r => r.split(','));
       const headers = rows[0];
@@ -296,17 +261,17 @@
       previewTable.innerHTML = html;
       previewTitle.style.display = 'block';
       clearBtn.style.display = 'inline-block';
-      console.log('Loaded file', file.name);
+      scoreBtn.disabled = false;
+    }
 
+    async function computeFile(file) {
+      loading.style.display = 'block';
+      const text = await file.text();
       const selected = Array.from(document.querySelectorAll('.controls input:checked')).map(cb => cb.value);
-      const params = new URLSearchParams();
-      selected.forEach(i => params.append('indices', i));
-
       try {
-        if (isGH && !apiBaseInput.value) {
-          const py = await loadPy();
-          const csvStr = JSON.stringify(text);
-          const pyRes = await py.runPythonAsync(`
+        const py = await loadPy();
+        const csvStr = JSON.stringify(text);
+        const pyRes = await py.runPythonAsync(`
 import pandas as pd, io, json
 from compute.dii import calculate_dii
 from compute.mind import calculate_mind
@@ -332,87 +297,33 @@ if 'DASH' in indices:
 out = {'csv': df.to_csv(index=False), 'stats': stats}
 json.dumps(out)
 `);
-          const info = JSON.parse(pyRes);
-          const csvText = info.csv;
-          const data = csvText.trim().split('\n').map(r => r.split(','));
-          const idx = data[0].reduce((m,h,i) => (m[h]=i,m), {});
-          let summary = '<h3>Summary Statistics:</h3><ul>';
-          selected.forEach(name => {
-            const vals = data.slice(1).map(r => parseFloat(r[idx[name]])).filter(v => !isNaN(v));
-            const s = info.stats[name];
-            summary += `<li><b>${name}</b> – mean: ${parseFloat(s.mean).toFixed(2)}, std: ${parseFloat(s.std).toFixed(2)}, min: ${parseFloat(s.min).toFixed(2)}, max: ${parseFloat(s.max).toFixed(2)}, median: ${parseFloat(s.median).toFixed(2)}, quintiles: ${s.quintiles.map(q=>parseFloat(q).toFixed(2)).join(', ')}</li>`;
-            const chartDiv = document.createElement('div');
-            document.getElementById('charts').append(chartDiv);
-            Plotly.newPlot(chartDiv,[{x:vals,type:'histogram',name}],{title:`${name} Distribution`,margin:{t:40}}, {responsive:true});
-          });
-          summary += '</ul>';
-          resultBox.innerHTML = summary;
-          const blob = new Blob([csvText], {type:'text/csv'});
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = file.name.replace(/\.csv$/, '') + '_scores.csv';
-          a.click();
-          URL.revokeObjectURL(url);
-          console.log('Scoring complete via Pyodide');
-        } else {
-          const fd = new FormData();
-          fd.append('file', file);
-          const res = await fetch(apiUrl(`/score?${params}`), {
-            method: 'POST',
-            body: fd,
-          });
-          if (!res.ok) {
-            let detail = '';
-            try { detail = (await res.json()).detail; } catch {}
-
-          if (!detail) {
-            const text = await res.text().catch(() => '');
-            detail = text.trim();
-          }
-          if (res.status === 404) {
-            detail = detail || 'Endpoint not found';
-          } else if (res.status === 405) {
-            detail = detail || 'Method not allowed';
-          }
-          const statusLine = `HTTP ${res.status} ${res.statusText}`;
-          throw new Error(detail ? `${statusLine} - ${detail}` : statusLine);
-        }
-          const info = await res.json();
-          const dl = await fetch(apiUrl(`/download/${info.filename}`));
-          if (!dl.ok) {
-            throw new Error(`Download error ${dl.status} ${dl.statusText}`);
-          }
-          const blob = await dl.blob();
-          const csvText = await blob.text();
-          const data = csvText.trim().split('\n').map(r => r.split(','));
-          const idx = data[0].reduce((m,h,i) => (m[h]=i,m), {});
-          let summary = '<h3>Summary Statistics:</h3><ul>';
-          selected.forEach(name => {
-            const vals = data.slice(1).map(r => parseFloat(r[idx[name]])).filter(v => !isNaN(v));
-            const s = computeStats(vals);
-            summary += `<li><b>${name}</b> – mean: ${s.mean}, std: ${s.std}, min: ${s.min}, max: ${s.max}, median: ${s.median}, quintiles: ${s.quintiles.join(', ')}</li>`;
-            const chartDiv = document.createElement('div');
-            document.getElementById('charts').append(chartDiv);
-            Plotly.newPlot(chartDiv,[{x:vals,type:'histogram',name}],{title:`${name} Distribution`,margin:{t:40}}, {responsive:true});
-          });
-          summary += '</ul>';
-          resultBox.innerHTML = summary;
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = file.name.replace(/\.csv$/, '') + '_scores.csv';
-          a.click();
-          URL.revokeObjectURL(url);
-          console.log('Scoring complete, results downloaded');
-        }
+        const info = JSON.parse(pyRes);
+        const csvText = info.csv;
+        const data = csvText.trim().split('\n').map(r => r.split(','));
+        const idx = data[0].reduce((m,h,i) => (m[h]=i,m), {});
+        let summary = '<h3>Summary Statistics:</h3><ul>';
+        selected.forEach(name => {
+          const vals = data.slice(1).map(r => parseFloat(r[idx[name]])).filter(v => !isNaN(v));
+          const s = info.stats[name];
+          summary += `<li><b>${name}</b> – mean: ${parseFloat(s.mean).toFixed(2)}, std: ${parseFloat(s.std).toFixed(2)}, min: ${parseFloat(s.min).toFixed(2)}, max: ${parseFloat(s.max).toFixed(2)}, median: ${parseFloat(s.median).toFixed(2)}, quintiles: ${s.quintiles.map(q=>parseFloat(q).toFixed(2)).join(', ')}</li>`;
+          const chartDiv = document.createElement('div');
+          document.getElementById('charts').append(chartDiv);
+          Plotly.newPlot(chartDiv,[{x:vals,type:'histogram',name}],{title:`${name} Distribution`,margin:{t:40}}, {responsive:true});
+        });
+        summary += '</ul>';
+        resultBox.innerHTML = summary;
+        const blob = new Blob([csvText], {type:'text/csv'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name.replace(/\.csv$/, '') + '_scores.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+        console.log('Scoring complete via Pyodide');
       } catch(err) {
         console.error('Scoring failed', err);
         let msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-        if (msg.includes('Failed to fetch')) {
-          msg = `Failed to reach ${apiUrl('/score')} – the server may be down or CORS blocked.`;
-        }
-        resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || 'http://localhost:8000'}</small></div>`;
+        resultBox.innerHTML = `<div class='error'><b>${msg}</b></div>`;
       } finally {
         loading.style.display = 'none';
       }

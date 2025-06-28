@@ -4,20 +4,25 @@
 This file provides guidance and context to the AI Codex agent when contributing to the DietaryCodex repository.
 
 ## Project Overview
-DietaryCodex is a Python-based FastAPI application that computes multiple diet-quality indices (DII, MIND, HEI-2015, DASH) from uploaded nutrition data. It uses `pandas` for data handling and includes pre-commit checks (`black`, `isort`, `flake8`) and pytest for testing.
+DietaryCodex is a browser-first tool for computing multiple diet-quality indices
+(DII, MIND, HEI‑2015, DASH). The GitHub Pages site runs the Python scoring
+modules through **Pyodide**, so users can upload a CSV and get results with no
+server required. The same modules under `compute/` double as a Python library
+for offline or programmatic use. A minimal FastAPI backend exists only for
+automated tests. Pre-commit checks (`black`, `isort`, `flake8`) and pytest
+provide quality assurance.
 
 ## Directory Structure
 ```
 /
 ├── compute/                # Core computation modules (dii, mind, hei, dash, base)
-├── frontend/               # Front-end static assets (CSS/JS)
 ├── tests/                  # Pytest test suites
 ├── docs/                   # Documentation files (markdown)
 ├── .pre-commit-config.yaml # Pre-commit hooks configuration
 ├── pyproject.toml          # Tool configuration (black, isort, flake8, mypy)
 ├── README.md               # High-level project overview
 └── AGENT.md                # Agent guidance file
-index.html                  # kept in root directy as the page has a static deployment using GitHub Pages
+index.html                  # Single-page app served via GitHub Pages
 ```
 
 ## Coding Standards
@@ -27,17 +32,15 @@ index.html                  # kept in root directy as the page has a static depl
 
 ## Development Workflow
 1. **Clone** the repository.
-2. **Install** dependencies:
+2. **Open** `index.html` directly or serve it with `python -m http.server` to
+   use the browser-only version.
+3. **Install** dependencies (for running tests or the optional library):
    ```bash
    pip install -r requirements.txt
    ```
-3. **Run pre-commit** checks before committing:
+4. **Run pre-commit** checks before committing:
    ```bash
    pre-commit run --all-files
-   ```
-4. **Start server** for local testing:
-   ```bash
-   uvicorn compute.api:app --reload
    ```
 5. **Run tests**:
    ```bash
