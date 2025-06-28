@@ -47,7 +47,7 @@ def calculate_dash(df: pd.DataFrame) -> pd.Series:
         # Compute cohort quintiles (1-5)
         try:
             ranks[col] = pd.qcut(df[col], 5, labels=False, duplicates="drop") + 1
-        except ValueError:
+        except (ValueError, IndexError):
             # Fallback to percentile-based ranking
             ranks[col] = (df[col].rank(pct=True) * 5).clip(1, 5).round().astype(int)
 
