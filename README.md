@@ -79,6 +79,12 @@ Detailed scoring methods, formulas, and reference citations are in [docs/validat
 
 ---
 
+## Multi-language Library
+
+While the browser UI relies on Python via Pyodide, the scoring routines are being ported to additional languages such as R, Julia, TypeScript, Go, Rust, and more. Every port must expose the same function names and arguments. **When a function changes in one language, update all others to keep results consistent.** See [docs/multi_language.md](docs/multi_language.md) for the current list of supported languages.
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on branching, testing, and PRs.

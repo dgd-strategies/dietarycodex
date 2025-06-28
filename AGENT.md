@@ -77,3 +77,12 @@ When the AI agent runs, reference this file to:
 ## UI Standard
 - Keep note of "AGENT_STYLE.md" particularly built for OpenAI Codex
 - This file keeps track and organizes the owner's central OKRs required in styling
+
+## Multi-language Library
+DietaryCodex aims to provide equivalent scoring modules in multiple languages.
+The Python implementation is the source of truth, but R, Julia, JavaScript/TypeScript,
+Go, Rust, Java/Kotlin, C#\F#, C++, Scala, Ruby/Lua, and Haskell/OCaml ports are
+expected. **Whenever the logic or signature of a scoring function changes in one
+language, update all other language implementations to match.** This keeps the
+API consistent so users get identical results no matter which language they run.
+See [docs/multi_language.md](docs/multi_language.md) for coordination details.
