@@ -1,5 +1,5 @@
 # Configuration for Codex agent to understand project structure
-project: dietary-index-web
+project: dietarycodex
 language: python
 entrypoints:
   - index.html

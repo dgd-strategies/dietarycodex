@@ -39,4 +39,4 @@ jobs:
           pytest tests
 
       - name: 🐳 Build Docker
-        run: docker build -t dietary-index-web .
+        run: docker build -t dietarycodex .

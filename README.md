@@ -1,6 +1,6 @@
 # Dietary Index Web Calculator
 
-**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, DASH) from nutrition CSV data**.
+**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, DASH) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
 
 ---
 
@@ -8,9 +8,9 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/<your-fork>/dietary-index-web.git
+git clone https://github.com/<your-fork>/dietarycodex.git
 # Change directory
-cd dietary-index-web
+cd dietarycodex
 
 # Install dependencies and start the local frontend
 ./setup.sh
@@ -31,7 +31,7 @@ cd dietary-index-web
 
 ### GitHub Pages Usage
 
-When the static site is served from `*.github.io`, there is **no backend API** available by default. Enter the URL of your running FastAPI service in the "API URL" field or append `?api=<url>` to the page. The page will display a warning until a reachable API is configured.
+The live site at [https://dgd-strategies.github.io/dietarycodex](https://dgd-strategies.github.io/dietarycodex) runs entirely in your browser using Pyodide. No server setup is required—just open the link and start scoring CSV files. The local setup script remains available for development or running your own FastAPI backend.
 
 ---
 

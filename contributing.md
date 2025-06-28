@@ -9,8 +9,8 @@ Thank you for your interest in contributing! This guide outlines the workflow, s
 1. **Fork** the repository to your personal GitHub account.
 2. **Clone** your fork:
    ```bash
-   git clone https://github.com/<your-username>/dietary-index-web.git
-   cd dietary-index-web
+   git clone https://github.com/<your-username>/dietarycodex.git
+   cd dietarycodex
    ```
 3. **Install** dependencies and set up your environment:
    ```bash
