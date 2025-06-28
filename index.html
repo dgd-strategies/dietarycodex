@@ -205,9 +205,13 @@
         const values = line.split(',');
         const obj = {};
         headers.forEach((h, i) => {
-          const v = values[i] ?? '';
-          const num = Number(v);
-          obj[h] = isNaN(num) || v === '' ? v : num;
+          const v = (values[i] ?? '').trim();
+          if (v === '') {
+            obj[h] = null;
+          } else {
+            const num = Number(v);
+            obj[h] = isNaN(num) ? v : num;
+          }
         });
         return obj;
       });
