@@ -1,6 +1,10 @@
-# Dietary Index Web Calculator
+# Dietary Codex
 
-**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, DASH) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
+**A Methods Generative AI Project**
+
+> **Warning:** This repository was rapidly assembled with help from OpenAI Codex to modernize the original [dietaryindex](https://github.com/jamesjiadazhan/dietaryindex) R code. Validate results at your own risk and please share feedback with the University of Florida team.
+
+This browser-based tool computes multiple diet-quality scores (DII, MIND, HEI‑2015, DASH) from nutrition CSV data. The GitHub Pages site uses Pyodide so it works entirely client side.
 
 ---
 
