@@ -56,8 +56,7 @@ The **Dietary Index Web Calculator** is a browser-based tool for computing multi
 │   ├── index.md            # This file
 │   ├── validation.md       # Scoring methods & rules
 │   └── validation_detailed.md # Detailed formulas & references
-├── frontend/               # Single-page web app
-│   └── index.html
+├── index.html              # Single-page web app
 ├── tests/                  # Pytest suites
 │   └── test_scoring.py
 ├── Dockerfile              # Static frontend container

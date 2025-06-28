@@ -13,7 +13,7 @@ d
 # Change directory
 cd dietary-index-web
 
-# Run setup script (frontend only)
+# Start static site locally
 ./setup.sh
 
 # OR full dev mode with FastAPI backend
@@ -40,8 +40,7 @@ cd dietary-index-web
 │   └── validation_detailed.md  # Full scientific validation guide
 ├── assets/
 │   └── template.csv         # CSV template with all required headers
-├── frontend/
-│   └── index.html           # Drag/drop UI + stats + Plotly charts
+├── index.html               # Drag/drop UI + stats + Plotly charts
 ├── compute/
 │   ├── __init__.py          # Package marker (empty)
 │   ├── base.py              # Shared utilities (validation, stats)
