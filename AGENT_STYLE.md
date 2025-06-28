@@ -23,6 +23,7 @@ This living style guide captures the visual and experiential standards for the p
 - The header image (UFLogo.png) is **centered, perfectly sized** for all screens—fills width on phones, scales proportionally for tablets, laptops, and desktops.
 - **Header logo must be clickable**, linking to [https://hobi.med.ufl.edu/](https://hobi.med.ufl.edu/).
 - Never alter placement, spacing, or aspect ratio of the header image.
+- **No rounded corners** on the header image; it should have square edges.
 
 **4. Typography**
 - Use a modern, sans-serif font (e.g., Inter, Helvetica Neue, Roboto).
@@ -59,6 +60,6 @@ This living style guide captures the visual and experiential standards for the p
 ```html
 <!-- Header logo: always centered, responsive, clickable -->
 <a href="https://hobi.med.ufl.edu/" style="display:block; text-align:center; margin-top:2rem;">
-  <img src="assets/UFLogo.png" alt="UF Logo" style="max-width:95vw; width:100%; height:auto; border-radius:2rem; box-shadow:0 8px 32px rgba(0,45,114,0.08);"/>
+  <img src="assets/UFLogo.png" alt="UF Logo" style="max-width:95vw; width:100%; height:auto; border-radius:0; box-shadow:0 8px 32px rgba(0,45,114,0.08);"/>
 </a>
 ```

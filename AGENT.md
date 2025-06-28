@@ -73,8 +73,7 @@ When the AI agent runs, reference this file to:
 - Ship a default CSV template that loads automatically.
 - Document calculations and validation steps clearly.
 - Enforce code quality via pre-commit and pytest in CI.
-  
+
 ## UI Standard
 - Keep note of "AGENT_STYLE.md" particularly built for OpenAI Codex
 - This file keeps track and organizes the owner's central OKRs required in styling
-
