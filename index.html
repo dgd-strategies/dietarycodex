@@ -156,17 +156,24 @@
     const apiBaseInput = document.getElementById('apiBase');
     const apiStatus = document.getElementById('apiStatus');
     const paramsQP = new URLSearchParams(location.search);
-    const storedApi = localStorage.getItem('apiBase');
+    const isGH = location.hostname.endsWith('github.io');
+    let storedApi = localStorage.getItem('apiBase');
     if (paramsQP.get('api')) {
       apiBaseInput.value = paramsQP.get('api');
     } else if (storedApi) {
-      apiBaseInput.value = storedApi;
+      if (isGH && storedApi.startsWith(location.origin)) {
+        storedApi = null;
+        localStorage.removeItem('apiBase');
+      } else {
+        apiBaseInput.value = storedApi;
+      }
     }
     apiBaseInput.addEventListener('change', () => {
-      localStorage.setItem('apiBase', apiBaseInput.value);
+      const val = apiBaseInput.value.trim();
+      if (val) localStorage.setItem('apiBase', val);
+      else localStorage.removeItem('apiBase');
     });
 
-    const isGH = location.hostname.endsWith('github.io');
     let pyReady = null;
     async function loadPy() {
       if (!pyReady) {

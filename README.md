@@ -31,7 +31,7 @@ cd dietarycodex
 
 ### GitHub Pages Usage
 
-The live site at [https://dgd-strategies.github.io/dietarycodex](https://dgd-strategies.github.io/dietarycodex) runs entirely in your browser using Pyodide. No server setup is required—just open the link and start scoring CSV files. The local setup script remains available for development or running your own FastAPI backend.
+The live site at [https://dgd-strategies.github.io/dietarycodex](https://dgd-strategies.github.io/dietarycodex) runs entirely in your browser using Pyodide. No server setup is required—just open the link and start scoring CSV files. If you previously entered an API URL, clear that field to return to local compute. The local setup script remains available for development or running your own FastAPI backend.
 
 ---
 
