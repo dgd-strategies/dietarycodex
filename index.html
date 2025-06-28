@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dietary Index Calculator</title>
+        <!-- sleek modern fonts and bootstrap -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
@@ -15,10 +16,10 @@
         <script>if ("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
         <style>
     :root {
-      --bg: #f9fafb;
+      --bg: #ffffff;
       --text: #212529;
-      --primary: #0d6efd;
-      --border: #dee2e6;
+      --primary: #0057d9;
+      --border: #e5e5e5;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -38,8 +39,18 @@
     }
     h1 {
       text-align: center;
-      font-size: 2rem;
+      font-size: 2.2rem;
       margin: 1rem 0;
+    }
+    header.hero {
+      padding: 3rem 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    header.hero img {
+      max-width: 320px;
+      width: 100%;
+      height: auto;
     }
     .container {
       max-width: 960px;
@@ -68,6 +79,10 @@
       background: rgba(13,110,253,0.05);
       transition: background 0.2s;
       cursor: pointer;
+      min-height: 6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #dropzone.hover {
       background: rgba(13,110,253,0.15);
@@ -105,8 +120,14 @@
         </style>
     </head>
     <body>
-        <div class="container my-4">
-            <h1>Dietary Index Calculator</h1>
+        <header class="hero text-center">
+            <img src="https://raw.githubusercontent.com/dgd-strategies/dietarycodex/main/assets/UFLogo.png"
+                 alt="UF Logo"
+                 class="img-fluid" />
+            <h1 class="display-5 fw-semibold mt-3">Dietary Index Calculator</h1>
+            <p class="lead">Compute diet quality scores right in your browser.</p>
+        </header>
+        <main class="container py-4">
             <div class="controls d-flex flex-wrap gap-2 align-items-center mb-3">
                 <span>All scores calculate automatically if columns exist.</span>
                 <span id="pyStatus" class="ms-auto small text-info">Loading Pyodide...</span>
@@ -128,7 +149,7 @@
             <div id="loading">⏳ Scoring in progress...</div>
             <div id="result"></div>
             <div id="charts"></div>
-        </div>
+        </main>
         <script>
     const dropzone = document.getElementById('dropzone');
     const resultBox = document.getElementById('result');
