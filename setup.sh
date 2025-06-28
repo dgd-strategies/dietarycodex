@@ -3,7 +3,7 @@
 
 set -e
 
-MODE="prod"
+MODE="basic"
 if [[ "$1" == "--dev" ]]; then
   MODE="dev"
 fi
@@ -26,11 +26,12 @@ pre-commit install
 echo "🧪 Running tests..."
 pytest tests || echo "⚠️ Some tests failed — check test output above."
 
-echo "🚀 Starting FastAPI backend..."
-pip install uvicorn 'fastapi[all]' watchdog
 if [[ "$MODE" == "dev" ]]; then
-  EXTRA="--reload"
+  echo "🚀 Starting FastAPI dev backend with live reload..."
+  pip install uvicorn 'fastapi[all]' watchdog
+  uvicorn compute.api:app --host 0.0.0.0 --port 8000 --reload
 else
-  EXTRA=""
+  echo "🌐 Starting local frontend server..."
+  python3 -m http.server 8000 &
+  echo "✅ Setup complete. Visit http://localhost:8000"
 fi
-uvicorn compute.api:app --host 0.0.0.0 --port 8000 $EXTRA

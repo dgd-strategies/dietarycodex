@@ -22,14 +22,13 @@ COPY tests/ tests/
 COPY index.html index.html
 COPY assets/ assets/
 COPY docs/ docs/
-COPY setup.sh setup.sh
 
 # Disable Python bytecode, enable logs
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Expose port for API + frontend
+# Expose port for static HTML hosting
 EXPOSE 8000
 
-# Run setup script on container start
-CMD ["bash", "./setup.sh"]
+# Default CMD serves index.html from repository root
+CMD ["python3", "-m", "http.server", "8000", "--directory", "."]

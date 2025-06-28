@@ -11,6 +11,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
               rel="stylesheet" />
         <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
         <style>
     :root {
       --bg: #f9fafb;
@@ -122,11 +123,7 @@
                     <input class="form-check-input" type="checkbox" value="DASH" checked />
                     DASH
                 </label>
-                <input id="apiBase"
-                       class="form-control form-control-sm ms-auto"
-                       style="max-width:240px"
-                       placeholder="http://localhost:8000" />
-                <div id="apiStatus" class="small ms-2"></div>
+                <span id="pyStatus" class="ms-auto small">Loading Python...</span>
             </div>
             <div id="dropzone" class="mb-3">Drag & drop CSV here, or click to select file</div>
             <div id="previewContainer">
@@ -152,41 +149,58 @@
     const previewTitle = document.getElementById('previewTitle');
     const clearBtn = document.getElementById('clearBtn');
     const loading = document.getElementById('loading');
-    const apiBaseInput = document.getElementById('apiBase');
-    const apiStatus = document.getElementById('apiStatus');
-    const paramsQP = new URLSearchParams(location.search);
-    const storedApi = localStorage.getItem('apiBase');
-    if (paramsQP.get('api')) {
-      apiBaseInput.value = paramsQP.get('api');
-    } else if (storedApi) {
-      apiBaseInput.value = storedApi;
-    }
-    apiBaseInput.addEventListener('change', () => {
-      localStorage.setItem('apiBase', apiBaseInput.value);
-    });
+    const pyStatus = document.getElementById('pyStatus');
+    let pyReady = null;
 
-    const apiUrl = (path) =>
-      (apiBaseInput.value || location.origin).replace(/\/+$/, '') + path;
 
-    function quantile(arr, q) {
-      const sorted = arr.slice().sort((a, b) => a - b);
-      const pos = (sorted.length - 1) * q;
-      const lo = Math.floor(pos), hi = Math.ceil(pos);
-      return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
-    }
-    function computeStats(values) {
-      const n = values.length;
-      const mean = values.reduce((a,b) => a + b, 0) / n;
-      const sq = values.map(v => (v - mean)**2);
-      const std = Math.sqrt(sq.reduce((a,b) => a + b, 0) / (n - 1));
-      return {
-        mean: mean.toFixed(2),
-        std: std.toFixed(2),
-        min: Math.min(...values).toFixed(2),
-        max: Math.max(...values).toFixed(2),
-        median: quantile(values,0.5).toFixed(2),
-        quintiles: [0.2,0.4,0.6,0.8].map(q => quantile(values,q).toFixed(2))
-      };
+
+    async function loadPy() {
+      const py = await loadPyodide();
+      await py.loadPackage(['pandas']);
+      const files = [
+        'compute/__init__.py',
+        'compute/base.py',
+        'compute/dii.py',
+        'compute/dii_parameters.json',
+        'compute/hei.py',
+        'compute/mind.py',
+        'compute/dash.py'
+      ];
+      for (const f of files) {
+        const res = await fetch(f);
+        if (!res.ok) throw new Error('load ' + f);
+        const text = await res.text();
+        py.FS.mkdirTree(f.substring(0, f.lastIndexOf('/')));
+        py.FS.writeFile(f, text);
+      }
+      await py.runPython(`import sys; sys.path.append('.')`);
+      await py.runPython(`
+import io, pandas as pd
+from compute.dii import calculate_dii
+from compute.mind import calculate_mind
+from compute.hei import calculate_hei_2015
+from compute.dash import calculate_dash
+
+def score_csv(text, indices):
+    df = pd.read_csv(io.StringIO(text))
+    results = {}
+    if 'DII' in indices:
+        results['DII'] = calculate_dii(df)
+    if 'MIND' in indices:
+        results['MIND'] = calculate_mind(df)
+    if 'HEI_2015' in indices:
+        results['HEI_2015'] = calculate_hei_2015(df)
+    if 'DASH' in indices:
+        results['DASH'] = calculate_dash(df)
+    for k, s in results.items():
+        df[k] = s
+    stats = {k:{'mean': float(s.mean()), 'std': float(s.std()), 'min': float(s.min()), 'max': float(s.max()), 'median': float(s.median()), 'quintiles': s.quantile([0.2,0.4,0.6,0.8]).tolist()} for k,s in results.items()}
+    out = io.StringIO()
+    df.to_csv(out, index=False)
+    return out.getvalue(), stats
+      `);
+      pyStatus.textContent = 'Python ready';
+      return py;
     }
     dropzone.addEventListener('click', () => {
       const input = document.createElement('input');
@@ -210,24 +224,9 @@
       if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
     });
 
-    // Load bundled template on startup
+    // Initialize Pyodide and load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
-      console.log('Using API', apiBaseInput.value || location.origin);
-      try {
-        const ping = await fetch(apiUrl('/ping'));
-        console.log('API ping', ping.status, ping.statusText);
-        apiStatus.textContent = `API ${ping.status} ${ping.statusText}`;
-        apiStatus.className = 'small ms-2 ' + (ping.ok ? 'text-success' : 'text-danger');
-        if (!ping.ok) {
-          console.warn('API ping not OK', ping.status, ping.statusText);
-        }
-
-      } catch (err) {
-        console.warn('API ping failed', err);
-        const msg = err instanceof Error ? err.message : String(err);
-        apiStatus.textContent = `API ping failed: ${msg}`;
-        apiStatus.className = 'small ms-2 text-danger';
-      }
+      pyReady = loadPy();
       try {
         const res = await fetch('./assets/template.csv');
         if (!res.ok) throw new Error(`template load ${res.status}`);
@@ -266,52 +265,28 @@
       console.log('Loaded file', file.name);
 
       const selected = Array.from(document.querySelectorAll('.controls input:checked')).map(cb => cb.value);
-      const params = new URLSearchParams();
-      selected.forEach(i => params.append('indices', i));
 
       try {
-        const fd = new FormData();
-        fd.append('file', file);
-        const res = await fetch(apiUrl(`/score?${params}`), {
-          method: 'POST',
-          body: fd,
-        });
-        if (!res.ok) {
-          let detail = '';
-          try { detail = (await res.json()).detail; } catch {}
-
-          if (!detail) {
-            const text = await res.text().catch(() => '');
-            detail = text.trim();
-          }
-          if (res.status === 404) {
-            detail = detail || 'Endpoint not found';
-          } else if (res.status === 405) {
-            detail = detail || 'Method not allowed';
-          }
-          const statusLine = `HTTP ${res.status} ${res.statusText}`;
-          throw new Error(detail ? `${statusLine} - ${detail}` : statusLine);
-        }
-        const info = await res.json();
-        const dl = await fetch(apiUrl(`/download/${info.filename}`));
-        if (!dl.ok) {
-          throw new Error(`Download error ${dl.status} ${dl.statusText}`);
-        }
-        const blob = await dl.blob();
-        const csvText = await blob.text();
+        const py = await pyReady;
+        const scoreCsv = py.globals.get('score_csv');
+        const result = scoreCsv(text, selected).toJs();
+        scoreCsv.destroy();
+        const csvText = result[0];
+        const stats = result[1];
         const data = csvText.trim().split('\n').map(r => r.split(','));
         const idx = data[0].reduce((m,h,i) => (m[h]=i,m), {});
         let summary = '<h3>Summary Statistics:</h3><ul>';
         selected.forEach(name => {
           const vals = data.slice(1).map(r => parseFloat(r[idx[name]])).filter(v => !isNaN(v));
-          const s = computeStats(vals);
-          summary += `<li><b>${name}</b> – mean: ${s.mean}, std: ${s.std}, min: ${s.min}, max: ${s.max}, median: ${s.median}, quintiles: ${s.quintiles.join(', ')}</li>`;
+          const s = stats[name];
+          summary += `<li><b>${name}</b> – mean: ${s.mean.toFixed(2)}, std: ${s.std.toFixed(2)}, min: ${s.min.toFixed(2)}, max: ${s.max.toFixed(2)}, median: ${s.median.toFixed(2)}, quintiles: ${s.quintiles.map(q=>q.toFixed(2)).join(', ')}</li>`;
           const chartDiv = document.createElement('div');
           document.getElementById('charts').append(chartDiv);
           Plotly.newPlot(chartDiv,[{x:vals,type:'histogram',name}],{title:`${name} Distribution`,margin:{t:40}}, {responsive:true});
         });
         summary += '</ul>';
         resultBox.innerHTML = summary;
+        const blob = new Blob([csvText], {type:'text/csv'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -321,11 +296,8 @@
         console.log('Scoring complete, results downloaded');
       } catch(err) {
         console.error('Scoring failed', err);
-        let msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-        if (msg.includes('Failed to fetch')) {
-          msg = `Failed to reach ${apiUrl('/score')} – the server may be down or CORS blocked.`;
-        }
-        resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || 'http://localhost:8000'}</small></div>`;
+        const msg = err instanceof Error ? err.message : String(err);
+        resultBox.innerHTML = `<div class='error'>${msg}</div>`;
       } finally {
         loading.style.display = 'none';
       }
