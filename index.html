@@ -261,13 +261,21 @@
       try {
         const fd = new FormData();
         fd.append('file', file);
-        const res = await fetch(apiUrl(`/score?${params}`), { method: 'POST', body: fd });
+        const res = await fetch(apiUrl(`/score?${params}`), {
+          method: 'POST',
+          body: fd,
+        });
         if (!res.ok) {
           let detail = '';
           try { detail = (await res.json()).detail; } catch {}
           throw new Error(detail || `Server error ${res.status}`);
         }
-        const blob = await res.blob();
+        const info = await res.json();
+        const dl = await fetch(apiUrl(`/download/${info.filename}`));
+        if (!dl.ok) {
+          throw new Error(`Download error ${dl.status}`);
+        }
+        const blob = await dl.blob();
         const csvText = await blob.text();
         const data = csvText.trim().split('\n').map(r => r.split(','));
         const idx = data[0].reduce((m,h,i) => (m[h]=i,m), {});
@@ -293,8 +301,10 @@
         console.error('Scoring failed', err);
         let msg = err.message;
         if (msg === 'Failed to fetch') {
-          msg = `Failed to reach ${apiUrl('/score')}. Is the API running?`;
+          msg = `Failed to reach ${apiUrl('/score')}. Is the API running or CORS blocked?`;
         }
+        
+        resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Check API at ${apiBaseInput.value}</small></div>`;
         resultBox.innerHTML = `<div class='error'>${msg}</div>`;
         resultBox.innerHTML = `<div class='error'>${err.message}. Check API at ${apiBaseInput.value}</div>`;
 
