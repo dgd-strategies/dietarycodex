@@ -275,6 +275,13 @@
         if (!res.ok) {
           let detail = '';
           try { detail = (await res.json()).detail; } catch {}
+
+          if (res.status === 404) {
+            detail = detail || 'Endpoint not found';
+          } else if (res.status === 405) {
+            detail = detail || 'Method not allowed';
+          }
+
           throw new Error(detail || `Server error ${res.status} ${res.statusText}`);
         }
         const info = await res.json();
@@ -310,7 +317,10 @@
         if (msg.includes('Failed to fetch')) {
           msg = `Failed to reach ${apiUrl('/score')} – the server may be down or CORS blocked.`;
         }
+
+        resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || 'http://localhost:8000'}</small></div>`;
         resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || location.origin}</small></div>`;
+
       } finally {
         loading.style.display = 'none';
       }
