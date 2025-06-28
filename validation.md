@@ -69,7 +69,15 @@ This document provides comprehensive, science-based validation details for each 
 
 ---
 
-## 4. DASH Diet Score
+_Last updated: 2025-06-28_
+
+## 🚧 Implementation Note (2025‑06‑28)
+
+The web UI now tries to compute **all** four diet indices automatically when the
+necessary columns are present. Only the DII calculation has been validated with
+real data so far. MIND, HEI‑2015, and DASH still need dedicated input datasets
+and benchmark results. Once those resources are available, revisit this logic
+and confirm the implementations.
 **Purpose:** Quantify adherence to the Dietary Approaches to Stop Hypertension diet.
 **Common Range:** 8 (lowest adherence) to 40 (highest adherence).
 **Units:** Sum of component quintile-based scores.

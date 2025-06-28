@@ -108,22 +108,7 @@
         <div class="container my-4">
             <h1>Dietary Index Calculator</h1>
             <div class="controls d-flex flex-wrap gap-2 align-items-center mb-3">
-                <label class="form-check">
-                    <input class="form-check-input" type="checkbox" value="DII" checked />
-                    DII
-                </label>
-                <label class="form-check">
-                    <input class="form-check-input" type="checkbox" value="MIND" checked />
-                    MIND
-                </label>
-                <label class="form-check">
-                    <input class="form-check-input" type="checkbox" value="HEI_2015" checked />
-                    HEI‑2015
-                </label>
-                <label class="form-check">
-                    <input class="form-check-input" type="checkbox" value="DASH" checked />
-                    DASH
-                </label>
+                <span>All scores calculate automatically if columns exist.</span>
                 <span id="pyStatus" class="ms-auto small text-info">Loading Pyodide...</span>
             </div>
             <div id="dropzone" class="mb-3">Drag & drop CSV here, or click to select file</div>
@@ -294,43 +279,64 @@
 
     async function computeFile(data, name) {
       loading.style.display = 'block';
-      const selected = Array.from(document.querySelectorAll('.controls input:checked')).map(cb => cb.value);
-      console.log('Scoring started', { file: name, indices: selected });
+      console.log('Scoring started', { file: name });
       try {
         const py = await loadPy();
         const jsonData = JSON.stringify(data).replace(/'/g, "\\'");
         const pyRes = await py.runPythonAsync(`
 import pandas as pd, json
-from compute.dii import calculate_dii
-from compute.mind import calculate_mind
-from compute.hei import calculate_hei_2015
-from compute.dash import calculate_dash
+from compute.dii import calculate_dii, DII_PARAMETER_KEYS
+from compute.mind import calculate_mind, MIND_COMPONENT_KEYS
+from compute.hei import calculate_hei_2015, HEI_COMPONENT_KEYS
+from compute.dash import calculate_dash, DASH_COMPONENT_KEYS
 from compute.base import compute_summary_stats
 data = json.loads('${jsonData}')
 df = pd.DataFrame(data)
-indices = ${JSON.stringify(selected)}
 stats = {}
-if 'DII' in indices:
+missing = {}
+def check(cols):
+    return [c for c in cols if c not in df.columns]
+
+if not check(DII_PARAMETER_KEYS):
     df['DII'] = calculate_dii(df)
     stats['DII'] = compute_summary_stats(df, ['DII'])['DII']
-if 'MIND' in indices:
+else:
+    missing['DII'] = check(DII_PARAMETER_KEYS)
+
+if not check(MIND_COMPONENT_KEYS):
     df['MIND'] = calculate_mind(df)
     stats['MIND'] = compute_summary_stats(df, ['MIND'])['MIND']
-if 'HEI_2015' in indices:
+else:
+    missing['MIND'] = check(MIND_COMPONENT_KEYS)
+
+if not check(HEI_COMPONENT_KEYS):
     df['HEI_2015'] = calculate_hei_2015(df)
     stats['HEI_2015'] = compute_summary_stats(df, ['HEI_2015'])['HEI_2015']
-if 'DASH' in indices:
+else:
+    missing['HEI_2015'] = check(HEI_COMPONENT_KEYS)
+
+if not check(DASH_COMPONENT_KEYS):
     df['DASH'] = calculate_dash(df)
     stats['DASH'] = compute_summary_stats(df, ['DASH'])['DASH']
-out = {'csv': df.to_csv(index=False), 'stats': stats}
+else:
+    missing['DASH'] = check(DASH_COMPONENT_KEYS)
+
+out = {'csv': df.to_csv(index=False), 'stats': stats, 'missing': missing}
 json.dumps(out)
 `);
         const info = JSON.parse(pyRes);
         const csvText = info.csv;
         const rows = csvText.trim().split('\n').map(r => r.split(','));
         const idx = rows[0].reduce((m,h,i) => (m[h]=i,m), {});
+        const computed = Object.keys(info.stats || {});
+        const missing = info.missing || {};
+        if (computed.length === 0) {
+          const allMissing = [...new Set(Object.values(missing).flat())];
+          resultBox.innerHTML = `<div class='alert alert-danger'>Missing required columns (${allMissing.length}): ${allMissing.join(', ')}</div>`;
+          return;
+        }
         let summary = '<h3>Summary Statistics:</h3><ul>';
-        selected.forEach(name => {
+        computed.forEach(name => {
           const vals = rows.slice(1).map(r => parseFloat(r[idx[name]])).filter(v => !isNaN(v));
           const s = info.stats[name];
           summary += `<li><b>${name}</b> – mean: ${parseFloat(s.mean).toFixed(2)}, std: ${parseFloat(s.std).toFixed(2)}, min: ${parseFloat(s.min).toFixed(2)}, max: ${parseFloat(s.max).toFixed(2)}, median: ${parseFloat(s.median).toFixed(2)}, quintiles: ${s.quintiles.map(q=>parseFloat(q).toFixed(2)).join(', ')}</li>`;
@@ -339,6 +345,9 @@ json.dumps(out)
           Plotly.newPlot(chartDiv,[{x:vals,type:'histogram',name}],{title:`${name} Distribution`,margin:{t:40}}, {responsive:true});
         });
         summary += '</ul>';
+        Object.entries(missing).forEach(([n, cols]) => {
+          summary += `<div class='alert alert-warning mt-2'>${n} missing columns: ${cols.join(', ')}</div>`;
+        });
         resultBox.innerHTML = summary;
         const blob = new Blob([csvText], {type:'text/csv'});
         const url = URL.createObjectURL(blob);
