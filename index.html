@@ -17,8 +17,8 @@
         <style>
     :root {
       --bg: #ffffff;
-      --text: #0021a5;
-      --primary: #1f77b4;
+      --text: #002d72;
+      --primary: #1976d2;
       --accent: #fa4616;
       --border: #e5e5e5;
     }
@@ -26,7 +26,7 @@
       :root {
         --bg: #111316;
         --text: #e9ecef;
-        --primary: #1f77b4;
+        --primary: #1976d2;
         --accent: #fa4616;
         --border: #333;
       }
@@ -43,21 +43,33 @@
       text-align: center;
       font-size: 2.2rem;
       margin: 1rem 0;
+      color: var(--text);
+      font-weight: 600;
     }
     header.hero {
       padding: 3rem 1rem 2rem;
       border-bottom: 2px solid var(--primary);
       background: var(--bg);
     }
+    header.hero a {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+    }
     header.hero img {
-      max-width: 320px;
+      max-width: 95vw;
       width: 100%;
       height: auto;
+      border-radius: 2rem;
+      box-shadow: 0 8px 32px rgba(0,45,114,0.08);
     }
     .container {
       max-width: 960px;
-      padding: 1rem;
+      padding: 2rem;
       margin: auto;
+      background: var(--bg);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 24px rgba(0,45,114,0.06);
     }
     .controls {
       display: flex;
@@ -76,28 +88,31 @@
     }
     #dropzone {
       border: 2px dashed var(--primary);
-      border-radius: 10px;
+      border-radius: 1.5rem;
       padding: 2rem;
       text-align: center;
-      background: rgba(31,119,180,0.05);
-      transition: background 0.2s, border-color 0.2s;
+      background: rgba(25,118,210,0.05);
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
       cursor: pointer;
       min-height: 6rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,45,114,0.05);
     }
     #dropzone.hover {
-      background: rgba(31,119,180,0.15);
+      background: rgba(25,118,210,0.15);
       border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(0,45,114,0.1);
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 0.5rem;
       font-size: 0.9rem;
-      border-radius: 0.25rem;
+      border-radius: 1rem;
       overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,45,114,0.05);
     }
     #previewContainer {
       overflow-x: auto;
@@ -123,6 +138,9 @@
     .btn-primary {
       background-color: var(--primary);
       border-color: var(--primary);
+      border-radius: 1.5rem;
+      font-weight: 600;
+      transition: background-color 0.2s, border-color 0.2s;
     }
     .btn-primary:hover {
       background-color: var(--accent);
@@ -140,9 +158,7 @@
     <body>
         <header class="hero text-center">
             <a href="https://hobi.med.ufl.edu/" target="_blank" rel="noopener">
-                <img src="https://raw.githubusercontent.com/dgd-strategies/dietarycodex/main/assets/UFLogo.png"
-                     alt="UF Logo"
-                     class="img-fluid" />
+                <img src="assets/UFLogo.png" alt="UF Logo" />
             </a>
             <h1 class="display-5 fw-semibold mt-3">Dietary Index Calculator</h1>
             <p class="lead">Compute diet quality scores right in your browser.</p>
