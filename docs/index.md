@@ -24,20 +24,16 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 
 ## Overview
 
-The **Dietary Index Web Calculator** is a browser-based tool for computing multiple diet-quality indices (DII, MIND, HEI‑2015, DASH) from user-uploaded nutrition data. It combines a vanilla JS frontend with a Python FastAPI backend.
+The **Dietary Index Web Calculator** lets users compute multiple diet-quality
+indices (DII, MIND, HEI‑2015, DASH) right in the browser. The GitHub Pages site
+ runs the Python scoring modules via **Pyodide**, so no server is required. A
+ minimal FastAPI backend exists only for automated tests.
 
 ---
 
-## Quick Start
+## Using the Web App
 
-1. **Install**
-   ```bash
-   ./setup.sh          # Frontend-only
-   ./setup.sh --dev    # Full dev mode (FastAPI + reload)
-   ```
-2. **Run**
-   - Frontend: http://localhost:8000 (static server)
-   - Backend:  http://localhost:8000/ping, /score, /download
+Open the hosted site or `index.html` locally. A service worker provides a demo `/api/time` endpoint. Everything runs in the browser.
 
 ---
 
@@ -112,7 +108,7 @@ Download the master template for user uploads: [template.csv](../assets/template
 
 - **Formatting & Linting**: `make format`, `make lint`
 - **Testing**: `make test`
-- **Dev Server**: `make dev`
+- **Optional API**: `make dev`
 - **CI**: GitHub Actions runs on push/PR (`.github/workflows/ci.yml`)
 
 ---
