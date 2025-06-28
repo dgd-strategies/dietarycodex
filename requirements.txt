@@ -5,3 +5,4 @@ pyodide-http
 fastapi
 uvicorn
 python-multipart
+httpx

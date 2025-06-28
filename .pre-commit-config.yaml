@@ -22,3 +22,10 @@ repos:
       - id: trailing-whitespace
       - id: check-added-large-files
         exclude: 'detailed_dii_table_20240606\.csv$'
+
+  - repo: https://github.com/djlint/djlint
+    rev: v1.36.4
+    hooks:
+      - id: djlint
+        args: ['--check']
+        files: '\.html$'
