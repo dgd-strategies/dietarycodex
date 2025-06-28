@@ -279,7 +279,9 @@
         const info = await res.json();
         const dl = await fetch(apiUrl(`/download/${info.filename}`));
         if (!dl.ok) {
+          
           throw new Error(`Download error ${dl.status} ${dl.statusText}`);
+
         }
         const blob = await dl.blob();
         const csvText = await blob.text();
@@ -309,7 +311,9 @@
         if (msg === 'Failed to fetch') {
           msg = `Failed to reach ${apiUrl('/score')}. Is the API running or CORS blocked?`;
         }
+
         resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || 'http://localhost:8000'}</small></div>`;
+
       } finally {
         loading.style.display = 'none';
       }
