@@ -58,12 +58,13 @@ def compute_summary_stats(df: pd.DataFrame, cols: list) -> dict:
     stats = {}
     for col in cols:
         s = df[col]
+        q = s.quantile([0.2, 0.4, 0.6, 0.8]).round(2).tolist()
         stats[col] = {
-            "mean": round(s.mean(), 2),
-            "std": round(s.std(), 2),
-            "min": round(s.min(), 2),
-            "max": round(s.max(), 2),
-            "median": round(s.median(), 2),
-            "quintiles": s.quantile([0.2, 0.4, 0.6, 0.8]).round(2).tolist(),
+            "mean": float(round(s.mean(), 2)),
+            "std": float(round(s.std(), 2)),
+            "min": float(round(s.min(), 2)),
+            "max": float(round(s.max(), 2)),
+            "median": float(round(s.median(), 2)),
+            "quintiles": [float(x) for x in q],
         }
     return stats
