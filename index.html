@@ -20,15 +20,6 @@
       --accent: #fa4616;
       --border: #e5e5e5;
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #111316;
-        --text: #e9ecef;
-        --primary: #1976d2;
-        --accent: #fa4616;
-        --border: #333;
-      }
-    }
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -49,11 +40,22 @@
       border-bottom: 2px solid var(--primary);
       background: var(--bg);
     }
+    header.hero img {
+      max-width: 95vw;
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      box-shadow: 0 8px 32px rgba(0,45,114,0.08);
+    }
+    @media (min-width: 768px) {
+      header.hero img { max-width: 600px; }
+    }
+
     .container {
       max-width: 960px;
       padding: 2rem;
       margin: auto;
-      background: var(--bg);U
+      background: var(--bg);
       border-radius: 1.5rem;
       box-shadow: 0 4px 24px rgba(0,45,114,0.06);
     }
@@ -149,19 +151,22 @@
                style="display:block;
                       text-align:center;
                       margin-top:2rem">
-                <img src="assets/UF_gen_ai.png"
-                     alt="UF Logo"
-                     style="max-width:95vw;
-                            width:100%;
-                            height:auto;
-                            border-radius:0;
-                            box-shadow:0 8px 32px rgba(0,45,114,0.08)" />
+                <img src="assets/UF_gen_ai.png" alt="UF Logo" />
             </a>
         </header>
         <main class="container py-4">
             <div class="controls d-flex flex-wrap gap-2 align-items-center mb-3">
                 <span>All scores calculate automatically if columns exist.</span>
                 <span id="pyStatus" class="ms-auto small text-info">Loading Pyodide...</span>
+            </div>
+            <div class="mb-4">
+                <ol class="mb-0">
+                    <li>
+                        Prepare your CSV using <a href="assets/template.csv">the template</a>.
+                    </li>
+                    <li>Drag it below or use the file picker.</li>
+                    <li>Download the scored file and review the charts.</li>
+                </ol>
             </div>
             <div id="dropzone" class="mb-3">Drag & drop CSV here, or click to select file</div>
             <div id="previewContainer">
@@ -273,7 +278,6 @@
       previewTitle.style.display = 'none';
       document.getElementById('charts').innerHTML = '';
       clearBtn.style.display = 'none';
-      console.log('Preview cleared');
     });
     dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('hover'); });
     dropzone.addEventListener('dragleave', () => dropzone.classList.remove('hover'));
@@ -296,7 +300,6 @@
         if (!res.ok) throw new Error(`template load ${res.status}`);
         const text = await res.text();
         const file = new File([text], 'template.csv', { type: 'text/csv' });
-        console.log('Loaded default template');
         handleFile(file);
       } catch (err) {
         console.error('Could not preload template', err);
@@ -310,7 +313,6 @@
       document.getElementById('charts').innerHTML = '';
       clearBtn.style.display = 'none';
       loading.style.display = 'none';
-      console.log('Loaded file', file.name);
       if (!file.name.toLowerCase().endsWith('.csv')) {
         resultBox.innerHTML = "<div class='error'>Only CSV files are supported.</div>";
         return;
@@ -331,7 +333,6 @@
 
     async function computeFile(data, name) {
       loading.style.display = 'block';
-      console.log('Scoring started', { file: name });
       try {
         const py = await loadPy();
         const jsonData = JSON.stringify(data).replace(/'/g, "\\'");
@@ -408,7 +409,6 @@ json.dumps(out)
         a.download = name.replace(/\.csv$/, '') + '_scores.csv';
         a.click();
         URL.revokeObjectURL(url);
-        console.log('Scoring complete via Pyodide');
       } catch(err) {
         console.error('Scoring failed', err);
         let msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
