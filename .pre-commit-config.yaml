@@ -24,6 +24,10 @@ repos:
         exclude: 'detailed_dii_table_20240606\.csv$'
       - id: check-yaml
       - id: check-json
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.9.0
+    hooks:
+      - id: shellcheck
 
   - repo: https://github.com/djlint/djlint
     rev: v1.36.4

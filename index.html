@@ -208,18 +208,24 @@
       if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
     });
 
-    // Load bundled template on startup when API is reachable
+    // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
       console.log('Using API', apiBaseInput.value || 'http://localhost:8000');
       try {
-        await fetch(apiUrl('/ping'));
-        const res = await fetch('assets/template.csv');
+        const ping = await fetch(apiUrl('/ping'));
+        console.log('API ping', ping.status);
+      } catch (err) {
+        console.warn('API ping failed', err);
+      }
+      try {
+        const res = await fetch('./assets/template.csv');
+        if (!res.ok) throw new Error(`template load ${res.status}`);
         const blob = await res.blob();
         const file = new File([blob], 'template.csv', { type: 'text/csv' });
         console.log('Loaded default template');
         handleFile(file);
       } catch (err) {
-        console.warn('API unreachable, skipping demo:', err);
+        console.error('Could not preload template', err);
       }
     });
 
@@ -285,6 +291,11 @@
         console.log('Scoring complete, results downloaded');
       } catch(err) {
         console.error('Scoring failed', err);
+        let msg = err.message;
+        if (msg === 'Failed to fetch') {
+          msg = `Failed to reach ${apiUrl('/score')}. Is the API running?`;
+        }
+        resultBox.innerHTML = `<div class='error'>${msg}</div>`;
         resultBox.innerHTML = `<div class='error'>${err.message}. Check API at ${apiBaseInput.value}</div>`;
       } finally {
         loading.style.display = 'none';
