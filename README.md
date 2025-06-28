@@ -29,6 +29,10 @@ cd dietary-index-web
   `shellcheck-py` so the ShellCheck hook works even when Docker is unavailable.
 - Error messages now include HTTP status details when API calls fail.
 
+### GitHub Pages Usage
+
+When the static site is served from `*.github.io`, there is **no backend API** available by default. Enter the URL of your running FastAPI service in the "API URL" field or append `?api=<url>` to the page. The page will display a warning until a reachable API is configured.
+
 ---
 
 ## Repository Structure

@@ -165,8 +165,10 @@
       localStorage.setItem('apiBase', apiBaseInput.value);
     });
 
-    const apiUrl = (path) =>
-      (apiBaseInput.value || location.origin).replace(/\/+$/, '') + path;
+    function apiUrl(path) {
+      const base = apiBaseInput.value || (!location.hostname.endsWith('github.io') ? location.origin : '');
+      return base.replace(/\/+$/, '') + path;
+    }
 
     function quantile(arr, q) {
       const sorted = arr.slice().sort((a, b) => a - b);
@@ -212,21 +214,27 @@
 
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
+      const isGH = location.hostname.endsWith('github.io');
       console.log('Using API', apiBaseInput.value || location.origin);
-      try {
-        const ping = await fetch(apiUrl('/ping'));
-        console.log('API ping', ping.status, ping.statusText);
-        apiStatus.textContent = `API ${ping.status} ${ping.statusText}`;
-        apiStatus.className = 'small ms-2 ' + (ping.ok ? 'text-success' : 'text-danger');
-        if (!ping.ok) {
-          console.warn('API ping not OK', ping.status, ping.statusText);
-        }
+      if (isGH && !apiBaseInput.value) {
+        apiStatus.textContent = 'Static site: enter API URL';
+        apiStatus.className = 'small ms-2 text-warning';
+      } else {
+        try {
+          const ping = await fetch(apiUrl('/ping'));
+          console.log('API ping', ping.status, ping.statusText);
+          apiStatus.textContent = `API ${ping.status} ${ping.statusText}`;
+          apiStatus.className = 'small ms-2 ' + (ping.ok ? 'text-success' : 'text-danger');
+          if (!ping.ok) {
+            console.warn('API ping not OK', ping.status, ping.statusText);
+          }
 
-      } catch (err) {
-        console.warn('API ping failed', err);
-        const msg = err instanceof Error ? err.message : String(err);
-        apiStatus.textContent = `API ping failed: ${msg}`;
-        apiStatus.className = 'small ms-2 text-danger';
+        } catch (err) {
+          console.warn('API ping failed', err);
+          const msg = err instanceof Error ? err.message : String(err);
+          apiStatus.textContent = `API ping failed: ${msg}`;
+          apiStatus.className = 'small ms-2 text-danger';
+        }
       }
       try {
         const res = await fetch('./assets/template.csv');
