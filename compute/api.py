@@ -8,7 +8,8 @@ from uuid import uuid4
 import pandas as pd
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
@@ -43,6 +44,17 @@ app = FastAPI(
     description=("Score multiple diet-quality indices from uploaded nutrition data."),
     version="0.1.0",
 )
+
+# Serve the frontend assets when running the API directly
+BASE_DIR = Path(__file__).resolve().parent.parent
+app.mount("/assets", StaticFiles(directory=BASE_DIR / "assets"), name="assets")
+
+
+@app.get("/", include_in_schema=False)
+def read_index():
+    """Return the main HTML page."""
+    return FileResponse(BASE_DIR / "index.html")
+
 
 # Enable CORS for local dev; lock down origins in production
 app.add_middleware(
