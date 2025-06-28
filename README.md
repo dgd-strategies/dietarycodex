@@ -2,6 +2,8 @@
 
 **A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, DASH) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
 
+This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
+
 ---
 
 ## Using the Web App
