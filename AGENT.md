@@ -27,7 +27,7 @@ index.html                  # kept in root directy as the page has a static depl
 
 ## Development Workflow
 1. **Clone** the repository.
-2. **Install** dependencies:  
+2. **Install** dependencies:
    ```bash
    pip install -r requirements.txt
    ```
@@ -45,16 +45,16 @@ index.html                  # kept in root directy as the page has a static depl
    ```
 
 ## API Endpoints
-- **POST** `/score`  
+- **POST** `/score`
   Upload a CSV of nutrition data; returns a CSV with computed indices and summary stats.
-- **GET** `/ping`  
+- **GET** `/ping`
   Health-check endpoint.
 
 ## Pre-commit Hooks
-- `black`: code formatting  
-- `isort`: import sorting  
-- `flake8`: linting (PEP8)  
-- `end-of-file-fixer`, `trailing-whitespace`  
+- `black`: code formatting
+- `isort`: import sorting
+- `flake8`: linting (PEP8)
+- `end-of-file-fixer`, `trailing-whitespace`
 - `check-added-large-files`: configured to exclude large data files with exclusions
 
 ## Usage for AI Agent
@@ -63,4 +63,3 @@ When the AI agent runs, reference this file to:
 - Adhere to coding standards and pre-commit configuration
 - Follow the development workflow and commands
 - Verify API endpoint signatures in `compute/api.py`
-
