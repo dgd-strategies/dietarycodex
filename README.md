@@ -27,6 +27,7 @@ cd dietary-index-web
  - Running `./setup.sh` installs all Python requirements (including `pandas`, `numpy`)
    and sets up the `pre-commit` tool for linting. The script also installs
    `shellcheck-py` so the ShellCheck hook works even when Docker is unavailable.
+
 ---
 
 ## Repository Structure
