@@ -61,3 +61,4 @@ This living style guide captures the visual and experiential standards for the p
 <a href="https://hobi.med.ufl.edu/" style="display:block; text-align:center; margin-top:2rem;">
   <img src="assets/UFLogo.png" alt="UF Logo" style="max-width:95vw; width:100%; height:auto; border-radius:2rem; box-shadow:0 8px 32px rgba(0,45,114,0.08);"/>
 </a>
+```
