@@ -166,7 +166,7 @@
     });
 
     const apiUrl = (path) =>
-      (apiBaseInput.value || 'http://localhost:8000').replace(/\/+$/, '') + path;
+      (apiBaseInput.value || location.origin).replace(/\/+$/, '') + path;
 
     function quantile(arr, q) {
       const sorted = arr.slice().sort((a, b) => a - b);
@@ -212,7 +212,7 @@
 
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
-      console.log('Using API', apiBaseInput.value || 'http://localhost:8000');
+      console.log('Using API', apiBaseInput.value || location.origin);
       try {
         const ping = await fetch(apiUrl('/ping'));
         console.log('API ping', ping.status, ping.statusText);
@@ -221,6 +221,7 @@
         if (!ping.ok) {
           console.warn('API ping not OK', ping.status, ping.statusText);
         }
+  
       } catch (err) {
         console.warn('API ping failed', err);
         const msg = err instanceof Error ? err.message : String(err);
@@ -278,6 +279,7 @@
         if (!res.ok) {
           let detail = '';
           try { detail = (await res.json()).detail; } catch {}
+          
           if (!detail) {
             const text = await res.text().catch(() => '');
             detail = text.trim();

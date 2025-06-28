@@ -28,6 +28,7 @@ cd dietary-index-web
   and sets up the `pre-commit` tool for linting. The script also installs
   `shellcheck-py` so the ShellCheck hook works even when Docker is unavailable.
 - Error messages now include HTTP status details when API calls fail.
+
 ---
 
 ## Repository Structure
