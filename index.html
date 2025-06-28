@@ -215,9 +215,13 @@
       console.log('Using API', apiBaseInput.value || location.origin);
       try {
         const ping = await fetch(apiUrl('/ping'));
-        console.log('API ping', ping.status);
-        apiStatus.textContent = `API ${ping.status}`;
+        console.log('API ping', ping.status, ping.statusText);
+        apiStatus.textContent = `API ${ping.status} ${ping.statusText}`;
         apiStatus.className = 'small ms-2 ' + (ping.ok ? 'text-success' : 'text-danger');
+        if (!ping.ok) {
+          console.warn('API ping not OK', ping.status, ping.statusText);
+        }
+  
       } catch (err) {
         console.warn('API ping failed', err);
         const msg = err instanceof Error ? err.message : String(err);
@@ -275,14 +279,18 @@
         if (!res.ok) {
           let detail = '';
           try { detail = (await res.json()).detail; } catch {}
-
+          
+          if (!detail) {
+            const text = await res.text().catch(() => '');
+            detail = text.trim();
+          }
           if (res.status === 404) {
             detail = detail || 'Endpoint not found';
           } else if (res.status === 405) {
             detail = detail || 'Method not allowed';
           }
-
-          throw new Error(detail || `Server error ${res.status} ${res.statusText}`);
+          const statusLine = `HTTP ${res.status} ${res.statusText}`;
+          throw new Error(detail ? `${statusLine} - ${detail}` : statusLine);
         }
         const info = await res.json();
         const dl = await fetch(apiUrl(`/download/${info.filename}`));
@@ -317,10 +325,7 @@
         if (msg.includes('Failed to fetch')) {
           msg = `Failed to reach ${apiUrl('/score')} – the server may be down or CORS blocked.`;
         }
-
         resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || 'http://localhost:8000'}</small></div>`;
-        resultBox.innerHTML = `<div class='error'><b>${msg}</b><br><small>Endpoint: ${apiUrl('/score')}<br>API base: ${apiBaseInput.value || location.origin}</small></div>`;
-
       } finally {
         loading.style.display = 'none';
       }

@@ -23,10 +23,11 @@ cd dietary-index-web
 - API documentation (Swagger) at: [http://localhost:8000/docs](http://localhost:8000/docs) when in `--dev` mode.
 - The web UI defaults to this local address. Use the "API URL" field in the page to point to a different backend when hosted elsewhere. You can also append `?api=https://yourserver` to the page URL to pre-fill this field.
 - Your chosen API URL is remembered in local storage so you only set it once.
-- The UI shows the API ping status next to this field on page load.
- - Running `./setup.sh` installs all Python requirements (including `pandas`, `numpy`)
-   and sets up the `pre-commit` tool for linting. The script also installs
-   `shellcheck-py` so the ShellCheck hook works even when Docker is unavailable.
+- The UI shows the API ping status (HTTP code and reason) next to this field on page load.
+- Running `./setup.sh` installs all Python requirements (including `pandas`, `numpy`)
+  and sets up the `pre-commit` tool for linting. The script also installs
+  `shellcheck-py` so the ShellCheck hook works even when Docker is unavailable.
+- Error messages now include HTTP status details when API calls fail.
 
 ---
 
