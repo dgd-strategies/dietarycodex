@@ -15,4 +15,5 @@ RUN pip install uvicorn fastapi[all] watchdog
 COPY . .
 
 EXPOSE 8000
-CMD ["uvicorn", "compute.api:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+COPY setup.sh setup.sh
+CMD ["bash", "./setup.sh", "--dev"]

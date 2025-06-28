@@ -221,7 +221,7 @@
         if (!ping.ok) {
           console.warn('API ping not OK', ping.status, ping.statusText);
         }
-  
+
       } catch (err) {
         console.warn('API ping failed', err);
         const msg = err instanceof Error ? err.message : String(err);
@@ -279,7 +279,7 @@
         if (!res.ok) {
           let detail = '';
           try { detail = (await res.json()).detail; } catch {}
-          
+
           if (!detail) {
             const text = await res.text().catch(() => '');
             detail = text.trim();
