@@ -22,6 +22,8 @@ cd dietary-index-web
 
 - Static UI served at: [http://localhost:8000](http://localhost:8000)
 - API documentation (Swagger) at: [http://localhost:8000/docs](http://localhost:8000/docs) when in `--dev` mode.
+- The web UI defaults to this local address. Use the "API URL" field in the page to point to a different backend when hosted elsewhere. You can also append `?api=https://yourserver` to the page URL to pre-fill this field.
+- Your chosen API URL is remembered in local storage so you only set it once.
 
 ---
 
