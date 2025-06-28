@@ -24,8 +24,10 @@ cd dietary-index-web
 - The web UI defaults to this local address. Use the "API URL" field in the page to point to a different backend when hosted elsewhere. You can also append `?api=https://yourserver` to the page URL to pre-fill this field.
 - Your chosen API URL is remembered in local storage so you only set it once.
 - The UI shows the API ping status next to this field on page load.
-- Running `./setup.sh` installs all Python requirements (including `pandas`, `numpy`)
-  and sets up the `pre-commit` tool for linting.
+ - Running `./setup.sh` installs all Python requirements (including `pandas`, `numpy`)
+   and sets up the `pre-commit` tool for linting. The script also installs
+   `shellcheck-py` so the ShellCheck hook works even when Docker is unavailable.
+
 ---
 
 ## Repository Structure
