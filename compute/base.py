@@ -39,6 +39,10 @@ def validate_dataframe(df: pd.DataFrame, required_cols: list) -> bool:
     for col in df.columns:
         if col == "id":
             continue
+        # Coerce to numeric to handle values passed as strings
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+
+        # After coercion, the column should be numeric even if it contains NaN
         if not pd.api.types.is_numeric_dtype(df[col]):
             raise ValueError(f"Column '{col}' must be numeric")
 
