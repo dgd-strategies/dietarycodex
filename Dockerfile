@@ -19,7 +19,7 @@ COPY .pre-commit-config.yaml .
 # Copy project directories
 COPY compute/ compute/
 COPY tests/ tests/
-COPY frontend/ frontend/
+COPY index.html index.html
 COPY assets/ assets/
 COPY docs/ docs/
 
@@ -30,5 +30,5 @@ ENV PYTHONUNBUFFERED=1
 # Expose port for static HTML hosting
 EXPOSE 8000
 
-# Default CMD serves index.html from /frontend
-CMD ["python3", "-m", "http.server", "8000", "--directory", "frontend"]
+# Default CMD serves index.html from repository root
+CMD ["python3", "-m", "http.server", "8000", "--directory", "."]

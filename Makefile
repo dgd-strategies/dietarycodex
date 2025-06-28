@@ -10,8 +10,8 @@ dev:
 
 # Format code with Black and sort imports with isort
 format:
-	black compute tests frontend
-	isort compute tests
+black compute tests
+isort compute tests
 
 # Run linter (flake8)
 lint:

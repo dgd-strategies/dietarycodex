@@ -2,7 +2,7 @@
 project: dietary-index-web
 language: python
 entrypoints:
-  - frontend/index.html
+  - index.html
   - compute/api.py
 tests:
   - tests/test_scoring.py

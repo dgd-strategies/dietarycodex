@@ -31,8 +31,6 @@ if [[ "$MODE" == "dev" ]]; then
   uvicorn compute.api:app --host 0.0.0.0 --port 8000 --reload
 else
   echo "🌐 Starting local frontend server..."
-  cd frontend
   python3 -m http.server 8000 &
-  cd ..
   echo "✅ Setup complete. Visit http://localhost:8000"
 fi
