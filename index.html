@@ -153,7 +153,8 @@
     const loading = document.getElementById('loading');
     const pyStatus = document.getElementById('pyStatus');
     const scoreBtn = document.getElementById('scoreBtn');
-    let currentFile = null;
+    let currentData = null;
+    let currentName = 'template.csv';
     let pyReady = null;
     async function loadPy() {
       if (!pyReady) {
@@ -196,6 +197,28 @@
         quintiles: [0.2,0.4,0.6,0.8].map(q => quantile(values,q).toFixed(2))
       };
     }
+
+    function csvToJson(text) {
+      const lines = text.trim().split('\n');
+      const headers = lines[0].split(',');
+      return lines.slice(1).map(line => {
+        const values = line.split(',');
+        const obj = {};
+        headers.forEach((h, i) => {
+          const v = values[i] ?? '';
+          const num = Number(v);
+          obj[h] = isNaN(num) || v === '' ? v : num;
+        });
+        return obj;
+      });
+    }
+
+    function jsonToCsv(data) {
+      if (!data.length) return '';
+      const headers = Object.keys(data[0]);
+      const lines = data.map(row => headers.map(h => row[h]).join(','));
+      return [headers.join(','), ...lines].join('\n');
+    }
     dropzone.addEventListener('click', () => {
       const input = document.createElement('input');
       input.type = 'file';
@@ -219,7 +242,7 @@
     });
 
     scoreBtn.addEventListener('click', () => {
-      if (currentFile) computeFile(currentFile);
+      if (currentData) computeFile(currentData, currentName);
     });
 
     // Load bundled template on startup
@@ -228,10 +251,11 @@
       pyStatus.textContent = 'Local compute ready';
       pyStatus.className = 'ms-auto small text-success';
       try {
-        const res = await fetch('./assets/template.csv');
+        const res = await fetch('./assets/template.json');
         if (!res.ok) throw new Error(`template load ${res.status}`);
-        const blob = await res.blob();
-        const file = new File([blob], 'template.csv', { type: 'text/csv' });
+        const data = await res.json();
+        const csv = jsonToCsv(data);
+        const file = new File([csv], 'template.csv', { type: 'text/csv' });
         console.log('Loaded default template');
         handleFile(file);
       } catch (err) {
@@ -251,8 +275,9 @@
         resultBox.innerHTML = "<div class='error'>Only CSV files are supported.</div>";
         return;
       }
-      currentFile = file;
+      currentName = file.name;
       const text = await file.text();
+      currentData = csvToJson(text);
       const rows = text.trim().split('\n').map(r => r.split(','));
       const headers = rows[0];
       const sample = rows.slice(1,6);
@@ -264,22 +289,21 @@
       scoreBtn.disabled = false;
     }
 
-    async function computeFile(file) {
+    async function computeFile(data, name) {
       loading.style.display = 'block';
-      const text = await file.text();
       const selected = Array.from(document.querySelectorAll('.controls input:checked')).map(cb => cb.value);
       try {
         const py = await loadPy();
-        const csvStr = JSON.stringify(text);
+        const jsonData = JSON.stringify(data).replace(/'/g, "\\'");
         const pyRes = await py.runPythonAsync(`
-import pandas as pd, io, json
+import pandas as pd, json
 from compute.dii import calculate_dii
 from compute.mind import calculate_mind
 from compute.hei import calculate_hei_2015
 from compute.dash import calculate_dash
 from compute.base import compute_summary_stats
-csv = ${csvStr}
-df = pd.read_csv(io.StringIO(csv))
+data = json.loads('${jsonData}')
+df = pd.DataFrame(data)
 indices = ${JSON.stringify(selected)}
 stats = {}
 if 'DII' in indices:
@@ -316,7 +340,7 @@ json.dumps(out)
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = file.name.replace(/\.csv$/, '') + '_scores.csv';
+        a.download = name.replace(/\.csv$/, '') + '_scores.csv';
         a.click();
         URL.revokeObjectURL(url);
         console.log('Scoring complete via Pyodide');
