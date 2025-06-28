@@ -47,6 +47,16 @@
       border-radius: 0;
       box-shadow: 0 8px 32px rgba(0,45,114,0.08);
     }
+    header.hero p {
+      margin: 1rem auto 0;
+      max-width: 720px;
+      font-size: 1.1rem;
+    }
+    header.hero .hero-btn {
+      margin-top: 1rem;
+      border-radius: 1.5rem;
+      font-weight: 600;
+    }
     @media (min-width: 768px) {
       header.hero img { max-width: 600px; }
     }
@@ -153,6 +163,15 @@
                       margin-top:2rem">
                 <img src="assets/UF_gen_ai.png" alt="UF Logo" />
             </a>
+            <p class="lead">
+                The Department of Health Outcomes & Biomedical Informatics
+                (HOBI) at the University of Florida advances research and
+                data science for better care. Tap the logo to explore our
+                programs and open-source tools.
+            </p>
+            <a class="btn btn-primary hero-btn"
+               href="https://hobi.med.ufl.edu/"
+               target="_blank">Learn more about HOBI</a>
         </header>
         <main class="container py-4">
             <div class="controls d-flex flex-wrap gap-2 align-items-center mb-3">
@@ -162,11 +181,20 @@
             <div class="mb-4">
                 <ol class="mb-0">
                     <li>
-                        Prepare your CSV using <a href="assets/template.csv">the template</a>.
+                        Prepare your CSV using
+                        <a href="assets/template.csv">the provided template</a>
+                        (download and replace the sample values with your own
+                        nutrient data).
                     </li>
                     <li>Drag it below or use the file picker.</li>
                     <li>Download the scored file and review the charts.</li>
                 </ol>
+                <div class="alert alert-light border rounded-4 mt-3" role="note">
+                    <strong>About the template:</strong> this CSV outlines all
+                    required nutrient columns. Use it as a guide so the scoring
+                    engine recognizes your data. Delete the example rows and add
+                    your own records before uploading.
+                </div>
             </div>
             <div id="dropzone" class="mb-3">Drag & drop CSV here, or click to select file</div>
             <div id="previewContainer">
