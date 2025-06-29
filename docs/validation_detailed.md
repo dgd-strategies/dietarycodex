@@ -43,8 +43,16 @@ It is intended as a reference for researchers and future contributors who requir
 - **Scoring**: Linear scaling to 10 points per component with gender-specific cut points for whole grains and alcohol. Sodium is scored on cohort-specific deciles.
 - **Range**: 0–110 when all components are summed.
 - **Validation**: The Python port mirrors the published R implementation from the `dietaryindex` package. Synthetic inputs cover gender and sodium decile edge cases.
+## 6. MED Index in Serving Sizes (MEDI)
 
-## 6. Healthy Eating Index 2020
+- **Components**: Olive oil, fruit, vegetables, legumes, nuts, fish/seafood, alcohol,
+  sugar-sweetened beverages, sweets, discretionary fats, and red/processed meat.
+- **Scoring**: Each component earns 1 point when the PREDIMED threshold is met; otherwise 0.
+- **Range**: 0–11 (10 if alcohol is excluded).
+- **Validation**: Ported directly from the R `dietaryindex` package.
+
+
+## 7. Healthy Eating Index 2020
 
 - **Components**: 13 dietary elements similar to HEI‑2015 but with updated cut points.
 - **Variants**: Standard HEI‑2020 for adults and HEI‑Toddlers‑2020 for children aged 1–2 years.

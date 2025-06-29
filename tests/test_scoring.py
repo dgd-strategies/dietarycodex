@@ -11,6 +11,7 @@ from compute.hei import (
     calculate_hei_2020,
     calculate_hei_toddlers_2020,
 )
+from compute.medi import MEDI_COMPONENT_KEYS, calculate_medi
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
 
 
@@ -82,3 +83,11 @@ def test_ahei_output_length():
     result = calculate_ahei(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 6
+
+
+def test_medi_output_length():
+    cols = MEDI_COMPONENT_KEYS
+    df = make_dummy_df(cols, n=4)
+    result = calculate_medi(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 4

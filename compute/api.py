@@ -20,6 +20,7 @@ from compute.hei import (
     calculate_hei_2020,
     calculate_hei_toddlers_2020,
 )
+from compute.medi import MEDI_COMPONENT_KEYS, calculate_medi
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
 
 logging.basicConfig(level=logging.INFO)
@@ -44,6 +45,7 @@ REQUIRED_COLS = (
     + MIND_COMPONENT_KEYS
     + DASH_COMPONENT_KEYS
     + AHEI_COMPONENT_KEYS
+    + MEDI_COMPONENT_KEYS
 )
 
 app = FastAPI(
@@ -128,6 +130,9 @@ async def score_diet_indices(
     if "AHEI" in indices:
         logger.info("Computing AHEI...")
         results["AHEI"] = calculate_ahei(df)
+    if "MEDI" in indices:
+        logger.info("Computing MEDI...")
+        results["MEDI"] = calculate_medi(df)
 
     # Attach results to DataFrame
     for name, series in results.items():
