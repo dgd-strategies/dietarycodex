@@ -4,4 +4,4 @@ pytest
 fastapi
 uvicorn
 python-multipart
-httpx
+httpx<0.25

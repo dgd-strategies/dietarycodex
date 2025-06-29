@@ -5,7 +5,12 @@ import pytest
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
-from compute.hei import HEI_COMPONENT_KEYS, calculate_hei_2015
+from compute.hei import (
+    HEI_COMPONENT_KEYS,
+    calculate_hei_2015,
+    calculate_hei_2020,
+    calculate_hei_toddlers_2020,
+)
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
 
 
@@ -36,6 +41,22 @@ def test_hei_output_length():
     result = calculate_hei_2015(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 8
+
+
+def test_hei2020_output_length():
+    cols = HEI_COMPONENT_KEYS + ["energy_kcal"]
+    df = make_dummy_df(cols, n=5)
+    result = calculate_hei_2020(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 5
+
+
+def test_hei_toddlers_2020_output_length():
+    cols = HEI_COMPONENT_KEYS + ["energy_kcal"]
+    df = make_dummy_df(cols, n=4)
+    result = calculate_hei_toddlers_2020(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 4
 
 
 def test_mind_output_length():

@@ -1,6 +1,6 @@
 # Dietary Index Web Calculator
 
-**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, DASH, AHEI) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
+**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, DASH, AHEI) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
@@ -35,7 +35,7 @@ The optional `setup.sh` script only installs dependencies for tests and the Pyth
 │   ├── base.py              # Shared utilities (validation, stats)
 │   ├── dii.py               # DII calculation module
 │   ├── dii_parameters.json  # 45 DII parameter definitions
-│   ├── hei.py               # HEI-2015 calculation module
+│   ├── hei.py               # HEI-2015/HEI-2020 scoring modules
 │   ├── mind.py              # MIND diet calculation module
 │   ├── dash.py              # DASH diet calculation module
 │   └── ahei.py              # Alternative Healthy Eating Index module
