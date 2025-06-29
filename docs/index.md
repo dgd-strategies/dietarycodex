@@ -27,7 +27,7 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 ## Overview
 
 The **Dietary Index Web Calculator** lets users compute multiple diet-quality
-indices (DII, MIND, HEI‑2015, DASH) right in the browser. The GitHub Pages site
+indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, DASH, MEDI) right in the browser. The GitHub Pages site
  runs the Python scoring modules via **Pyodide**, so no server is required. A
  minimal FastAPI backend exists only for automated tests.
 
@@ -49,6 +49,8 @@ Open the hosted site or `index.html` locally. A service worker provides a demo `
 │   ├── hei.py              # Healthy Eating Index 2015
 │   ├── mind.py             # MIND diet score
 │   ├── dash.py             # DASH diet score
+│   ├── ahei.py             # Alternative Healthy Eating Index
+│   ├── medi.py             # Mediterranean Diet Index
 │   └── dii_parameters.json # DII global parameters
 ├── docs/                   # Documentation files
 │   ├── index.md            # This file
@@ -80,7 +82,8 @@ Open the hosted site or `index.html` locally. A service worker provides a demo `
 ### Score Endpoint
 
 - **Endpoint**: `POST /score`
-- **Description**: Upload a CSV and optionally specify `?indices=DII,MIND,HEI_2015,DASH`.
+- **Description**: Upload a CSV and optionally specify
+  `?indices=DII,MIND,HEI_2015,HEI_2020,HEI_TODDLERS_2020,DASH,AHEI,MEDI`.
 - **Response**: JSON with `filename` and `stats` (mean, std, min, max, median, quintiles).
 
 ### Download Endpoint
