@@ -26,7 +26,7 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 ## Overview
 
 The **Dietary Index Web Calculator** lets users compute multiple diet-quality
-indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) right in the browser. The original version runs the Python scoring modules via **Pyodide**. A Rust port is available under [`rust/`](../rust) and is meant to compile to WebAssembly so the frontend can eventually drop Pyodide. A minimal FastAPI backend exists only for automated tests.
+indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) right in the browser. Earlier versions executed the Python scoring modules using **Pyodide**. Now the frontend loads a WebAssembly module compiled from Rust for the core calculations. A minimal FastAPI backend exists only for automated tests.
 
 ---
 
@@ -141,6 +141,14 @@ before validation.
 - **Testing**: `make test`
 - **Validation & Hooks**: `pre-commit run --all-files` will format, lint,
   and execute the full test suite before commit.
+- **Compile WASM** whenever Rust changes:
+  ```bash
+  cd rust
+  wasm-pack build --release --target web --out-dir ../assets/wasm
+  base64 -w0 ../assets/wasm/dietarycodex_bg.wasm \
+    > ../assets/wasm/dietarycodex_bg.wasm.b64
+  ```
+  Commit only the `.b64` file.
 - **Optional API**: `make dev`
 - **CI**: GitHub Actions runs on push/PR (`.github/workflows/ci.yml`)
 

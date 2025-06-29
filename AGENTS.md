@@ -5,10 +5,7 @@ This file provides guidance and context to the AI Codex agent when contributing 
 
 ## Project Overview
 DietaryCodex is a browser-first tool for computing multiple diet-quality indices
-(DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2). The initial version runs the Python scoring modules
-through **Pyodide** so users can upload a CSV and get results entirely client
-side. A Rust port exists under `rust/` and is intended for a WebAssembly
-frontend that will eventually replace Pyodide once feature parity is reached.
+(DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2). Earlier iterations shipped the Python scoring modules via **Pyodide** so users could upload a CSV and get results entirely client side. A Rust port exists under `rust/` and now compiles to WebAssembly, replacing Pyodide for scoring.
 The same modules under `compute/` double as a Python library for offline or
 programmatic use. A tiny FastAPI app is included solely for local tests and
 development, but the project aims to avoid any long‑running server in
@@ -48,6 +45,15 @@ index.html                  # Single-page app served via GitHub Pages
    pre-commit run --all-files
    ```
    Manual `pytest` runs are optional because the hook covers them.
+5. **Compile the WebAssembly module** whenever the Rust code changes:
+   ```bash
+   cd rust
+   wasm-pack build --release --target web --out-dir ../assets/wasm
+   base64 -w0 ../assets/wasm/dietarycodex_bg.wasm \
+     > ../assets/wasm/dietarycodex_bg.wasm.b64
+   ```
+   The binary `.wasm` file is not committed. Instead we store a base64
+   version so diffs remain text-only.
 
 ## API Endpoints
 - **POST** `/score`

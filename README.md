@@ -1,6 +1,6 @@
 # Dietary Index Web Calculator
 
-**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The original frontend relies on Pyodide so it works without any backend server. A Rust implementation now lives under [`rust/`](rust) with the long‑term goal of compiling to WebAssembly and eventually replacing the Pyodide layer.
+**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The original frontend relied on Pyodide to run Python scoring modules entirely client side. The current version ships a WebAssembly module compiled from Rust, eliminating the Pyodide dependency and speeding up calculations.
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
@@ -85,6 +85,14 @@ pytest tests/ --cov
   ```bash
   pre-commit run --all-files
   ```
+- **Compile the WASM module** after editing the Rust code:
+  ```bash
+  cd rust
+  wasm-pack build --release --target web --out-dir ../assets/wasm
+  base64 -w0 ../assets/wasm/dietarycodex_bg.wasm \
+    > ../assets/wasm/dietarycodex_bg.wasm.b64
+  ```
+  Only the `.b64` file is committed to avoid binary diffs.
 
 ---
 
