@@ -9,6 +9,7 @@ from compute.acs2020 import (
     calculate_acs2020_v2,
 )
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
+from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
 from compute.hei import (
@@ -17,7 +18,12 @@ from compute.hei import (
     calculate_hei_2020,
     calculate_hei_toddlers_2020,
 )
-from compute.medi import MEDI_COMPONENT_KEYS, calculate_medi
+from compute.medi import (
+    MEDI_COMPONENT_KEYS,
+    MEDI_V2_COMPONENT_KEYS,
+    calculate_medi,
+    calculate_medi_v2,
+)
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
 from compute.phdi import PHDI_COMPONENT_KEYS, calculate_phdi
 
@@ -92,10 +98,26 @@ def test_ahei_output_length():
     assert len(result) == 6
 
 
+def test_aheip_output_length():
+    cols = AHEIP_COMPONENT_KEYS
+    df = make_dummy_df(cols, n=5)
+    result = calculate_aheip(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 5
+
+
 def test_medi_output_length():
     cols = MEDI_COMPONENT_KEYS
     df = make_dummy_df(cols, n=4)
     result = calculate_medi(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 4
+
+
+def test_medi_v2_output_length():
+    cols = MEDI_V2_COMPONENT_KEYS
+    df = make_dummy_df(cols, n=4)
+    result = calculate_medi_v2(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 4
 

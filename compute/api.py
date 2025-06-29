@@ -18,6 +18,7 @@ from compute.acs2020 import (
     calculate_acs2020_v2,
 )
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
+from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
 from compute.hei import (
@@ -26,7 +27,12 @@ from compute.hei import (
     calculate_hei_2020,
     calculate_hei_toddlers_2020,
 )
-from compute.medi import MEDI_COMPONENT_KEYS, calculate_medi
+from compute.medi import (
+    MEDI_COMPONENT_KEYS,
+    MEDI_V2_COMPONENT_KEYS,
+    calculate_medi,
+    calculate_medi_v2,
+)
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
 from compute.phdi import PHDI_COMPONENT_KEYS, calculate_phdi
 
@@ -52,7 +58,9 @@ REQUIRED_COLS = (
     + MIND_COMPONENT_KEYS
     + DASH_COMPONENT_KEYS
     + AHEI_COMPONENT_KEYS
+    + AHEIP_COMPONENT_KEYS
     + MEDI_COMPONENT_KEYS
+    + MEDI_V2_COMPONENT_KEYS
     + PHDI_COMPONENT_KEYS
     + ACS2020_V1_KEYS
     + ACS2020_V2_KEYS
@@ -140,9 +148,15 @@ async def score_diet_indices(
     if "AHEI" in indices:
         logger.info("Computing AHEI...")
         results["AHEI"] = calculate_ahei(df)
+    if "AHEIP" in indices:
+        logger.info("Computing AHEIP...")
+        results["AHEIP"] = calculate_aheip(df)
     if "MEDI" in indices:
         logger.info("Computing MEDI...")
         results["MEDI"] = calculate_medi(df)
+    if "MEDI_V2" in indices:
+        logger.info("Computing MEDI_V2...")
+        results["MEDI_V2"] = calculate_medi_v2(df)
     if "PHDI" in indices:
         logger.info("Computing PHDI...")
         results["PHDI"] = calculate_phdi(df)
