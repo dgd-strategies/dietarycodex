@@ -1,7 +1,17 @@
 use crate::nutrition_vector::NutritionVector;
-use super::DietScore;
+use super::{DietScore, FieldDeps};
 
 pub struct Ahei;
+
+impl FieldDeps for Ahei {
+    fn name() -> &'static str {
+        "AHEI"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &["fiber_g", "fat_g", "saturated_fat_g"]
+    }
+}
 
 impl DietScore for Ahei {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -21,10 +31,10 @@ impl DietScore for Ahei {
     }
 
     fn name(&self) -> &'static str {
-        "AHEI"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &["fiber_g", "fat_g", "saturated_fat_g"]
+        <Self as FieldDeps>::required_fields()
     }
 }

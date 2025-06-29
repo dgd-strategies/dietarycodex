@@ -1,7 +1,23 @@
-use super::{capped_score, DietScore};
+use super::{capped_score, DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct DashiScorer;
+
+impl FieldDeps for DashiScorer {
+    fn name() -> &'static str {
+        "DASHI"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &[
+            "vegetables_g",
+            "total_fruits_g",
+            "calcium_mg",
+            "whole_grains_g",
+            "sodium_mg",
+        ]
+    }
+}
 
 impl DietScore for DashiScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -20,16 +36,10 @@ impl DietScore for DashiScorer {
     }
 
     fn name(&self) -> &'static str {
-        "DASHI"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &[
-            "vegetables_g",
-            "total_fruits_g",
-            "calcium_mg",
-            "whole_grains_g",
-            "sodium_mg",
-        ]
+        <Self as FieldDeps>::required_fields()
     }
 }

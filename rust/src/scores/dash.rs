@@ -1,7 +1,24 @@
-use super::DietScore;
+use super::{DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct DashScorer;
+
+impl FieldDeps for DashScorer {
+    fn name() -> &'static str {
+        "DASH"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &[
+            "total_fruits_g",
+            "vegetables_g",
+            "whole_grains_g",
+            "sodium_mg",
+            "saturated_fat_g",
+            "energy_kcal",
+        ]
+    }
+}
 
 impl DietScore for DashScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -31,17 +48,10 @@ impl DietScore for DashScorer {
     }
 
     fn name(&self) -> &'static str {
-        "DASH"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &[
-            "total_fruits_g",
-            "vegetables_g",
-            "whole_grains_g",
-            "sodium_mg",
-            "saturated_fat_g",
-            "energy_kcal",
-        ]
+        <Self as FieldDeps>::required_fields()
     }
 }

@@ -2,6 +2,11 @@
 
 use crate::nutrition_vector::NutritionVector;
 
+pub trait FieldDeps {
+    fn name() -> &'static str;
+    fn required_fields() -> &'static [&'static str];
+}
+
 pub trait DietScore {
     fn name(&self) -> &'static str;
     fn evaluate(&self, nv: &NutritionVector) -> f64;

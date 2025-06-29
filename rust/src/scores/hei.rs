@@ -1,7 +1,17 @@
-use super::DietScore;
+use super::{DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct HeiScorer;
+
+impl FieldDeps for HeiScorer {
+    fn name() -> &'static str {
+        "HEI"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &["total_fruits_g", "whole_grains_g", "sodium_mg"]
+    }
+}
 
 impl DietScore for HeiScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -22,10 +32,10 @@ impl DietScore for HeiScorer {
     }
 
     fn name(&self) -> &'static str {
-        "HEI"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &["total_fruits_g", "whole_grains_g", "sodium_mg"]
+        <Self as FieldDeps>::required_fields()
     }
 }

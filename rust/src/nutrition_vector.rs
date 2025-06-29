@@ -40,6 +40,42 @@ pub struct NutritionVector {
     pub alcohol_g: Option<f64>,
 }
 
+static ALL_FIELD_NAMES: &[&str] = &[
+    "energy_kcal",
+    "fat_g",
+    "saturated_fat_g",
+    "carbs_g",
+    "fiber_g",
+    "sugar_g",
+    "protein_g",
+    "sodium_mg",
+    "calcium_mg",
+    "iron_mg",
+    "vitamin_c_mg",
+    "total_fruits_g",
+    "vegetables_g",
+    "whole_grains_g",
+    "refined_grains_g",
+    "legumes_g",
+    "fish_g",
+    "red_meat_g",
+    "mono_fat_g",
+    "berries_g",
+    "cheese_g",
+    "butter_g",
+    "poultry_g",
+    "fast_food_g",
+    "nuts_g",
+    "omega3_g",
+    "vitamin_a_mcg",
+    "vitamin_e_mg",
+    "zinc_mg",
+    "selenium_mcg",
+    "magnesium_mg",
+    "trans_fat_g",
+    "alcohol_g",
+];
+
 impl NutritionVector {
     pub fn from_fdc_json(data: &str) -> anyhow::Result<Self> {
         let v: Value = serde_json::from_str(data)?;
@@ -188,5 +224,9 @@ impl NutritionVector {
             missing.push("alcohol_g");
         }
         missing
+    }
+
+    pub fn all_field_names() -> &'static [&'static str] {
+        ALL_FIELD_NAMES
     }
 }

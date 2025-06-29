@@ -228,3 +228,16 @@ fn allow_partial_skips_missing() {
     assert!(result.scores.contains_key("AHEI"));
     assert!(!result.scores.contains_key("DASH"));
 }
+
+#[test]
+fn metadata_fields_are_valid() {
+    use dietarycodex::scores::registry::all_score_metadata;
+    use std::collections::HashSet;
+
+    let all_fields: HashSet<&str> = NutritionVector::all_field_names().iter().copied().collect();
+    for meta in all_score_metadata() {
+        for field in meta.required_fields {
+            assert!(all_fields.contains(field), "{} missing field {}", meta.name, field);
+        }
+    }
+}

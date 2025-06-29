@@ -1,7 +1,25 @@
-use super::{capped_score, DietScore};
+use super::{capped_score, DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct AMedScorer;
+
+impl FieldDeps for AMedScorer {
+    fn name() -> &'static str {
+        "aMED"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &[
+            "vegetables_g",
+            "legumes_g",
+            "total_fruits_g",
+            "whole_grains_g",
+            "fish_g",
+            "mono_fat_g",
+            "red_meat_g",
+        ]
+    }
+}
 
 impl DietScore for AMedScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -17,18 +35,10 @@ impl DietScore for AMedScorer {
     }
 
     fn name(&self) -> &'static str {
-        "aMED"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &[
-            "vegetables_g",
-            "legumes_g",
-            "total_fruits_g",
-            "whole_grains_g",
-            "fish_g",
-            "mono_fat_g",
-            "red_meat_g",
-        ]
+        <Self as FieldDeps>::required_fields()
     }
 }
