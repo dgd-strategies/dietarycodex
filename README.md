@@ -1,6 +1,6 @@
 # Dietary Index Web Calculator
 
-**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, DASH, DASHI, AHEI, AMED, MEDI, PHDI, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
+**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The original frontend relies on Pyodide so it works without any backend server. A Rust implementation now lives under [`rust/`](rust) with the long‑term goal of compiling to WebAssembly and eventually replacing the Pyodide layer.
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
@@ -36,7 +36,7 @@ pre-commit install
 ├── docs/
 │   └── validation_detailed.md  # Full scientific validation guide
 ├── data/
-│   ├── template.csv         # CSV template with all required headers
+│   ├── template.csv         # Optional sample CSV
 │   └── dii_parameters.json  # 45 DII parameter definitions
 ├── index.html               # Drag/drop UI + stats + Plotly charts
 ├── compute/
@@ -47,6 +47,7 @@ pre-commit install
 │   ├── mind.py              # MIND diet calculation module
 │   ├── dash.py              # DASH diet calculation module
 │   └── ahei.py              # Alternative Healthy Eating Index module
+├── rust/                   # Rust implementation for future WASM frontend
 ├── tests/
 │   └── test_scoring.py      # Unit tests for scoring functions
 └── .github/
@@ -57,10 +58,9 @@ pre-commit install
 
 ## Usage
 
-1. **Prepare a CSV** using [`data/template.csv`](data/template.csv) as a guide.
-2. **Upload & Score** via the web UI or `POST /score` endpoint.
-3. **Download** the enriched CSV and review summary statistics.
-4. **Inspect** histogram/box plots for score distributions.
+1. **Upload & Score** your own CSV via the web UI or `POST /score` endpoint.
+2. **Download** the enriched CSV and review summary statistics.
+3. **Inspect** histogram/box plots for score distributions.
 
 ---
 
@@ -94,20 +94,12 @@ Detailed scoring methods, formulas, and reference citations are in [docs/validat
 
 ---
 
-## Multi-language Library
-
-While the browser UI relies on Python via Pyodide, the scoring routines are being ported to additional languages such as R, Julia, TypeScript, Go, Rust, and more. Every port must expose the same function names and arguments. **When a function changes in one language, update all others to keep results consistent.** See [docs/multi_language.md](docs/multi_language.md) for the current list of supported languages.
-
----
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on branching, testing, and PRs.
 
 ## Roadmap & OKRs
-- **Objective 1** – reliable scoring from a default template and drag‑and‑drop uploads across modern browsers.
-- **Objective 2** – clear documentation; methods live in [`validation.md`](validation.md) and [`docs/validation_detailed.md`](docs/validation_detailed.md).
-- **Objective 3** – code quality with pre‑commit and pytest enforced in CI.
+The sole objective is a **fully client-side webpage** where users drop in their own CSV and the app computes all available diet-quality indices.
 ---
 
 **License:** MIT

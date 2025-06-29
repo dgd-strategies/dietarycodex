@@ -1,9 +1,12 @@
 # Configuration for Codex agent to understand project structure
 project: dietarycodex
-language: python
+languages:
+  - python
+  - rust
 entrypoints:
   - index.html
   - compute/api.py
+  - rust/src/lib.rs
 tests:
   - tests/test_scoring.py
 sample_data:

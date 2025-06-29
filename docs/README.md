@@ -17,7 +17,6 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 - [Validation & Scoring Standards](#validation--scoring-standards)
 - [CSV Template](#csv-template)
 - [Development Workflow](#development-workflow)
-- [Multi-language Library](multi_language.md)
 - [Contributing](#contributing)
 - [Roadmap & OKRs](okrs.md)
 - [License](#license)
@@ -27,9 +26,7 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 ## Overview
 
 The **Dietary Index Web Calculator** lets users compute multiple diet-quality
-indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, DASH, MEDI, PHDI, ACS2020_V1, ACS2020_V2) right in the browser. The GitHub Pages site
-runs the Python scoring modules via **Pyodide**, so no server is required. A
-minimal FastAPI backend exists only for automated tests.
+indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) right in the browser. The original version runs the Python scoring modules via **Pyodide**. A Rust port is available under [`rust/`](../rust) and is meant to compile to WebAssembly so the frontend can eventually drop Pyodide. A minimal FastAPI backend exists only for automated tests.
 
 ---
 
@@ -83,7 +80,7 @@ Open the hosted site or `index.html` locally. A service worker provides a demo `
 
 - **Endpoint**: `POST /score`
 - **Description**: Upload a CSV and optionally specify
-  `?indices=DII,MIND,HEI_2015,HEI_2020,HEI_TODDLERS_2020,DASH,AHEI,MEDI`.
+  `?indices=DII,MIND,HEI_2015,HEI_2020,HEI_TODDLERS_2020,AHEI,AHEIP,AMED,DASH,DASHI,MEDI,MEDI_V2,PHDI,PHDI_V2,ACS2020_V1,ACS2020_V2`.
 - **Response**: JSON with `filename` and `stats` (mean, std, min, max, median, quintiles).
 
 ### Download Endpoint
@@ -147,16 +144,6 @@ before validation.
 
 ---
 
-## Multi-language Library
-
-The scoring algorithms are being ported to several languages beyond Python. Each
-language module should expose the same functions (`calculate_dii`,
-`calculate_mind`, `calculate_hei_2015`, `calculate_dash`). When one
-implementation changes, every other port must be updated to stay in sync. See
-[multi_language.md](multi_language.md) for the list of supported languages and
-workflow tips.
-
----
 
 ## Contributing
 
