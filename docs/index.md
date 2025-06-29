@@ -42,7 +42,7 @@ Open the hosted site or `index.html` locally. A service worker provides a demo `
 ## Project Structure
 
 ```
-├── assets/                 # Sample CSV templates, logos
+├── data/                   # Sample CSV templates & parameter JSON
 ├── compute/                # Python scoring modules
 │   ├── base.py             # Validation & utils
 │   ├── dii.py              # Dietary Inflammatory Index
@@ -51,7 +51,7 @@ Open the hosted site or `index.html` locally. A service worker provides a demo `
 │   ├── dash.py             # DASH diet score
 │   ├── ahei.py             # Alternative Healthy Eating Index
 │   ├── medi.py             # Mediterranean Diet Index
-│   └── dii_parameters.json # DII global parameters
+│   └── dii_parameters.json # Moved to data/
 ├── docs/                   # Documentation files
 │   ├── index.md            # This file
 │   ├── validation.md       # Scoring methods & rules
@@ -105,7 +105,7 @@ Refer to our validation rules and scientific methods: [validation.md](validation
 
 ## CSV Template
 
-Download the master template for user uploads: [template.csv](../assets/template.csv)
+Download the master template for user uploads: [template.csv](../data/template.csv)
 
 ---
 

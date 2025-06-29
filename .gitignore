@@ -6,4 +6,4 @@ __pycache__/
 *.sqlite3
 
 # ignore the huge DII lookup table
-detailed_dii_table_20240606.csv
+data/detailed_dii_table_20240606.csv

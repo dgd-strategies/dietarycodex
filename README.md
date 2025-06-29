@@ -27,14 +27,14 @@ The optional `setup.sh` script only installs dependencies for tests and the Pyth
 ├── README.md                # This file
 ├── docs/
 │   └── validation_detailed.md  # Full scientific validation guide
-├── assets/
-│   └── template.csv         # CSV template with all required headers
+├── data/
+│   ├── template.csv         # CSV template with all required headers
+│   └── dii_parameters.json  # 45 DII parameter definitions
 ├── index.html               # Drag/drop UI + stats + Plotly charts
 ├── compute/
 │   ├── __init__.py          # Package marker (empty)
 │   ├── base.py              # Shared utilities (validation, stats)
 │   ├── dii.py               # DII calculation module
-│   ├── dii_parameters.json  # 45 DII parameter definitions
 │   ├── hei.py               # HEI-2015/HEI-2020 scoring modules
 │   ├── mind.py              # MIND diet calculation module
 │   ├── dash.py              # DASH diet calculation module
@@ -49,7 +49,7 @@ The optional `setup.sh` script only installs dependencies for tests and the Pyth
 
 ## Usage
 
-1. **Prepare a CSV** using [`assets/template.csv`](assets/template.csv) as a guide.
+1. **Prepare a CSV** using [`data/template.csv`](data/template.csv) as a guide.
 2. **Upload & Score** via the web UI or `POST /score` endpoint.
 3. **Download** the enriched CSV and review summary statistics.
 4. **Inspect** histogram/box plots for score distributions.

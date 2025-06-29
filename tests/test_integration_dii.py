@@ -15,8 +15,8 @@ client = TestClient(app)
 
 # Paths (adjust if you move the CSV)
 ROOT = Path(__file__).parent.parent
-DETAILED_CSV = ROOT / "detailed_dii_table_20240606.csv"
-PARAMS_JSON = ROOT / "compute" / "dii_parameters.json"
+DETAILED_CSV = ROOT / "data" / "detailed_dii_table_20240606.csv"
+PARAMS_JSON = ROOT / "data" / "dii_parameters.json"
 
 # Load the reference table and normalize column names
 df_ref = pd.read_csv(DETAILED_CSV)
