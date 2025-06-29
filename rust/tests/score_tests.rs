@@ -5,6 +5,7 @@ use dietarycodex::scores::dash::DashScorer;
 use dietarycodex::scores::hei::HeiScorer;
 use dietarycodex::scores::DietScore;
 use dietarycodex::scores::dii::DiiScorer;
+use dietarycodex::scores::acs2020::Acs2020Scorer;
 
 #[test]
 fn hei_score_not_nan() {
@@ -88,4 +89,28 @@ fn evaluate_returns_dii() {
     let scorer = DiiScorer;
     let val = scorer.score(&nv);
     assert!(!val.is_nan());
+}
+
+#[test]
+fn acs2020_score_not_nan() {
+    let nv = NutritionVector {
+        vegetables_g: 250.0,
+        legumes_g: 90.0,
+        total_fruits_g: 180.0,
+        whole_grains_g: 80.0,
+        red_meat_g: 40.0,
+        sugar_g: 30.0,
+        alcohol_g: 10.0,
+        ..Default::default()
+    };
+    let scorer = Acs2020Scorer;
+    let val = scorer.score(&nv);
+    assert!(!val.is_nan());
+}
+
+#[test]
+fn evaluate_returns_acs2020() {
+    let nv = NutritionVector::default();
+    let scores = evaluate_all_scores(&nv);
+    assert!(scores.contains_key("ACS2020"));
 }
