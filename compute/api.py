@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
+from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
 from compute.hei import HEI_COMPONENT_KEYS, calculate_hei_2015
@@ -37,6 +38,7 @@ REQUIRED_COLS = (
     + HEI_COMPONENT_KEYS
     + MIND_COMPONENT_KEYS
     + DASH_COMPONENT_KEYS
+    + AHEI_COMPONENT_KEYS
 )
 
 app = FastAPI(
@@ -112,6 +114,9 @@ async def score_diet_indices(
     if "DASH" in indices:
         logger.info("Computing DASH...")
         results["DASH"] = calculate_dash(df)
+    if "AHEI" in indices:
+        logger.info("Computing AHEI...")
+        results["AHEI"] = calculate_ahei(df)
 
     # Attach results to DataFrame
     for name, series in results.items():

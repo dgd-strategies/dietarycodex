@@ -37,6 +37,13 @@ It is intended as a reference for researchers and future contributors who requir
 - **Range**: 8–40.
 - **Validation**: Population quintiles from NHANES will be used to verify distributional properties.
 
+## 5. Alternative Healthy Eating Index (AHEI)
+
+- **Components**: Vegetables, fruit, whole grains, nuts/legumes, omega‑3 fats, polyunsaturated fat, sugar‑sweetened beverages, red/processed meat, trans fat, sodium, and alcohol.
+- **Scoring**: Linear scaling to 10 points per component with gender-specific cut points for whole grains and alcohol. Sodium is scored on cohort-specific deciles.
+- **Range**: 0–110 when all components are summed.
+- **Validation**: The Python port mirrors the published R implementation from the `dietaryindex` package. Synthetic inputs cover gender and sodium decile edge cases.
+
 ---
 
 ## Cross‑validation Workflow
