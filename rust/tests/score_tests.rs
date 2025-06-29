@@ -1,5 +1,6 @@
 use dietarycodex::eval::{
-    evaluate_all_scores, evaluate_allow_partial, print_scores_as_json_allow_partial, ScorerStatus,
+    evaluate_all_scores, evaluate_allow_partial, format_skipped_scores,
+    print_scores_as_json_allow_partial, ScorerStatus,
 };
 use dietarycodex::nutrition_vector::NutritionVector;
 use dietarycodex::scores::acs2020::Acs2020Scorer;
@@ -399,4 +400,51 @@ fn json_output_valid_with_skipped_scores() {
     let json = print_scores_as_json_allow_partial(&nv);
     let parsed: serde_json::Value = serde_json::from_str(&json).expect("invalid json");
     assert!(parsed.get("scores").is_some());
+}
+
+#[test]
+fn skipped_reason_field_order() {
+    let nv = NutritionVector::default();
+    let result = evaluate_allow_partial(&nv);
+    for status in result.scores.values() {
+        if let ScorerStatus::Skipped { reason } = status {
+            let fields: Vec<&str> = reason
+                .trim_start_matches("missing fields: ")
+                .split(',')
+                .map(|s| s.trim())
+                .collect();
+            let mut sorted = fields.clone();
+            sorted.sort();
+            assert_eq!(fields, sorted);
+        }
+    }
+}
+
+#[test]
+fn verbose_partial_output_stable() {
+    let nv = NutritionVector::default();
+    let result = evaluate_allow_partial(&nv);
+    let output = format_skipped_scores(&result).expect("expected skipped scores");
+    let lines: Vec<&str> = output.lines().collect();
+    assert!(!lines.is_empty());
+    assert_eq!(lines[0], "Skipped scores:");
+    let names: Vec<&str> = lines
+        .iter()
+        .skip(1)
+        .map(|l| l.split(':').next().unwrap().trim())
+        .collect();
+    let mut sorted_names = names.clone();
+    sorted_names.sort();
+    assert_eq!(names, sorted_names);
+    for line in lines.iter().skip(1) {
+        let reason = line.split(':').nth(1).unwrap().trim();
+        let fields: Vec<&str> = reason
+            .trim_start_matches("missing fields: ")
+            .split(',')
+            .map(|s| s.trim())
+            .collect();
+        let mut sorted_fields = fields.clone();
+        sorted_fields.sort();
+        assert_eq!(fields, sorted_fields);
+    }
 }

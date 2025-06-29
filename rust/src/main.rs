@@ -1,5 +1,6 @@
 use dietarycodex::eval::{
-    evaluate_allow_partial, print_scores_as_json, print_scores_as_json_allow_partial, ScorerStatus,
+    evaluate_allow_partial, format_skipped_scores, print_scores_as_json,
+    print_scores_as_json_allow_partial,
 };
 use dietarycodex::nutrition_vector::NutritionVector;
 use dietarycodex::scores::registry::all_score_metadata;
@@ -65,22 +66,9 @@ fn main() -> anyhow::Result<()> {
     if allow_partial {
         if verbose_partial {
             let result = evaluate_allow_partial(&nv);
-            let mut skipped: Vec<(String, String)> = result
-                .ordered_names
-                .iter()
-                .filter_map(|name| {
-                    result.scores.get(name).and_then(|s| match s {
-                        ScorerStatus::Skipped { reason } => Some((name.clone(), reason.clone())),
-                        _ => None,
-                    })
-                })
-                .collect();
-            if !skipped.is_empty() {
-                skipped.sort_by(|a, b| a.0.cmp(&b.0));
-                eprintln!("Skipped scores:");
-                for (name, reason) in &skipped {
-                    eprintln!("  {}: {}", name, reason);
-                }
+            if let Some(report) = format_skipped_scores(&result) {
+                eprint!("{}", report);
+                eprintln!();
             }
             let json = serde_json::to_string_pretty(&result)?;
             println!("{}", json);
