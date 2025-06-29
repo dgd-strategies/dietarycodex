@@ -27,9 +27,9 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 ## Overview
 
 The **Dietary Index Web Calculator** lets users compute multiple diet-quality
-indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, DASH, MEDI) right in the browser. The GitHub Pages site
- runs the Python scoring modules via **Pyodide**, so no server is required. A
- minimal FastAPI backend exists only for automated tests.
+indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, DASH, MEDI, PHDI, ACS2020_V1, ACS2020_V2) right in the browser. The GitHub Pages site
+runs the Python scoring modules via **Pyodide**, so no server is required. A
+minimal FastAPI backend exists only for automated tests.
 
 ---
 

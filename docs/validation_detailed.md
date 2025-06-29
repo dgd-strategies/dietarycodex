@@ -66,6 +66,13 @@ It is intended as a reference for researchers and future contributors who requir
 - **Range**: 0–140 when summed across all components.
 - **Validation**: Implemented according to the R `dietaryindex` package which serves as the reference implementation.
 
+## 9. American Cancer Society 2020 Diet Score
+
+- **Variants**: `ACS2020_V1` using the percent of calories from highly processed foods and refined grains, and `ACS2020_V2` using servings per 1000 kcal.
+- **Scoring**: Components are ranked by gender-specific quartiles. Healthy foods earn up to 0.75 or 3 points depending on the component, while unhealthy foods are reverse scored. Sugar-sweetened beverages have fixed cut points.
+- **Range**: 0–12 when all components are summed.
+- **Validation**: The Python functions mirror the R implementations in the `dietaryindex` package. Example validation datasets (`ACS2020_V1_validation.csv`, `ACS2020_V2_validation.csv`) are included in the repository.
+
 ---
 
 ## Cross‑validation Workflow
