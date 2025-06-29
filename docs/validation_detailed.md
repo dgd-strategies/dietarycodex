@@ -77,7 +77,10 @@ It is intended as a reference for researchers and future contributors who requir
 - **Origin**: Proposed by the EAT‑Lancet Commission for sustainable diets.
 - **Scoring**: Components scaled from 0–10 (legumes and soy max 5) with gender‑specific cut points for whole grains.
 - **Range**: 0–140 when summed across all components.
-- **Validation**: Implemented according to the R `dietaryindex` package which serves as the reference implementation.
+- **Validation**: Implemented according to the R `dietaryindex` package which
+  serves as the reference implementation. A small sample dataset
+  (`PHDI_VALIDATION.csv`) is included in this repository for automated
+  cross‑checks.
 
 ## 10. American Cancer Society 2020 Diet Score
 
