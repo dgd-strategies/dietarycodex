@@ -19,7 +19,8 @@ COPY .pre-commit-config.yaml .
 # Copy project directories
 COPY compute/ compute/
 COPY tests/ tests/
-COPY index.html index.html
+# Copy the static HTML entry point
+COPY static/index.html index.html
 COPY assets/ assets/
 COPY docs/ docs/
 COPY setup.sh setup.sh
