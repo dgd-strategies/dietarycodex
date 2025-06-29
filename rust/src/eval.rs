@@ -15,7 +15,7 @@ pub fn evaluate_all_scores(nv: &NutritionVector) -> ScoreResult {
     let mut ordered = Vec::new();
     for calc in calculators {
         let name = calc.name().to_string();
-        let val = calc.score(nv);
+        let val = calc.evaluate(nv);
         ordered.push(name.clone());
         results.insert(name, val);
     }

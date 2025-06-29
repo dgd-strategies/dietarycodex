@@ -4,7 +4,7 @@ use crate::nutrition_vector::NutritionVector;
 pub struct PhdiScorer;
 
 impl DietScore for PhdiScorer {
-    fn score(&self, nv: &NutritionVector) -> f64 {
+    fn evaluate(&self, nv: &NutritionVector) -> f64 {
         let veg = capped_score(nv.vegetables_g, 300.0);
         let legumes = capped_score(nv.legumes_g, 100.0);
         let grains = capped_score(nv.whole_grains_g, 90.0);

@@ -4,7 +4,7 @@ use crate::nutrition_vector::NutritionVector;
 pub struct DashScorer;
 
 impl DietScore for DashScorer {
-    fn score(&self, nv: &NutritionVector) -> f64 {
+    fn evaluate(&self, nv: &NutritionVector) -> f64 {
         let fruit = (nv.total_fruits_g / 400.0 * 10.0).clamp(0.0, 10.0);
         let veg = (nv.vegetables_g / 400.0 * 10.0).clamp(0.0, 10.0);
         let grains = (nv.whole_grains_g / 75.0 * 10.0).clamp(0.0, 10.0);

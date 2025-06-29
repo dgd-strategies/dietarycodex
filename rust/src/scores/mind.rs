@@ -4,7 +4,7 @@ use crate::nutrition_vector::NutritionVector;
 pub struct MindScorer;
 
 impl DietScore for MindScorer {
-    fn score(&self, nv: &NutritionVector) -> f64 {
+    fn evaluate(&self, nv: &NutritionVector) -> f64 {
         let leafy = capped_score(nv.vegetables_g, 100.0) / 10.0;
         let berries = capped_score(nv.berries_g, 50.0) / 10.0;
         let nuts = capped_score(nv.nuts_g, 30.0) / 10.0;

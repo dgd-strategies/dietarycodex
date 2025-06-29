@@ -23,7 +23,7 @@ fn hei_score_not_nan() {
         ..Default::default()
     };
     let scorer = HeiScorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
@@ -39,7 +39,7 @@ fn dash_score_not_nan() {
         ..Default::default()
     };
     let scorer = DashScorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
@@ -54,7 +54,7 @@ fn dashi_score_not_nan() {
         ..Default::default()
     };
     let scorer = DashiScorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
@@ -71,7 +71,7 @@ fn amed_score_not_nan() {
         ..Default::default()
     };
     let scorer = AMedScorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
@@ -116,7 +116,7 @@ fn evaluate_returns_dii() {
     let scores = evaluate_all_scores(&nv);
     assert!(scores.scores.contains_key("DII"));
     let scorer = DiiScorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
@@ -133,7 +133,7 @@ fn acs2020_score_not_nan() {
         ..Default::default()
     };
     let scorer = Acs2020Scorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
@@ -160,7 +160,7 @@ fn phdi_score_not_nan() {
         ..Default::default()
     };
     let scorer = PhdiScorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
@@ -189,7 +189,7 @@ fn mind_score_not_nan() {
         ..Default::default()
     };
     let scorer = MindScorer;
-    let val = scorer.score(&nv);
+    let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
 }
 
