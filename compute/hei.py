@@ -47,20 +47,20 @@ _HEI_COMPONENTS = [
         "max": 4.3,
         "points": 10,
     },
-    {"key": "sodium_mg", "type": "moderation", "min": 1100, "max": 2300, "points": 10},
+    {"key": "sodium_mg", "type": "moderation", "min": 1100, "max": 2000, "points": 10},
     # Percent of energy components
     {
         "key": "added_sugars_g",
         "type": "percent_kcal",
-        "min": 0.0,
-        "max": 10.0,
+        "min": 6.5,
+        "max": 26.0,
         "points": 10,
     },
     {
         "key": "saturated_fat_g",
         "type": "percent_kcal",
-        "min": 0.0,
-        "max": 8.0,
+        "min": 8.0,
+        "max": 16.0,
         "points": 10,
     },
 ]
@@ -230,7 +230,8 @@ def _calculate_hei(df: pd.DataFrame, components: list) -> pd.Series:
             sc = ((comp["max"] - val) / (comp["max"] - comp["min"]) * pts).clip(0, pts)
 
         elif ctype == "percent_kcal":
-            pct = df[key] * 4 / energy * 100
+            kcal_factor = 9 if key == "saturated_fat_g" else 4
+            pct = df[key] * kcal_factor / energy * 100
             sc = ((comp["max"] - pct) / (comp["max"] - comp["min"]) * pts).clip(0, pts)
 
         else:
