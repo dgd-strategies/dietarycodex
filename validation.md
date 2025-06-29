@@ -1,6 +1,8 @@
 # 🧪 Validation & Scoring Standards
 
 This document provides comprehensive, science-based validation details for each diet-quality index implemented in the **Dietary Index Web Calculator**. It includes calculation methods, reference sources, expected ranges, and validation strategies.
+All algorithms mirror the reference implementation in the [`dietaryindex` R package](https://jamesjiadazhan.github.io/dietaryindex_manual/index.html), and regression tests compare our outputs to the validation datasets documented in that manual.
+
 
 ---
 
@@ -11,25 +13,41 @@ This document provides comprehensive, science-based validation details for each 
 
 ### 1.1 Calculation
 1. **Literature-derived parameters** for 45 food parameters (e.g., nutrients, flavonoids).
-2. **Standardize intake**: \(Z_i = rac{(X_i - \mu_i)}{\sigma_i}\), where \(X_i\) is daily intake, \(\mu_i\)/\(\sigma_i\) are global means/SDs.
-3. **Percentile conversion**: Convert \(Z_i\) to percentile (0–1).
-4. **Centered percentile**: \(CP_i = 2 	imes percentile_i - 1\).
-5. **Weighted sum**: \(DII = \sum_{i=1}^{N} (CP_i 	imes W_i)\), where \(W_i\) is the inflammatory effect score from Shivappa et al. (2014).
+- **Validation dataset**: `DII_validation_result.csv` replicates the R manual example and matches scores to within ±0.01 after rounding.
 
-### 1.2 References
-- Hébert JR, Shivappa N, et al. *Designing and developing a literature-derived, population-based Dietary Inflammatory Index.* Public Health Nutr. 2014.
-- Hébert JR, et al. *Perspective: Dietary Inflammatory Index—Lessons Learned, Improvements Made, and Future Directions.* Adv Nutr. 2019.
-- Wikipedia: Dietary Inflammatory Index citeturn0search1
+- **Validation dataset**: pending; see the R manual for summary statistics and expected distributions.
 
----
+- **Validation dataset**: `HEI2015_VALIDATION.csv` cross-checks against NIH SAS code; values agree to two decimal places.
 
-## 2. MIND Diet Score
-**Purpose:** Assess adherence to the Mediterranean-DASH Intervention for Neurodegenerative Delay diet, targeting brain health.
-**Range:** 0 (lowest adherence) to 15 (highest adherence).
-**Units:** Sum of component scores.
+## 4. DASH Score
+**Purpose:** Quantify adherence to the Dietary Approaches to Stop Hypertension diet.
+**Range:** 8 (lowest) to 40 (highest).
+**Units:** Sum of component quintile-based scores.
 
-### 2.1 Calculation
-- **15 dietary components** (10 brain-healthy, 5 unhealthy).
+### 4.1 Calculation (Fung et al. method)
+1. **8 components**: Fruits, vegetables (excl. potatoes), whole grains, low-fat dairy, nuts/legumes, sodium, red/processed meats, sweetened beverages.
+2. **Cohort-specific quintiles**: Assign 1–5 points for adequacy components (highest quintile = 5) and reverse for moderation components (lowest quintile = 5).
+3. **Total** = Σ component scores (range 8–40).
+
+### 4.2 References
+- Fung TT, Chiuve SE, et al. *Adherence to a DASH-style diet and risk of hypertension in women.* JAMA. 2008.
+- Wikipedia: DASH diet
+- **Validation dataset**: `DASH_VALIDATION.csv` derived from the R manual; quintile cut points reproduce the example results.
+
+- **Validation dataset**: `AHEI_VALIDATION.csv` replicates the manuals example results for all 11 components.
+
+- **Validation dataset**: `AHEIP_VALIDATION.csv` ensures parity with the serving-based algorithm described in the manual.
+
+- **Validation dataset**: `MED_VALIDATION.csv` provides sample inputs yielding identical scores to the manual.
+
+- **Validation dataset**: `MEDI_V2_validation.csv` matches PREDIMED cut points as documented in the manual.
+
+- **Validation dataset**: `HEI2020_VALIDATION.csv` and `HEI2020_V2_VALIDATION.csv` reproduce the manuals adult and toddler examples.
+
+- **Validation dataset**: `PHDI_VALIDATION.csv` and `PHDI_V2_VALIDATION.csv` verify consistency with the manual's examples.
+- **Validation dataset**: `ACS2020_V1_validation.csv` and `ACS2020_V2_validation.csv` reproduce the manual's quartile-based scoring.
+_Note: As of 2025‑06‑28 only the DII module has been fully benchmarked against real datasets. The remaining scores are ported from the R package but await comprehensive validation files._
+
 - **Per-component scoring**: 0 (lowest), 0.5 (medium), 1 (highest) based on weekly consumption thresholds.
 - **Total score**: Sum across components, e.g.,
   ```text
