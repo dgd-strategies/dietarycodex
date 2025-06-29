@@ -18,4 +18,7 @@ def test_dash_matches_reference():
     }
     df = df.rename(columns=mapping)
     result = calculate_dash(df)
-    assert pytest.approx(result.tolist(), rel=1e-3, abs=1e-3) == df["EXP_DASH_ALL"].tolist()
+    assert (
+        pytest.approx(result.tolist(), rel=1e-3, abs=1e-3)
+        == df["EXP_DASH_ALL"].tolist()
+    )
