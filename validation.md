@@ -68,8 +68,102 @@ This document provides comprehensive, science-based validation details for each 
 - NIH NCI HEI Scoring Algorithm: EGRP/DCCPS/NCI/NIH citeturn2search0
 
 ---
+## 5. Alternative Healthy Eating Index (AHEI)
+**Purpose:** Evaluate diet quality for chronic disease prevention.
+**Range:** 0 to 110.
+**Units:** Sum of component scores (11 components × 10 points).
 
-_Last updated: 2025-06-28_
+### 5.1 Calculation
+- **11 components** including vegetables, fruit, whole grains, nuts/legumes,
+  omega‑3 fats, polyunsaturated fat, sugar‑sweetened beverages,
+  red/processed meat, trans fat, sodium, and alcohol.
+- **Linear scoring** from 0–10 with gender‑specific cut points for whole grains
+  and alcohol. Sodium is scored on energy-adjusted deciles.
+
+### 5.2 References
+- Chiuve SE, Fung TT, et al. *Development of the Alternative Healthy Eating
+  Index‑2010.* J Nutr. 2012.
+- Harvard T.H. Chan School of Public Health: AHEI scoring method.
+
+## 6. AHEI (Serving-based Variant, AHEIP)
+**Purpose:** Serving-sized adaptation used in epidemiologic studies.
+**Range:** 0 to 90.
+**Units:** Sum of component scores (9 components × 10 points).
+
+### 6.1 Calculation
+- Scores servings of vegetables, whole fruit, white‑to‑red meat ratio, fiber,
+  trans fat, polyunsaturated‑to‑saturated fat ratio, calcium, folate, and iron.
+- Healthy components score linearly upward; unhealthy components reverse score.
+
+### 6.2 References
+- `dietaryindex` R package documentation.
+
+## 7. Alternate Mediterranean Diet Score (aMED)
+**Purpose:** U.S. adaptation of the Mediterranean diet pattern.
+**Range:** 0 to 9.
+**Units:** Sum of binary component scores.
+
+### 7.1 Calculation
+- Components compared to cohort medians with 1 point for favorable intake.
+- Alcohol earns 1 point for 10–25 g/day.
+
+### 7.2 References
+- Fung TT, McCullough ML, et al. *Mediterranean diet and mortality in the
+  NIH‑AARP Diet and Health Study.* Arch Intern Med. 2009.
+
+## 8. MED Index in Serving Sizes (MEDI)
+**Purpose:** PREDIMED-style Mediterranean index using serving thresholds.
+**Range:** 0 to 11.
+**Units:** Sum of binary component scores.
+
+### 8.1 Calculation
+- Each component earns 1 point when the PREDIMED threshold is met.
+
+### 8.2 References
+- Estruch R, et al. *Primary Prevention of Cardiovascular Disease with a
+  Mediterranean Diet.* N Engl J Med. 2013.
+
+## 9. Healthy Eating Index 2020
+**Purpose:** Measure conformance to the 2020–2025 U.S. Dietary Guidelines.
+**Range:** 0 to 100.
+**Variants:** HEI‑2020 for adults and HEI‑Toddlers‑2020 for children aged 1–2 years.
+
+### 9.1 Calculation
+- Density-based approach similar to HEI‑2015 with updated cut points.
+
+### 9.2 References
+- USDA Center for Nutrition Policy and Promotion HEI‑2020 materials.
+
+## 10. Planetary Health Diet Index (PHDI)
+**Purpose:** Quantify adherence to the EAT‑Lancet Planetary Health Diet.
+**Range:** 0 to 140.
+**Units:** Sum of component scores.
+
+### 10.1 Calculation
+- Components scaled 0–10 (legumes and soy max 5) with gender-specific cut
+  points for whole grains.
+
+### 10.2 References
+- Cacau LT, et al. *Development and validation of the Planetary Health Diet
+  Index.* Nutrients. 2023.
+- EAT‑Lancet Commission documentation.
+
+## 11. American Cancer Society 2020 Diet Score
+**Purpose:** Evaluate compliance with 2020 ACS guidelines for cancer prevention.
+**Range:** 0 to 12.
+**Variants:** `ACS2020_V1` uses percent of calories from highly processed foods
+and refined grains; `ACS2020_V2` uses servings per 1,000 kcal.
+
+### 11.1 Calculation
+- Components are ranked in gender-specific quartiles. Healthy foods earn up to
+  0.75 or 3 points; unhealthy foods are reverse scored. Sugar-sweetened
+  beverages use fixed cut points.
+
+### 11.2 References
+- Kushi LH, et al. *American Cancer Society guideline for diet and physical
+  activity for cancer prevention.* CA Cancer J Clin. 2020.
+
+_Last updated: 2025-06-29_
 
 ## 🚧 Implementation Note (2025‑06‑28)
 
