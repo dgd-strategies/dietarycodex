@@ -33,7 +33,7 @@ minimal FastAPI backend exists only for automated tests.
 
 ---
 
-## Using the Web App
+## Quick Start
 
 Open the hosted site or `index.html` locally. A service worker provides a demo `/api/time` endpoint. Everything runs in the browser.
 
@@ -53,7 +53,7 @@ Open the hosted site or `index.html` locally. A service worker provides a demo `
 │   ├── medi.py             # Mediterranean Diet Index
 │   └── dii_parameters.json # Moved to data/
 ├── docs/                   # Documentation files
-│   ├── index.md            # This file
+│   ├── README.md            # This file
 │   ├── validation.md       # Scoring methods & rules
 │   └── validation_detailed.md # Detailed formulas & references
 ├── index.html              # Single-page web app
@@ -99,7 +99,7 @@ See the complete API definition: [openapi.yml](../openapi.yml)
 
 ## Validation & Scoring Standards
 
-Refer to our validation rules and scientific methods: [validation.md](validation.md) and [validation_detailed.md](validation_detailed.md)
+Refer to our validation rules and scientific methods: [validation.md](validation.md) and [validation_detailed.md](validation_detailed.md). Additional tables for scoring cut points and serving-size formulas are in [scoring_algorithms.md](scoring_algorithms.md) and [serving_sizes.md](serving_sizes.md).
 
 ---
 

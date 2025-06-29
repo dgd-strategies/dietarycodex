@@ -19,8 +19,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Validation**: The integration tests compare computed scores to a curated reference table extracted from the original publication.
 - **References**: Shivappa N et al. Public Health Nutr. 2014; Hébert JR et al. Adv Nutr. 2019.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#dii)
-  - Serving sizes: [NHANES](excel_serving_sizes_part1.md#nhanes_dii), [ASA24](excel_serving_sizes_part2.md#asa24_dii), [BLOCK FFQ](excel_serving_sizes_part3.md#block_ffq_dii)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [NHANES](serving_sizes.md#nhanes), [ASA24](serving_sizes.md#asa24), [BLOCK FFQ](serving_sizes.md#block-ffq)
 
 
 ## 2. MIND Diet Score
@@ -41,8 +41,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
   in `data/HEI2015_VALIDATION.csv`, `data/HEI2020_VALIDATION.csv`, and
   `data/HEI2020_V2_VALIDATION.csv`.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#hei2015)
-  - Serving sizes: [NHANES](excel_serving_sizes_part1.md#nhanes_hei2015), [ASA24](excel_serving_sizes_part2.md#asa24_hei2015), [DHQ3](excel_serving_sizes_part2.md#dhq3_hei2015), [BLOCK FFQ](excel_serving_sizes_part3.md#block_ffq_hei2015)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [NHANES](serving_sizes.md#nhanes), [ASA24](serving_sizes.md#asa24), [DHQ3](serving_sizes.md#dhq3), [BLOCK FFQ](serving_sizes.md#block-ffq)
 
 
 ## 4. DASH Score
@@ -53,8 +53,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Range**: 8–40.
 - **Validation**: Population quintiles from NHANES will be used to verify distributional properties.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#dash)
-  - Serving sizes: [NHANES](excel_serving_sizes_part1.md#nhanes_dash), [ASA24](excel_serving_sizes_part2.md#asa24_dash), [DHQ3](excel_serving_sizes_part3.md#dhq3_dash), [BLOCK FFQ](excel_serving_sizes_part3.md#block_ffq_dash)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [NHANES](serving_sizes.md#nhanes), [ASA24](serving_sizes.md#asa24), [DHQ3](serving_sizes.md#dhq3), [BLOCK FFQ](serving_sizes.md#block-ffq)
 
 
 ## 5. Alternative Healthy Eating Index (AHEI)
@@ -65,8 +65,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Range**: 0–110 when all components are summed.
 - **Validation**: Reference results from the R `dietaryindex` package are included in `data/AHEI_VALIDATION.csv`.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#ahei-2010)
-  - Serving sizes: [NHANES](excel_serving_sizes_part1.md#nhanes_ahei-2010), [ASA24](excel_serving_sizes_part2.md#asa24_ahei-2010), [DHQ3](excel_serving_sizes_part2.md#dhq3_ahei-2010), [BLOCK FFQ](excel_serving_sizes_part3.md#block_ffq_ahei-2010)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [NHANES](serving_sizes.md#nhanes), [ASA24](serving_sizes.md#asa24), [DHQ3](serving_sizes.md#dhq3), [BLOCK FFQ](serving_sizes.md#block-ffq)
 
 
 - **References**: McCullough ML et al. AJCN. 2002.
@@ -77,8 +77,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Validation**: Reference values from `data/AHEIP_VALIDATION.csv` ensure parity with the R implementation.
 - **References**: Fung TT et al. Arch Intern Med. 2009.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#aheip)
-  - Serving sizes: [BLOCK FFQ](excel_serving_sizes_part3.md#block_ffq_aheip)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [BLOCK FFQ](serving_sizes.md#block-ffq)
 
 ## 6. Alternate Mediterranean Diet Score (aMED)
 
@@ -89,8 +89,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 
 - **References**: Estruch R et al. N Engl J Med. 2013.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#med)
-  - Serving sizes: [NHANES](excel_serving_sizes_part1.md#nhanes_med), [ASA24](excel_serving_sizes_part2.md#asa24_med), [DHQ3](excel_serving_sizes_part3.md#dhq3_med), [BLOCK FFQ](excel_serving_sizes_part3.md#block_ffq_med)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [NHANES](serving_sizes.md#nhanes), [ASA24](serving_sizes.md#asa24), [DHQ3](serving_sizes.md#dhq3), [BLOCK FFQ](serving_sizes.md#block-ffq)
 
 ## 7. MED Index in Serving Sizes (MEDI)
 
@@ -101,8 +101,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Validation**: Ported directly from the R `dietaryindex` package.
 - **References**: U.S. Department of Agriculture HEI‑2020 Documentation.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#medi)
-  - Serving sizes: [NHANES](excel_serving_sizes_part1.md#nhanes_medi)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [NHANES](serving_sizes.md#nhanes)
 
 
 
@@ -114,8 +114,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Validation**: Thresholds and scoring logic are ported from the R `dietaryindex` package.
 - **References**: U.S. Department of Agriculture HEI‑2020 documentation.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#hei2020)
-  - Serving sizes: [NHANES](excel_serving_sizes_part1.md#nhanes_hei2020), [ASA24](excel_serving_sizes_part2.md#asa24_hei2020)
+  - [Scoring Algorithm](scoring_algorithms.md)
+  - Serving sizes: [NHANES](serving_sizes.md#nhanes), [ASA24](serving_sizes.md#asa24)
 
 
 ## 9. Planetary Health Diet Index (PHDI)
@@ -129,7 +129,7 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
   (`PHDI_VALIDATION.csv`) is included in this repository for automated
   cross‑checks.
 - **Tables**:
-  - [Scoring Algorithm](excel_scoring_algorithm.md#phdi)
+  - [Scoring Algorithm](scoring_algorithms.md)
 
 
 ## 10. American Cancer Society 2020 Diet Score
@@ -140,8 +140,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Validation**: The Python functions mirror the R implementations in the `dietaryindex` package. Example validation datasets (`ACS2020_V1_validation.csv`, `ACS2020_V2_validation.csv`) are included in the repository.
 - **References**: Kushi LH et al. CA Cancer J Clin. 2020.
 - **Tables**:
-  - [ACS2020_V1 Algorithm](excel_scoring_algorithm.md#acs-2020_v1)
-  - [ACS2020_V2 Algorithm](excel_scoring_algorithm.md#acs-2020_v2)
+  - [ACS2020_V1 Algorithm](scoring_algorithms.md)
+  - [ACS2020_V2 Algorithm](scoring_algorithms.md)
 
 
 ---
@@ -157,7 +157,8 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
    first with `pip install -r requirements.txt`.
 ## Spreadsheet Resources
 
-Full tables extracted from the provided Excel files are available at [excel_scoring_algorithm.md](excel_scoring_algorithm.md) and [excel_serving_sizes_part1.md), [excel_serving_sizes_part2.md](excel_serving_sizes_part2.md), [excel_serving_sizes_part3.md](excel_serving_sizes_part3.md).
+The raw Excel tables have been distilled into two cleaner references:
+[scoring_algorithms.md](scoring_algorithms.md) and [serving_sizes.md](serving_sizes.md).
 
 
 _This guide will evolve as additional datasets and language ports become available._
