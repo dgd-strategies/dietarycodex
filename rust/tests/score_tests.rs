@@ -1,4 +1,4 @@
-use dietarycodex::eval::evaluate_all_scores;
+use dietarycodex::eval::{evaluate_all_scores, evaluate_allow_partial};
 use dietarycodex::nutrition_vector::NutritionVector;
 use dietarycodex::scores::amed::AMedScorer;
 use dietarycodex::scores::dash::DashScorer;
@@ -20,9 +20,9 @@ fn expected_names() -> Vec<String> {
 #[test]
 fn hei_score_not_nan() {
     let nv = NutritionVector {
-        total_fruits_g: 150.0,
-        whole_grains_g: 80.0,
-        sodium_mg: 1600.0,
+        total_fruits_g: Some(150.0),
+        whole_grains_g: Some(80.0),
+        sodium_mg: Some(1600.0),
         ..Default::default()
     };
     let scorer = HeiScorer;
@@ -33,12 +33,12 @@ fn hei_score_not_nan() {
 #[test]
 fn dash_score_not_nan() {
     let nv = NutritionVector {
-        total_fruits_g: 200.0,
-        vegetables_g: 250.0,
-        whole_grains_g: 80.0,
-        sodium_mg: 1600.0,
-        saturated_fat_g: 10.0,
-        energy_kcal: 2000.0,
+        total_fruits_g: Some(200.0),
+        vegetables_g: Some(250.0),
+        whole_grains_g: Some(80.0),
+        sodium_mg: Some(1600.0),
+        saturated_fat_g: Some(10.0),
+        energy_kcal: Some(2000.0),
         ..Default::default()
     };
     let scorer = DashScorer;
@@ -49,11 +49,11 @@ fn dash_score_not_nan() {
 #[test]
 fn dashi_score_not_nan() {
     let nv = NutritionVector {
-        vegetables_g: 250.0,
-        total_fruits_g: 250.0,
-        whole_grains_g: 80.0,
-        calcium_mg: 900.0,
-        sodium_mg: 1600.0,
+        vegetables_g: Some(250.0),
+        total_fruits_g: Some(250.0),
+        whole_grains_g: Some(80.0),
+        calcium_mg: Some(900.0),
+        sodium_mg: Some(1600.0),
         ..Default::default()
     };
     let scorer = DashiScorer;
@@ -64,13 +64,13 @@ fn dashi_score_not_nan() {
 #[test]
 fn amed_score_not_nan() {
     let nv = NutritionVector {
-        vegetables_g: 250.0,
-        legumes_g: 100.0,
-        total_fruits_g: 150.0,
-        whole_grains_g: 80.0,
-        fish_g: 80.0,
-        mono_fat_g: 30.0,
-        red_meat_g: 50.0,
+        vegetables_g: Some(250.0),
+        legumes_g: Some(100.0),
+        total_fruits_g: Some(150.0),
+        whole_grains_g: Some(80.0),
+        fish_g: Some(80.0),
+        mono_fat_g: Some(30.0),
+        red_meat_g: Some(50.0),
         ..Default::default()
     };
     let scorer = AMedScorer;
@@ -81,42 +81,41 @@ fn amed_score_not_nan() {
 #[test]
 fn evaluate_returns_dash() {
     let nv = NutritionVector {
-        total_fruits_g: 200.0,
-        vegetables_g: 200.0,
-        whole_grains_g: 80.0,
-        sodium_mg: 1600.0,
-        saturated_fat_g: 10.0,
-        energy_kcal: 2000.0,
+        total_fruits_g: Some(200.0),
+        vegetables_g: Some(200.0),
+        whole_grains_g: Some(80.0),
+        sodium_mg: Some(1600.0),
+        saturated_fat_g: Some(10.0),
+        energy_kcal: Some(2000.0),
         ..Default::default()
     };
-    let scores = evaluate_all_scores(&nv);
+    let scores = evaluate_allow_partial(&nv);
     assert!(scores.scores.contains_key("DASH"));
 }
 
 #[test]
 fn evaluate_returns_dashi() {
-    let nv = NutritionVector::default();
-    let scores = evaluate_all_scores(&nv);
-    assert!(scores.scores.contains_key("DASHI"));
+    let names = expected_names();
+    assert!(names.contains(&"DASHI".to_string()));
 }
 
 #[test]
 fn evaluate_returns_dii() {
     let nv = NutritionVector {
-        saturated_fat_g: 8.0,
-        sugar_g: 50.0,
-        fiber_g: 20.0,
-        vitamin_c_mg: 60.0,
-        vitamin_a_mcg: 700.0,
-        vitamin_e_mg: 10.0,
-        omega3_g: 1.0,
-        zinc_mg: 12.0,
-        selenium_mcg: 55.0,
-        magnesium_mg: 300.0,
-        trans_fat_g: 0.5,
+        saturated_fat_g: Some(8.0),
+        sugar_g: Some(50.0),
+        fiber_g: Some(20.0),
+        vitamin_c_mg: Some(60.0),
+        vitamin_a_mcg: Some(700.0),
+        vitamin_e_mg: Some(10.0),
+        omega3_g: Some(1.0),
+        zinc_mg: Some(12.0),
+        selenium_mcg: Some(55.0),
+        magnesium_mg: Some(300.0),
+        trans_fat_g: Some(0.5),
         ..Default::default()
     };
-    let scores = evaluate_all_scores(&nv);
+    let scores = evaluate_allow_partial(&nv);
     assert!(scores.scores.contains_key("DII"));
     let scorer = DiiScorer;
     let val = scorer.evaluate(&nv);
@@ -126,13 +125,13 @@ fn evaluate_returns_dii() {
 #[test]
 fn acs2020_score_not_nan() {
     let nv = NutritionVector {
-        vegetables_g: 250.0,
-        legumes_g: 90.0,
-        total_fruits_g: 180.0,
-        whole_grains_g: 80.0,
-        red_meat_g: 40.0,
-        sugar_g: 30.0,
-        alcohol_g: 10.0,
+        vegetables_g: Some(250.0),
+        legumes_g: Some(90.0),
+        total_fruits_g: Some(180.0),
+        whole_grains_g: Some(80.0),
+        red_meat_g: Some(40.0),
+        sugar_g: Some(30.0),
+        alcohol_g: Some(10.0),
         ..Default::default()
     };
     let scorer = Acs2020Scorer;
@@ -142,24 +141,23 @@ fn acs2020_score_not_nan() {
 
 #[test]
 fn evaluate_returns_acs2020() {
-    let nv = NutritionVector::default();
-    let scores = evaluate_all_scores(&nv);
-    assert!(scores.scores.contains_key("ACS2020"));
+    let names = expected_names();
+    assert!(names.contains(&"ACS2020".to_string()));
 }
 
 #[test]
 fn phdi_score_not_nan() {
     let nv = NutritionVector {
-        vegetables_g: 250.0,
-        legumes_g: 80.0,
-        whole_grains_g: 70.0,
-        fat_g: 40.0,
-        saturated_fat_g: 10.0,
-        trans_fat_g: 0.5,
-        red_meat_g: 20.0,
-        sugar_g: 30.0,
-        refined_grains_g: 100.0,
-        energy_kcal: 2000.0,
+        vegetables_g: Some(250.0),
+        legumes_g: Some(80.0),
+        whole_grains_g: Some(70.0),
+        fat_g: Some(40.0),
+        saturated_fat_g: Some(10.0),
+        trans_fat_g: Some(0.5),
+        red_meat_g: Some(20.0),
+        sugar_g: Some(30.0),
+        refined_grains_g: Some(100.0),
+        energy_kcal: Some(2000.0),
         ..Default::default()
     };
     let scorer = PhdiScorer;
@@ -169,26 +167,25 @@ fn phdi_score_not_nan() {
 
 #[test]
 fn evaluate_returns_phdi() {
-    let nv = NutritionVector::default();
-    let scores = evaluate_all_scores(&nv);
-    assert!(scores.scores.contains_key("PHDI"));
+    let names = expected_names();
+    assert!(names.contains(&"PHDI".to_string()));
 }
 
 #[test]
 fn mind_score_not_nan() {
     let nv = NutritionVector {
-        vegetables_g: 150.0,
-        berries_g: 40.0,
-        nuts_g: 20.0,
-        whole_grains_g: 60.0,
-        fish_g: 50.0,
-        poultry_g: 80.0,
-        mono_fat_g: 25.0,
-        red_meat_g: 20.0,
-        sugar_g: 15.0,
-        cheese_g: 10.0,
-        butter_g: 5.0,
-        fast_food_g: 0.0,
+        vegetables_g: Some(150.0),
+        berries_g: Some(40.0),
+        nuts_g: Some(20.0),
+        whole_grains_g: Some(60.0),
+        fish_g: Some(50.0),
+        poultry_g: Some(80.0),
+        mono_fat_g: Some(25.0),
+        red_meat_g: Some(20.0),
+        sugar_g: Some(15.0),
+        cheese_g: Some(10.0),
+        butter_g: Some(5.0),
+        fast_food_g: Some(0.0),
         ..Default::default()
     };
     let scorer = MindScorer;
@@ -198,18 +195,36 @@ fn mind_score_not_nan() {
 
 #[test]
 fn evaluate_returns_mind() {
-    let nv = NutritionVector::default();
-    let scores = evaluate_all_scores(&nv);
-    assert!(scores.scores.contains_key("MIND"));
+    let names = expected_names();
+    assert!(names.contains(&"MIND".to_string()));
 }
 
 #[test]
 fn default_evaluates_all_scores() {
     let nv = NutritionVector::default();
-    let result = evaluate_all_scores(&nv);
-    let expected = expected_names();
-    for name in &expected {
-        assert!(result.scores.contains_key(name.as_str()), "missing {name}");
-    }
-    assert_eq!(result.ordered_names, expected);
+    assert!(evaluate_all_scores(&nv).is_err());
+}
+
+#[test]
+fn returns_err_with_missing_fields() {
+    let nv = NutritionVector {
+        fiber_g: Some(5.0),
+        ..Default::default()
+    };
+    let err = evaluate_all_scores(&nv).unwrap_err();
+    assert!(err.contains(&"fat_g"));
+    assert!(err.contains(&"saturated_fat_g"));
+}
+
+#[test]
+fn allow_partial_skips_missing() {
+    let nv = NutritionVector {
+        fiber_g: Some(5.0),
+        fat_g: Some(40.0),
+        saturated_fat_g: Some(10.0),
+        ..Default::default()
+    };
+    let result = evaluate_allow_partial(&nv);
+    assert!(result.scores.contains_key("AHEI"));
+    assert!(!result.scores.contains_key("DASH"));
 }

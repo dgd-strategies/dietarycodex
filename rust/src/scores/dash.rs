@@ -5,18 +5,18 @@ pub struct DashScorer;
 
 impl DietScore for DashScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
-        let fruit = (nv.total_fruits_g / 400.0 * 10.0).clamp(0.0, 10.0);
-        let veg = (nv.vegetables_g / 400.0 * 10.0).clamp(0.0, 10.0);
-        let grains = (nv.whole_grains_g / 75.0 * 10.0).clamp(0.0, 10.0);
-        let sodium = if nv.sodium_mg <= 1500.0 {
+        let fruit = (nv.total_fruits_g.unwrap_or(0.0) / 400.0 * 10.0).clamp(0.0, 10.0);
+        let veg = (nv.vegetables_g.unwrap_or(0.0) / 400.0 * 10.0).clamp(0.0, 10.0);
+        let grains = (nv.whole_grains_g.unwrap_or(0.0) / 75.0 * 10.0).clamp(0.0, 10.0);
+        let sodium = if nv.sodium_mg.unwrap_or(f64::INFINITY) <= 1500.0 {
             10.0
-        } else if nv.sodium_mg >= 2300.0 {
+        } else if nv.sodium_mg.unwrap_or(0.0) >= 2300.0 {
             0.0
         } else {
-            (2300.0 - nv.sodium_mg) / (2300.0 - 1500.0) * 10.0
+            (2300.0 - nv.sodium_mg.unwrap_or(0.0)) / (2300.0 - 1500.0) * 10.0
         };
-        let sat_percent = if nv.energy_kcal > 0.0 {
-            (nv.saturated_fat_g * 9.0) / nv.energy_kcal * 100.0
+        let sat_percent = if nv.energy_kcal.unwrap_or(0.0) > 0.0 {
+            (nv.saturated_fat_g.unwrap_or(0.0) * 9.0) / nv.energy_kcal.unwrap_or(0.0) * 100.0
         } else {
             0.0
         };
@@ -32,5 +32,16 @@ impl DietScore for DashScorer {
 
     fn name(&self) -> &'static str {
         "DASH"
+    }
+
+    fn required_fields(&self) -> &'static [&'static str] {
+        &[
+            "total_fruits_g",
+            "vegetables_g",
+            "whole_grains_g",
+            "sodium_mg",
+            "saturated_fat_g",
+            "energy_kcal",
+        ]
     }
 }
