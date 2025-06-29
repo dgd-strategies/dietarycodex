@@ -3,9 +3,15 @@ use crate::scores::all_scorers;
 use serde::Serialize;
 use std::collections::HashMap;
 
+#[derive(Debug, Serialize, PartialEq)]
+pub enum ScorerStatus {
+    Complete(f64),
+    Skipped { reason: String },
+}
+
 #[derive(Debug, Serialize)]
 pub struct ScoreResult {
-    pub scores: HashMap<String, f64>,
+    pub scores: HashMap<String, ScorerStatus>,
     pub ordered_names: Vec<String>,
 }
 
@@ -24,13 +30,22 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
     let mut ordered = Vec::new();
     let missing = nv.missing_fields();
     for calc in calculators {
-        if calc.required_fields().iter().any(|f| missing.contains(f)) {
-            continue;
-        }
         let name = calc.name().to_string();
-        let val = calc.evaluate(nv);
+        let required = calc.required_fields();
+        let missing_fields: Vec<&str> = required
+            .iter()
+            .copied()
+            .filter(|f| missing.contains(f))
+            .collect();
+        let status = if missing_fields.is_empty() {
+            ScorerStatus::Complete(calc.evaluate(nv))
+        } else {
+            ScorerStatus::Skipped {
+                reason: format!("missing fields: {}", missing_fields.join(", ")),
+            }
+        };
         ordered.push(name.clone());
-        results.insert(name, val);
+        results.insert(name, status);
     }
     ScoreResult {
         scores: results,

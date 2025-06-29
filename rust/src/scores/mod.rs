@@ -1,4 +1,9 @@
-//! Available scorers: AHEI, HEI, DASH, aMED, DII, ACS2020, PHDI, DASHI, MIND
+//! Available scorers: AHEI, HEI, DASH, aMED, DII, ACS2020, PHDI, DASHI, MIND.
+//!
+//! Partial evaluation is supported through [`evaluate_allow_partial`](crate::eval::evaluate_allow_partial).
+//! Each scorer returns a [`ScorerStatus`](crate::eval::ScorerStatus) indicating
+//! whether the score was computed or skipped. Skipped scores include a reason
+//! listing which input fields were missing.
 
 use crate::nutrition_vector::NutritionVector;
 
