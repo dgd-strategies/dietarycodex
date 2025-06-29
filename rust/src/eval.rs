@@ -15,7 +15,6 @@ pub struct ScoreResult {
     pub ordered_names: Vec<String>,
 }
 
-
 pub fn evaluate_all_scores(nv: &NutritionVector) -> Result<ScoreResult, Vec<&'static str>> {
     let missing = nv.missing_fields();
     if !missing.is_empty() {
@@ -32,11 +31,12 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
     for calc in calculators {
         let name = calc.name().to_string();
         let required = calc.required_fields();
-        let missing_fields: Vec<&str> = required
+        let mut missing_fields: Vec<&str> = required
             .iter()
             .copied()
             .filter(|f| missing.contains(f))
             .collect();
+        missing_fields.sort();
         let status = if missing_fields.is_empty() {
             ScorerStatus::Complete(calc.evaluate(nv))
         } else {
