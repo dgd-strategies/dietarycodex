@@ -42,7 +42,13 @@ It is intended as a reference for researchers and future contributors who requir
 - **Components**: Vegetables, fruit, whole grains, nuts/legumes, omega‑3 fats, polyunsaturated fat, sugar‑sweetened beverages, red/processed meat, trans fat, sodium, and alcohol.
 - **Scoring**: Linear scaling to 10 points per component with gender-specific cut points for whole grains and alcohol. Sodium is scored on cohort-specific deciles.
 - **Range**: 0–110 when all components are summed.
-- **Validation**: The Python port mirrors the published R implementation from the `dietaryindex` package. Synthetic inputs cover gender and sodium decile edge cases.
+- **Validation**: Reference results from the R `dietaryindex` package are included in `data/AHEI_VALIDATION.csv`.
+
+### AHEI (serving-based variant, AHEIP)
+
+- **Components**: Vegetables, whole fruit, white-to-red meat ratio, fiber, trans fat, polyunsaturated-to-saturated fat ratio, calcium, folate, and iron.
+- **Range**: 0–90 when summed.
+- **Validation**: Reference values from `data/AHEIP_VALIDATION.csv` ensure parity with the R implementation.
 ## 6. Alternate Mediterranean Diet Score (aMED)
 
 - **Components**: Fruit, vegetables, whole grains, legumes, nuts, fish, red/processed meat, monounsaturated-to-saturated fat ratio, and alcohol.

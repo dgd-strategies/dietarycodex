@@ -39,7 +39,8 @@ def _score_linear(
     if positive:
         score = (val - min_val) / (max_val - min_val) * 10
     else:
-        score = (max_val - val) / (max_val - min_val) * 10
+        low, high = max_val, min_val
+        score = (high - val) / (high - low) * 10
     return score.clip(0, 10)
 
 
@@ -80,17 +81,14 @@ def calculate_ahei(df: pd.DataFrame) -> pd.Series:
             score[male & (df[key] > 2.0) & (df[key] < 3.5)] = (
                 (3.5 - df[key]) / (3.5 - 2.0) * 10
             )
-            score[(df[key] < 0.5) & (df[key] > 0)] = df[key] / 0.5 * 10
-            score[df[key] == 0] = 2.5
+            score[(df[key] < 0.5) & (df[key] > 0.125)] = df[key] / 0.5 * 10
+            score[df[key] <= 0.125] = 2.5
             scores[key] = score.clip(0, 10)
 
-    # Sodium requires cohort-specific deciles per 2000 kcal
+    # Sodium score based on deciles per 2000 kcal in the reference implementation
     sodium_adj = df["sodium_mg"] / (df["total_kcal"] / 2000)
-    deciles = np.quantile(sodium_adj.dropna(), np.linspace(0, 1, 11))
-    sodium_score = pd.Series(0.0, index=df.index)
-    for i in range(10, 0, -1):
-        sodium_score[sodium_adj <= deciles[i]] = 10 - i
-    scores["sodium"] = sodium_score
+    sodium_score = 11 - (sodium_adj / 400)
+    scores["sodium"] = sodium_score.clip(0, 10)
 
     total = scores.sum(axis=1)
     return total
