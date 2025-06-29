@@ -16,6 +16,11 @@ Thank you for your interest in contributing! This guide outlines the workflow, s
    ```bash
    ./setup.sh --dev
    ```
+   If you prefer a manual setup, run:
+   ```bash
+   pip install -r requirements.txt
+   pre-commit install
+   ```
 
 ---
 
@@ -32,7 +37,8 @@ Thank you for your interest in contributing! This guide outlines the workflow, s
 
 - **Formatting & Linting**: Code is auto-formatted with **Black** and imports sorted with **isort**.
 - **Linting**: Ensure **flake8** passes with no errors or warnings.
-- **Pre-commit**: Hooks (black, isort, flake8, end-of-file-fixer) run on every `git commit`.
+- **Pre-commit**: Hooks run on every `git commit` and now include the
+  full pytest suite for validation in addition to black, isort, and flake8.
 - **Type Hints**: Use PEP 484 type annotations where appropriate.
 - **Docstrings**: Follow [Google style](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings).
 
@@ -68,7 +74,7 @@ This project follows the [Contributor Covenant](https://www.contributor-covenant
 
 - **README.md**: Project overview, setup, and usage.
 - **docs/validation\_detailed.md**: Scientific validation details for scoring methods.
-- **.pre-commit-config.yaml**: Pre-commit hook configuration.
+- **.pre-commit-config.yaml**: Pre-commit hook configuration (runs pytest and linters).
 - **pyproject.toml**: Black, isort, flake8, pytest configuration.
 
 ---

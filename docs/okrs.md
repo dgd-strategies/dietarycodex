@@ -11,6 +11,7 @@ This document outlines the **Objectives and Key Results** guiding ongoing develo
 ## Objective 2 – Solid Validation & Documentation
 - Provide clear instructions in the README and docs.
 - Document calculation methods in `validation.md` and `validation_detailed.md`.
+- Keep validation datasets under `data/` to enable automated regression tests.
 - Add examples and screenshots as features mature.
 
 ## Objective 3 – Code Quality & Automation

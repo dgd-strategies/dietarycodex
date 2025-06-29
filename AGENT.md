@@ -35,18 +35,17 @@ index.html                  # Single-page app served via GitHub Pages
 1. **Clone** the repository.
 2. **Open** `index.html` directly or serve it with `python -m http.server` to
    use the browser-only version.
-3. **Install** dependencies (for running tests or the optional library):
+3. **Install** dependencies and pre-commit hooks:
    ```bash
    pip install -r requirements.txt
+   pre-commit install
    ```
-4. **Run pre-commit** checks before committing:
+4. **Run pre-commit** checks before committing. The hook now runs the full
+   test suite along with formatting and linting:
    ```bash
    pre-commit run --all-files
    ```
-5. **Run tests**:
-   ```bash
-   pytest -v
-   ```
+   Manual `pytest` runs are optional because the hook covers them.
 
 ## API Endpoints
 - **POST** `/score`
@@ -58,6 +57,7 @@ index.html                  # Single-page app served via GitHub Pages
 - `black`: code formatting
 - `isort`: import sorting
 - `flake8`: linting (PEP8)
+- `pytest`: run the full test suite
 - `end-of-file-fixer`, `trailing-whitespace`
 - `check-added-large-files`: configured to exclude large data files with exclusions
 
@@ -73,6 +73,8 @@ When the AI agent runs, reference this file to:
 - Ship a default CSV template that loads automatically.
 - Document calculations and validation steps clearly.
 - Enforce code quality via pre-commit and pytest in CI.
+- Maintain reference validation datasets under `data/` with tests that
+  automatically run via the pre-commit hook.
 
 ## UI Standard
 - Keep note of "AGENT_STYLE.md" particularly built for OpenAI Codex

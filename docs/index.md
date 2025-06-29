@@ -111,8 +111,15 @@ Download the master template for user uploads: [template.csv](../data/template.c
 
 ## Development Workflow
 
+- **Install** requirements and pre-commit hooks:
+  ```bash
+  pip install -r requirements.txt
+  pre-commit install
+  ```
 - **Formatting & Linting**: `make format`, `make lint`
 - **Testing**: `make test`
+- **Validation & Hooks**: `pre-commit run --all-files` will format, lint,
+  and execute the full test suite before commit.
 - **Optional API**: `make dev`
 - **CI**: GitHub Actions runs on push/PR (`.github/workflows/ci.yml`)
 
