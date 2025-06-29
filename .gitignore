@@ -7,3 +7,4 @@ __pycache__/
 
 # ignore the huge DII lookup table
 data/detailed_dii_table_20240606.csv
+*.rda

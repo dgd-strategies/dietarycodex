@@ -28,7 +28,9 @@ It is intended as a reference for researchers and future contributors who requir
 - **Components**: 13 dietary elements measured per 1,000 kcal.
 - **Method**: Density-based scoring with component‑specific cut points.
 - **Total Range**: 0–100.
-- **Validation**: Upcoming work will benchmark the Python implementation against the NCI SAS macros.
+- **Validation**: Reference results from the R `dietaryindex` package are included
+  in `data/HEI2015_VALIDATION.csv`, `data/HEI2020_VALIDATION.csv`, and
+  `data/HEI2020_V2_VALIDATION.csv`.
 
 ## 4. DASH Score
 
