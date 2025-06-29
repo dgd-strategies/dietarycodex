@@ -107,7 +107,20 @@ Refer to our validation rules and scientific methods: [validation.md](validation
 
 Download the master template for user uploads: [template.csv](../data/template.csv)
 
-### Column Mapping
+## Automatic Column Mapping
+
+Raw USDA or FNDDS exports often use different column names than the scoring modules.
+Use `compute.mapping.apply_mapping` to rename them automatically. Example:
+
+```python
+import pandas as pd
+from compute.mapping import USDA_HEI_MAP, apply_mapping
+
+df = pd.read_csv("fndds_export.csv")
+df = apply_mapping(df, USDA_HEI_MAP)
+```
+
+### Manual Column Mapping
 
 When your CSV headers don't exactly match the expected names, the web app now
 prompts you to map them. After an initial upload, any unmatched required columns

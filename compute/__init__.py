@@ -21,6 +21,12 @@ from .hei import (  # noqa: F401
     calculate_hei_2020,
     calculate_hei_toddlers_2020,
 )
+from .mapping import (  # noqa: F401
+    USDA_DASH_MAP,
+    USDA_DII_MAP,
+    USDA_HEI_MAP,
+    apply_mapping,
+)
 from .medi import (  # noqa: F401
     MEDI_COMPONENT_KEYS,
     MEDI_V2_COMPONENT_KEYS,
