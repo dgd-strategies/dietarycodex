@@ -23,6 +23,14 @@ pub struct NutritionVector {
     pub fish_g: f64,
     pub red_meat_g: f64,
     pub mono_fat_g: f64,
+    // Additional nutrients for indices like DII
+    pub omega3_g: f64,
+    pub vitamin_a_mcg: f64,
+    pub vitamin_e_mg: f64,
+    pub zinc_mg: f64,
+    pub selenium_mcg: f64,
+    pub magnesium_mg: f64,
+    pub trans_fat_g: f64,
 }
 
 impl NutritionVector {
@@ -59,6 +67,13 @@ impl NutritionVector {
             nv.calcium_mg = map.get("Calcium, Ca").unwrap_or(&0.0) * 1000.0;
             nv.iron_mg = map.get("Iron, Fe").unwrap_or(&0.0) * 1000.0;
             nv.vitamin_c_mg = map.get("Vitamin C, total ascorbic acid").unwrap_or(&0.0) * 1000.0;
+            nv.omega3_g = *map.get("Fatty acids, total polyunsaturated").unwrap_or(&0.0);
+            nv.vitamin_a_mcg = *map.get("Vitamin A, RAE").unwrap_or(&0.0);
+            nv.vitamin_e_mg = map.get("Vitamin E (alpha-tocopherol)").unwrap_or(&0.0) * 1000.0;
+            nv.zinc_mg = map.get("Zinc, Zn").unwrap_or(&0.0) * 1000.0;
+            nv.selenium_mcg = *map.get("Selenium, Se").unwrap_or(&0.0);
+            nv.magnesium_mg = map.get("Magnesium, Mg").unwrap_or(&0.0) * 1000.0;
+            nv.trans_fat_g = *map.get("Fatty acids, total trans").unwrap_or(&0.0);
         }
         Ok(nv)
     }

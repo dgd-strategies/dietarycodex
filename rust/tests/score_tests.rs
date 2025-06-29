@@ -4,6 +4,7 @@ use dietarycodex::scores::amed::AMedScorer;
 use dietarycodex::scores::dash::DashScorer;
 use dietarycodex::scores::hei::HeiScorer;
 use dietarycodex::scores::DietScore;
+use dietarycodex::scores::dii::DiiScorer;
 
 #[test]
 fn hei_score_not_nan() {
@@ -64,4 +65,27 @@ fn evaluate_returns_dash() {
     };
     let scores = evaluate_all_scores(&nv);
     assert!(scores.contains_key("DASH"));
+}
+
+#[test]
+fn evaluate_returns_dii() {
+    let nv = NutritionVector {
+        saturated_fat_g: 8.0,
+        sugar_g: 50.0,
+        fiber_g: 20.0,
+        vitamin_c_mg: 60.0,
+        vitamin_a_mcg: 700.0,
+        vitamin_e_mg: 10.0,
+        omega3_g: 1.0,
+        zinc_mg: 12.0,
+        selenium_mcg: 55.0,
+        magnesium_mg: 300.0,
+        trans_fat_g: 0.5,
+        ..Default::default()
+    };
+    let scores = evaluate_all_scores(&nv);
+    assert!(scores.contains_key("DII"));
+    let scorer = DiiScorer;
+    let val = scorer.score(&nv);
+    assert!(!val.is_nan());
 }

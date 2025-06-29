@@ -1,5 +1,5 @@
 use crate::nutrition_vector::NutritionVector;
-use crate::scores::{all_scorers, DietScore};
+use crate::scores::all_scorers;
 use std::collections::HashMap;
 
 pub fn evaluate_all_scores(nv: &NutritionVector) -> HashMap<String, f64> {

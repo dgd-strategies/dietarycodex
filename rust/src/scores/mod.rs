@@ -12,6 +12,7 @@ pub fn capped_score(value: f64, max: f64) -> f64 {
 pub mod ahei;
 pub mod amed;
 pub mod dash;
+pub mod dii;
 pub mod hei;
 pub mod registry;
 
