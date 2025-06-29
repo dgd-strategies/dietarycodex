@@ -30,7 +30,7 @@ pub struct ScoreMeta {
 }
 
 pub fn all_score_metadata() -> Vec<ScoreMeta> {
-    vec![
+    let mut metas = vec![
         ScoreMeta {
             name: <crate::scores::ahei::Ahei as FieldDeps>::name(),
             required_fields: <crate::scores::ahei::Ahei as FieldDeps>::required_fields(),
@@ -67,5 +67,7 @@ pub fn all_score_metadata() -> Vec<ScoreMeta> {
             name: <crate::scores::mind::MindScorer as FieldDeps>::name(),
             required_fields: <crate::scores::mind::MindScorer as FieldDeps>::required_fields(),
         },
-    ]
+    ];
+    metas.sort_by(|a, b| a.name.cmp(b.name));
+    metas
 }

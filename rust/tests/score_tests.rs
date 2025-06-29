@@ -241,3 +241,21 @@ fn metadata_fields_are_valid() {
         }
     }
 }
+
+#[test]
+fn metadata_sorted() {
+    use dietarycodex::scores::registry::all_score_metadata;
+
+    let metas = all_score_metadata();
+    let mut names: Vec<&str> = metas.iter().map(|m| m.name).collect();
+    let mut sorted_names = names.clone();
+    sorted_names.sort();
+    assert_eq!(names, sorted_names, "score metadata not sorted by name");
+
+    for meta in metas {
+        let mut fields: Vec<&str> = meta.required_fields.iter().copied().collect();
+        let mut sorted_fields = fields.clone();
+        sorted_fields.sort();
+        assert_eq!(fields, sorted_fields, "fields for {} not sorted", meta.name);
+    }
+}

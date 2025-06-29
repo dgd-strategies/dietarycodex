@@ -10,13 +10,13 @@ impl FieldDeps for Acs2020Scorer {
 
     fn required_fields() -> &'static [&'static str] {
         &[
-            "vegetables_g",
-            "total_fruits_g",
+            "alcohol_g",
             "legumes_g",
-            "whole_grains_g",
             "red_meat_g",
             "sugar_g",
-            "alcohol_g",
+            "total_fruits_g",
+            "vegetables_g",
+            "whole_grains_g",
         ]
     }
 }

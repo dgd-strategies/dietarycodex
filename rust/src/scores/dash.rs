@@ -10,12 +10,12 @@ impl FieldDeps for DashScorer {
 
     fn required_fields() -> &'static [&'static str] {
         &[
+            "energy_kcal",
+            "saturated_fat_g",
+            "sodium_mg",
             "total_fruits_g",
             "vegetables_g",
             "whole_grains_g",
-            "sodium_mg",
-            "saturated_fat_g",
-            "energy_kcal",
         ]
     }
 }

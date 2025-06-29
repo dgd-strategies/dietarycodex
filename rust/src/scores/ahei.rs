@@ -9,7 +9,7 @@ impl FieldDeps for Ahei {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &["fiber_g", "fat_g", "saturated_fat_g"]
+        &["fat_g", "fiber_g", "saturated_fat_g"]
     }
 }
 

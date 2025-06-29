@@ -10,17 +10,17 @@ impl FieldDeps for DiiScorer {
 
     fn required_fields() -> &'static [&'static str] {
         &[
-            "saturated_fat_g",
-            "trans_fat_g",
-            "sugar_g",
             "fiber_g",
-            "vitamin_c_mg",
-            "vitamin_a_mcg",
-            "vitamin_e_mg",
-            "omega3_g",
-            "zinc_mg",
-            "selenium_mcg",
             "magnesium_mg",
+            "omega3_g",
+            "saturated_fat_g",
+            "selenium_mcg",
+            "sugar_g",
+            "trans_fat_g",
+            "vitamin_a_mcg",
+            "vitamin_c_mg",
+            "vitamin_e_mg",
+            "zinc_mg",
         ]
     }
 }
