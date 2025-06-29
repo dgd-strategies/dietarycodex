@@ -4,7 +4,7 @@ use crate::nutrition_vector::NutritionVector;
 pub struct DiiScorer;
 
 impl DietScore for DiiScorer {
-    fn score(&self, nv: &NutritionVector) -> f64 {
+    fn evaluate(&self, nv: &NutritionVector) -> f64 {
         // Placeholder weighted scoring reflecting inflammatory potential.
         let mut score = 0.0;
         // pro-inflammatory components

@@ -4,7 +4,7 @@ use super::DietScore;
 pub struct Ahei;
 
 impl DietScore for Ahei {
-    fn score(&self, nv: &NutritionVector) -> f64 {
+    fn evaluate(&self, nv: &NutritionVector) -> f64 {
         // Simplified scoring: ratio of healthy components
         let mut score = 0.0;
         if nv.fiber_g >= 25.0 {

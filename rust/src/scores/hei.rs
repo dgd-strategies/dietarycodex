@@ -4,7 +4,7 @@ use crate::nutrition_vector::NutritionVector;
 pub struct HeiScorer;
 
 impl DietScore for HeiScorer {
-    fn score(&self, nv: &NutritionVector) -> f64 {
+    fn evaluate(&self, nv: &NutritionVector) -> f64 {
         let mut score = 0.0;
         // fruit component: 0-10 points with 200g threshold
         score += (nv.total_fruits_g / 200.0 * 10.0).clamp(0.0, 10.0);

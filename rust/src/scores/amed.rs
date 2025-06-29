@@ -4,7 +4,7 @@ use crate::nutrition_vector::NutritionVector;
 pub struct AMedScorer;
 
 impl DietScore for AMedScorer {
-    fn score(&self, nv: &NutritionVector) -> f64 {
+    fn evaluate(&self, nv: &NutritionVector) -> f64 {
         let veg = capped_score(nv.vegetables_g, 300.0);
         let legumes = capped_score(nv.legumes_g, 100.0);
         let fruit = capped_score(nv.total_fruits_g, 200.0);
