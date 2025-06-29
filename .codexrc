@@ -9,5 +9,7 @@ tests:
 sample_data:
   - data/template.csv
 docs:
-  - docs/index.md
+  - docs/README.md
   - docs/okrs.md
+  - docs/scoring_algorithms.md
+  - docs/serving_sizes.md

@@ -4,6 +4,8 @@
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
+For a complete documentation index, see [docs/README.md](docs/README.md).
+
 ---
 
 ## Using the Web App
