@@ -23,6 +23,12 @@ pub struct NutritionVector {
     pub fish_g: f64,
     pub red_meat_g: f64,
     pub mono_fat_g: f64,
+    pub berries_g: f64,
+    pub cheese_g: f64,
+    pub butter_g: f64,
+    pub poultry_g: f64,
+    pub fast_food_g: f64,
+    pub nuts_g: f64,
     // Additional nutrients for indices like DII
     pub omega3_g: f64,
     pub vitamin_a_mcg: f64,

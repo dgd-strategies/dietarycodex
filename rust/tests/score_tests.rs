@@ -2,10 +2,12 @@ use dietarycodex::eval::evaluate_all_scores;
 use dietarycodex::nutrition_vector::NutritionVector;
 use dietarycodex::scores::amed::AMedScorer;
 use dietarycodex::scores::dash::DashScorer;
+use dietarycodex::scores::dashi::DashiScorer;
 use dietarycodex::scores::hei::HeiScorer;
 use dietarycodex::scores::DietScore;
 use dietarycodex::scores::dii::DiiScorer;
 use dietarycodex::scores::acs2020::Acs2020Scorer;
+use dietarycodex::scores::mind::MindScorer;
 use dietarycodex::scores::phdi::PhdiScorer;
 
 #[test]
@@ -33,6 +35,21 @@ fn dash_score_not_nan() {
         ..Default::default()
     };
     let scorer = DashScorer;
+    let val = scorer.score(&nv);
+    assert!(!val.is_nan());
+}
+
+#[test]
+fn dashi_score_not_nan() {
+    let nv = NutritionVector {
+        vegetables_g: 250.0,
+        total_fruits_g: 250.0,
+        whole_grains_g: 80.0,
+        calcium_mg: 900.0,
+        sodium_mg: 1600.0,
+        ..Default::default()
+    };
+    let scorer = DashiScorer;
     let val = scorer.score(&nv);
     assert!(!val.is_nan());
 }
@@ -67,6 +84,13 @@ fn evaluate_returns_dash() {
     };
     let scores = evaluate_all_scores(&nv);
     assert!(scores.contains_key("DASH"));
+}
+
+#[test]
+fn evaluate_returns_dashi() {
+    let nv = NutritionVector::default();
+    let scores = evaluate_all_scores(&nv);
+    assert!(scores.contains_key("DASHI"));
 }
 
 #[test]
@@ -141,4 +165,33 @@ fn evaluate_returns_phdi() {
     let nv = NutritionVector::default();
     let scores = evaluate_all_scores(&nv);
     assert!(scores.contains_key("PHDI"));
+}
+
+#[test]
+fn mind_score_not_nan() {
+    let nv = NutritionVector {
+        vegetables_g: 150.0,
+        berries_g: 40.0,
+        nuts_g: 20.0,
+        whole_grains_g: 60.0,
+        fish_g: 50.0,
+        poultry_g: 80.0,
+        mono_fat_g: 25.0,
+        red_meat_g: 20.0,
+        sugar_g: 15.0,
+        cheese_g: 10.0,
+        butter_g: 5.0,
+        fast_food_g: 0.0,
+        ..Default::default()
+    };
+    let scorer = MindScorer;
+    let val = scorer.score(&nv);
+    assert!(!val.is_nan());
+}
+
+#[test]
+fn evaluate_returns_mind() {
+    let nv = NutritionVector::default();
+    let scores = evaluate_all_scores(&nv);
+    assert!(scores.contains_key("MIND"));
 }
