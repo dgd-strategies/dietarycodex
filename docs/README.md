@@ -107,6 +107,15 @@ Refer to our validation rules and scientific methods: [validation.md](validation
 
 Download the master template for user uploads: [template.csv](../data/template.csv)
 
+### Column Mapping
+
+When your CSV headers don't exactly match the expected names, the web app now
+prompts you to map them. After an initial upload, any unmatched required columns
+are listed with a dropdown of your file's headers. Select the appropriate source
+column for each requirement and click **Save Mapping**. The choices are stored in
+your browser's local storage so future uploads automatically rename columns
+before validation.
+
 ---
 
 ## Development Workflow
