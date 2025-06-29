@@ -35,3 +35,11 @@ repos:
       - id: djlint
         args: ['--check']
         files: '\.html$'
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest -q
+        language: system
+        pass_filenames: false

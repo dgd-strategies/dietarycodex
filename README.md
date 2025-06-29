@@ -72,7 +72,7 @@ The optional `setup.sh` script only installs dependencies for tests and the Pyth
   pytest tests/ --cov
   ```
 
-- **Pre-commit** hooks will run on `git commit` (black, isort, flake8).
+- **Pre-commit** hooks will run on `git commit` (black, isort, flake8, pytest).
 
 ---
 
