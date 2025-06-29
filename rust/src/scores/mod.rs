@@ -1,4 +1,4 @@
-//! Available scores: AHEI, HEI, DASH, DASHI, aMED, DII, ACS2020, PHDI, MIND
+//! Available scorers: AHEI, HEI, DASH, aMED, DII, ACS2020, PHDI, DASHI, MIND
 
 use crate::nutrition_vector::NutritionVector;
 
@@ -23,4 +23,5 @@ pub mod phdi;
 pub mod mind;
 pub mod registry;
 
+/// Available scorers: AHEI, HEI, DASH, aMED, DII, ACS2020, PHDI, DASHI, MIND
 pub use registry::all_scorers;
