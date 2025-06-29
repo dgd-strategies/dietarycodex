@@ -13,6 +13,7 @@ from compute.hei import (
 )
 from compute.medi import MEDI_COMPONENT_KEYS, calculate_medi
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
+from compute.phdi import PHDI_COMPONENT_KEYS, calculate_phdi
 
 
 def make_dummy_df(cols, n=10, fill_value=1.0):
@@ -91,3 +92,12 @@ def test_medi_output_length():
     result = calculate_medi(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 4
+
+
+def test_phdi_output_length():
+    cols = PHDI_COMPONENT_KEYS
+    df = make_dummy_df(cols, n=3)
+    df["gender"] = 1
+    result = calculate_phdi(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 3

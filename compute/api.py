@@ -22,6 +22,7 @@ from compute.hei import (
 )
 from compute.medi import MEDI_COMPONENT_KEYS, calculate_medi
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
+from compute.phdi import PHDI_COMPONENT_KEYS, calculate_phdi
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,6 +47,7 @@ REQUIRED_COLS = (
     + DASH_COMPONENT_KEYS
     + AHEI_COMPONENT_KEYS
     + MEDI_COMPONENT_KEYS
+    + PHDI_COMPONENT_KEYS
 )
 
 app = FastAPI(
@@ -133,6 +135,9 @@ async def score_diet_indices(
     if "MEDI" in indices:
         logger.info("Computing MEDI...")
         results["MEDI"] = calculate_medi(df)
+    if "PHDI" in indices:
+        logger.info("Computing PHDI...")
+        results["PHDI"] = calculate_phdi(df)
 
     # Attach results to DataFrame
     for name, series in results.items():
