@@ -4,15 +4,18 @@ use dietarycodex::eval::{
 use dietarycodex::nutrition_vector::NutritionVector;
 use dietarycodex::scores::registry::all_score_metadata;
 use serde_json::to_string_pretty;
-use std::io::Write;
-use tabwriter::TabWriter;
 use std::env;
 use std::fs;
+use std::io::Write;
+use tabwriter::TabWriter;
 
 fn main() -> anyhow::Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        eprintln!("Usage: {} <fdc_json> [--allow-partial] [--verbose-partial] [--list-scores] [--json]", args[0]);
+        eprintln!(
+            "Usage: {} <fdc_json> [--allow-partial] [--verbose-partial] [--list-scores] [--json]",
+            args[0]
+        );
         std::process::exit(1);
     }
     let mut allow_partial = false;
@@ -51,7 +54,10 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
     if file.is_empty() {
-        eprintln!("Usage: {} <fdc_json> [--allow-partial] [--verbose-partial] [--list-scores] [--json]", args[0]);
+        eprintln!(
+            "Usage: {} <fdc_json> [--allow-partial] [--verbose-partial] [--list-scores] [--json]",
+            args[0]
+        );
         std::process::exit(1);
     }
     let data = fs::read_to_string(&file)?;
@@ -59,9 +65,21 @@ fn main() -> anyhow::Result<()> {
     if allow_partial {
         if verbose_partial {
             let result = evaluate_allow_partial(&nv);
-            for name in &result.ordered_names {
-                if let Some(ScorerStatus::Skipped { reason }) = result.scores.get(name) {
-                    eprintln!("Skipped {}: {}", name, reason);
+            let mut skipped: Vec<(String, String)> = result
+                .ordered_names
+                .iter()
+                .filter_map(|name| {
+                    result.scores.get(name).and_then(|s| match s {
+                        ScorerStatus::Skipped { reason } => Some((name.clone(), reason.clone())),
+                        _ => None,
+                    })
+                })
+                .collect();
+            if !skipped.is_empty() {
+                skipped.sort_by(|a, b| a.0.cmp(&b.0));
+                eprintln!("Skipped scores:");
+                for (name, reason) in &skipped {
+                    eprintln!("  {}: {}", name, reason);
                 }
             }
             let json = serde_json::to_string_pretty(&result)?;

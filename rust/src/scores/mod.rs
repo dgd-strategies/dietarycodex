@@ -3,7 +3,10 @@
 //! Partial evaluation is supported through [`evaluate_allow_partial`](crate::eval::evaluate_allow_partial).
 //! Each scorer returns a [`ScorerStatus`](crate::eval::ScorerStatus) indicating
 //! whether the score was computed or skipped. Skipped scores include a reason
-//! listing which input fields were missing.
+//! listing which input fields were missing. When running the CLI with
+//! `--allow-partial --verbose-partial`, skipped scores are grouped and printed
+//! in alphabetical order before the JSON result so missing fields are easy to
+//! spot.
 
 use crate::nutrition_vector::NutritionVector;
 

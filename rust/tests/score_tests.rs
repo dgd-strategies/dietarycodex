@@ -1,14 +1,17 @@
-use dietarycodex::eval::{evaluate_all_scores, evaluate_allow_partial, ScorerStatus};
+use dietarycodex::eval::{
+    evaluate_all_scores, evaluate_allow_partial, print_scores_as_json_allow_partial, ScorerStatus,
+};
 use dietarycodex::nutrition_vector::NutritionVector;
+use dietarycodex::scores::acs2020::Acs2020Scorer;
 use dietarycodex::scores::amed::AMedScorer;
 use dietarycodex::scores::dash::DashScorer;
 use dietarycodex::scores::dashi::DashiScorer;
-use dietarycodex::scores::hei::HeiScorer;
-use dietarycodex::scores::DietScore;
 use dietarycodex::scores::dii::DiiScorer;
-use dietarycodex::scores::acs2020::Acs2020Scorer;
+use dietarycodex::scores::hei::HeiScorer;
 use dietarycodex::scores::mind::MindScorer;
 use dietarycodex::scores::phdi::PhdiScorer;
+use dietarycodex::scores::DietScore;
+use serde_json;
 
 fn expected_names() -> Vec<String> {
     dietarycodex::register_scores!()
@@ -272,7 +275,12 @@ fn metadata_fields_are_valid() {
     let all_fields: HashSet<&str> = NutritionVector::all_field_names().iter().copied().collect();
     for meta in all_score_metadata() {
         for field in meta.required_fields {
-            assert!(all_fields.contains(field), "{} missing field {}", meta.name, field);
+            assert!(
+                all_fields.contains(field),
+                "{} missing field {}",
+                meta.name,
+                field
+            );
         }
     }
 }
@@ -293,4 +301,102 @@ fn metadata_sorted() {
         sorted_fields.sort();
         assert_eq!(fields, sorted_fields, "fields for {} not sorted", meta.name);
     }
+}
+
+fn all_fields_nv() -> NutritionVector {
+    NutritionVector {
+        energy_kcal: Some(2000.0),
+        fat_g: Some(70.0),
+        saturated_fat_g: Some(10.0),
+        carbs_g: Some(250.0),
+        fiber_g: Some(30.0),
+        sugar_g: Some(25.0),
+        protein_g: Some(50.0),
+        sodium_mg: Some(1500.0),
+        calcium_mg: Some(900.0),
+        iron_mg: Some(10.0),
+        vitamin_c_mg: Some(60.0),
+        total_fruits_g: Some(250.0),
+        vegetables_g: Some(250.0),
+        whole_grains_g: Some(90.0),
+        refined_grains_g: Some(90.0),
+        legumes_g: Some(100.0),
+        fish_g: Some(50.0),
+        red_meat_g: Some(30.0),
+        mono_fat_g: Some(30.0),
+        berries_g: Some(30.0),
+        cheese_g: Some(20.0),
+        butter_g: Some(5.0),
+        poultry_g: Some(50.0),
+        fast_food_g: Some(0.0),
+        nuts_g: Some(20.0),
+        omega3_g: Some(1.0),
+        vitamin_a_mcg: Some(800.0),
+        vitamin_e_mg: Some(10.0),
+        zinc_mg: Some(12.0),
+        selenium_mcg: Some(55.0),
+        magnesium_mg: Some(300.0),
+        trans_fat_g: Some(0.2),
+        alcohol_g: Some(5.0),
+    }
+}
+
+#[test]
+fn all_scores_skipped_when_no_input() {
+    let nv = NutritionVector::default();
+    let result = evaluate_allow_partial(&nv);
+    assert!(result
+        .scores
+        .values()
+        .all(|s| matches!(s, ScorerStatus::Skipped { .. })));
+}
+
+#[test]
+fn no_scores_skipped_when_all_fields_present() {
+    let nv = all_fields_nv();
+    let result = evaluate_allow_partial(&nv);
+    assert!(result
+        .scores
+        .values()
+        .all(|s| matches!(s, ScorerStatus::Complete(_))));
+}
+
+#[test]
+fn skipped_reason_fields_are_required() {
+    use dietarycodex::scores::registry::all_score_metadata;
+    use std::collections::HashMap;
+
+    let nv = NutritionVector::default();
+    let result = evaluate_allow_partial(&nv);
+    let meta_map: HashMap<&str, Vec<&str>> = all_score_metadata()
+        .into_iter()
+        .map(|m| (m.name, m.required_fields.to_vec()))
+        .collect();
+
+    for (name, status) in result.scores {
+        if let ScorerStatus::Skipped { reason } = status {
+            let fields: Vec<&str> = reason
+                .trim_start_matches("missing fields: ")
+                .split(',')
+                .map(|s| s.trim())
+                .collect();
+            let required = meta_map.get(name.as_str()).unwrap();
+            for f in fields {
+                assert!(
+                    required.contains(&f),
+                    "{} reported missing {} not in required fields",
+                    name,
+                    f
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn json_output_valid_with_skipped_scores() {
+    let nv = NutritionVector::default();
+    let json = print_scores_as_json_allow_partial(&nv);
+    let parsed: serde_json::Value = serde_json::from_str(&json).expect("invalid json");
+    assert!(parsed.get("scores").is_some());
 }
