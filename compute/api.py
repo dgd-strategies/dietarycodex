@@ -27,7 +27,12 @@ from compute.hei import (
     calculate_hei_2020,
     calculate_hei_toddlers_2020,
 )
-from compute.medi import MEDI_COMPONENT_KEYS, calculate_medi
+from compute.medi import (
+    MEDI_COMPONENT_KEYS,
+    MEDI_V2_COMPONENT_KEYS,
+    calculate_medi,
+    calculate_medi_v2,
+)
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
 from compute.phdi import PHDI_COMPONENT_KEYS, calculate_phdi
 
@@ -55,6 +60,7 @@ REQUIRED_COLS = (
     + AHEI_COMPONENT_KEYS
     + AHEIP_COMPONENT_KEYS
     + MEDI_COMPONENT_KEYS
+    + MEDI_V2_COMPONENT_KEYS
     + PHDI_COMPONENT_KEYS
     + ACS2020_V1_KEYS
     + ACS2020_V2_KEYS
@@ -148,6 +154,9 @@ async def score_diet_indices(
     if "MEDI" in indices:
         logger.info("Computing MEDI...")
         results["MEDI"] = calculate_medi(df)
+    if "MEDI_V2" in indices:
+        logger.info("Computing MEDI_V2...")
+        results["MEDI_V2"] = calculate_medi_v2(df)
     if "PHDI" in indices:
         logger.info("Computing PHDI...")
         results["PHDI"] = calculate_phdi(df)
