@@ -31,6 +31,9 @@ _PHDI_COMPONENTS = [
 # Expose for validation
 PHDI_COMPONENT_KEYS = [c["key"] for c in _PHDI_COMPONENTS] + ["gender"]
 
+# Input columns for the gram-based PHDI_V2 version include total energy
+PHDI_V2_COMPONENT_KEYS = PHDI_COMPONENT_KEYS + ["totalkcal_phdi"]
+
 
 def _score_healthy(
     series: pd.Series, min_val: float, max_val: float, max_score: float
@@ -80,3 +83,21 @@ def calculate_phdi(df: pd.DataFrame) -> pd.Series:
 
     total = scores.sum(axis=1)
     return total
+
+
+def calculate_phdi_v2(df: pd.DataFrame) -> pd.Series:
+    """Calculate PHDI using gram-based fat and sugar inputs."""
+    validate_dataframe(df, PHDI_V2_COMPONENT_KEYS)
+
+    df = df.copy()
+    df["added_fat_unsat_serv_phdi"] = (
+        df["added_fat_unsat_serv_phdi"] * 9 / df["totalkcal_phdi"] * 100
+    )
+    df["added_fat_sat_trans_serv_phdi"] = (
+        df["added_fat_sat_trans_serv_phdi"] * 9 / df["totalkcal_phdi"] * 100
+    )
+    df["added_sugar_serv_phdi"] = (
+        df["added_sugar_serv_phdi"] * 4 / df["totalkcal_phdi"] * 100
+    )
+
+    return calculate_phdi(df)

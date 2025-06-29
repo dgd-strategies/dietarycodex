@@ -36,7 +36,12 @@ from compute.medi import (
     calculate_medi_v2,
 )
 from compute.mind import MIND_COMPONENT_KEYS, calculate_mind
-from compute.phdi import PHDI_COMPONENT_KEYS, calculate_phdi
+from compute.phdi import (
+    PHDI_COMPONENT_KEYS,
+    PHDI_V2_COMPONENT_KEYS,
+    calculate_phdi,
+    calculate_phdi_v2,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -66,6 +71,7 @@ REQUIRED_COLS = (
     + MEDI_COMPONENT_KEYS
     + MEDI_V2_COMPONENT_KEYS
     + PHDI_COMPONENT_KEYS
+    + PHDI_V2_COMPONENT_KEYS
     + ACS2020_V1_KEYS
     + ACS2020_V2_KEYS
 )
@@ -170,6 +176,9 @@ async def score_diet_indices(
     if "PHDI" in indices:
         logger.info("Computing PHDI...")
         results["PHDI"] = calculate_phdi(df)
+    if "PHDI_V2" in indices:
+        logger.info("Computing PHDI_V2...")
+        results["PHDI_V2"] = calculate_phdi_v2(df)
     if "ACS2020_V1" in indices:
         logger.info("Computing ACS2020_V1...")
         results["ACS2020_V1"] = calculate_acs2020_v1(df)

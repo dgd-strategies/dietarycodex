@@ -22,4 +22,9 @@ from .medi import (  # noqa: F401
     calculate_medi,
     calculate_medi_v2,
 )
-from .phdi import PHDI_COMPONENT_KEYS, calculate_phdi  # noqa: F401
+from .phdi import (  # noqa: F401
+    PHDI_COMPONENT_KEYS,
+    PHDI_V2_COMPONENT_KEYS,
+    calculate_phdi,
+    calculate_phdi_v2,
+)
