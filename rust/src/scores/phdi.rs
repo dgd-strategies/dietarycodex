@@ -10,16 +10,16 @@ impl FieldDeps for PhdiScorer {
 
     fn required_fields() -> &'static [&'static str] {
         &[
-            "vegetables_g",
-            "legumes_g",
-            "whole_grains_g",
-            "fat_g",
-            "saturated_fat_g",
-            "trans_fat_g",
-            "red_meat_g",
-            "sugar_g",
-            "refined_grains_g",
             "energy_kcal",
+            "fat_g",
+            "legumes_g",
+            "red_meat_g",
+            "refined_grains_g",
+            "saturated_fat_g",
+            "sugar_g",
+            "trans_fat_g",
+            "vegetables_g",
+            "whole_grains_g",
         ]
     }
 }

@@ -9,7 +9,7 @@ impl FieldDeps for HeiScorer {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &["total_fruits_g", "whole_grains_g", "sodium_mg"]
+        &["sodium_mg", "total_fruits_g", "whole_grains_g"]
     }
 }
 

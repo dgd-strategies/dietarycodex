@@ -10,18 +10,18 @@ impl FieldDeps for MindScorer {
 
     fn required_fields() -> &'static [&'static str] {
         &[
-            "vegetables_g",
             "berries_g",
-            "nuts_g",
-            "whole_grains_g",
-            "fish_g",
-            "poultry_g",
-            "mono_fat_g",
-            "red_meat_g",
-            "fast_food_g",
-            "sugar_g",
-            "cheese_g",
             "butter_g",
+            "cheese_g",
+            "fast_food_g",
+            "fish_g",
+            "mono_fat_g",
+            "nuts_g",
+            "poultry_g",
+            "red_meat_g",
+            "sugar_g",
+            "vegetables_g",
+            "whole_grains_g",
         ]
     }
 }
