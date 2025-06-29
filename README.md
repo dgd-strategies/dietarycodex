@@ -11,6 +11,12 @@ This repository doubles as a high-quality corpus for exploring generative AI tec
 Just open [https://dgd-strategies.github.io/dietarycodex](https://dgd-strategies.github.io/dietarycodex) or `index.html` locally. The page works fully client side and registers a service worker providing a demo endpoint `/api/time`.
 
 The optional `setup.sh` script only installs dependencies for tests and the Python library.
+If running commands manually, install the requirements and pre-commit hooks first:
+
+```bash
+pip install -r requirements.txt
+pre-commit install
+```
 
 ---
 
@@ -68,17 +74,21 @@ The optional `setup.sh` script only installs dependencies for tests and the Pyth
 
 - **Testing**:
 
-  ```bash
-  pytest tests/ --cov
-  ```
+```bash
+pytest tests/ --cov
+```
 
-- **Pre-commit** hooks will run on `git commit` (black, isort, flake8, pytest).
+- **Pre-commit** hooks run automatically on `git commit` and include the
+  complete pytest suite. You can trigger them manually as well:
+  ```bash
+  pre-commit run --all-files
+  ```
 
 ---
 
 ## Validation
 
-Detailed scoring methods, formulas, and reference citations are in [docs/validation\_detailed.md](docs/validation_detailed.md).
+Detailed scoring methods, formulas, and reference citations are in [docs/validation_detailed.md](docs/validation_detailed.md). Reference CSV files used for regression tests live under `data/` and are executed automatically whenever the pre-commit hook runs.
 
 ---
 
@@ -93,12 +103,9 @@ While the browser UI relies on Python via Pyodide, the scoring routines are bein
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on branching, testing, and PRs.
 
 ## Roadmap & OKRs
-These lightweight objectives keep development focused while ensuring the tool remains fully client side:
-
 - **Objective 1** – reliable scoring from a default template and drag‑and‑drop uploads across modern browsers.
 - **Objective 2** – clear documentation; methods live in [`validation.md`](validation.md) and [`docs/validation_detailed.md`](docs/validation_detailed.md).
 - **Objective 3** – code quality with pre‑commit and pytest enforced in CI.
-
 ---
 
 **License:** MIT

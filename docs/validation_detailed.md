@@ -99,5 +99,8 @@ It is intended as a reference for researchers and future contributors who requir
 2. **Integration tests** run the FastAPI endpoints against known datasets.
 3. **Statistical checks** compare summary statistics to those reported in the literature.
 4. **Visual diagnostics** (histograms and boxplots) ensure each score follows the expected shape.
+5. **Pre-commit**: Running `pre-commit run --all-files` executes these tests
+   automatically before code is committed. Ensure all requirements are installed
+   first with `pip install -r requirements.txt`.
 
 _This guide will evolve as additional datasets and language ports become available._
