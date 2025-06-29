@@ -1,7 +1,13 @@
 use wasm_bindgen::prelude::*;
 use serde::{Deserialize, Serialize};
+use console_error_panic_hook;
 use crate::nutrition_vector::NutritionVector;
 use crate::eval::{evaluate_allow_partial, ScorerStatus};
+
+#[wasm_bindgen(start)]
+pub fn init() {
+    console_error_panic_hook::set_once();
+}
 
 #[wasm_bindgen]
 pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
