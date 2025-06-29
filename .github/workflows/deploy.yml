@@ -28,12 +28,12 @@ jobs:
         run: cargo install wasm-pack
 
       - name: Build with wasm-pack
-        run: wasm-pack build --target web --release
+        run: cd rust && wasm-pack build --target web --release
 
       - name: Copy files to dist/
         run: |
           mkdir -p dist/pkg
-          cp -r pkg/* dist/pkg/
+          cp -r rust/pkg/* dist/pkg/
           cp static/index.html dist/
 
       - name: Upload artifact
