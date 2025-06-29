@@ -16,4 +16,3 @@ def test_dii_matches_publication_validation():
     cols = [p["name"] for p in get_dii_parameters()]
     result = calculate_dii(df[cols])
     assert pytest.approx(result.tolist(), rel=1e-3, abs=1e-3) == df["DII_ALL"].tolist()
-
