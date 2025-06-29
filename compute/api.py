@@ -18,6 +18,7 @@ from compute.acs2020 import (
     calculate_acs2020_v2,
 )
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
+from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
 from compute.hei import (
@@ -52,6 +53,7 @@ REQUIRED_COLS = (
     + MIND_COMPONENT_KEYS
     + DASH_COMPONENT_KEYS
     + AHEI_COMPONENT_KEYS
+    + AHEIP_COMPONENT_KEYS
     + MEDI_COMPONENT_KEYS
     + PHDI_COMPONENT_KEYS
     + ACS2020_V1_KEYS
@@ -140,6 +142,9 @@ async def score_diet_indices(
     if "AHEI" in indices:
         logger.info("Computing AHEI...")
         results["AHEI"] = calculate_ahei(df)
+    if "AHEIP" in indices:
+        logger.info("Computing AHEIP...")
+        results["AHEIP"] = calculate_aheip(df)
     if "MEDI" in indices:
         logger.info("Computing MEDI...")
         results["MEDI"] = calculate_medi(df)

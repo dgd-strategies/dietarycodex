@@ -7,6 +7,7 @@ from .acs2020 import (  # noqa: F401
     calculate_acs2020_v2,
 )
 from .ahei import AHEI_COMPONENT_KEYS, calculate_ahei  # noqa: F401
+from .aheip import AHEIP_COMPONENT_KEYS, calculate_aheip  # noqa: F401
 from .hei import (  # noqa: F401
     HEI_COMPONENT_KEYS,
     calculate_hei_2015,

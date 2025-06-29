@@ -9,6 +9,7 @@ from compute.acs2020 import (
     calculate_acs2020_v2,
 )
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
+from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
 from compute.hei import (
@@ -90,6 +91,14 @@ def test_ahei_output_length():
     result = calculate_ahei(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 6
+
+
+def test_aheip_output_length():
+    cols = AHEIP_COMPONENT_KEYS
+    df = make_dummy_df(cols, n=5)
+    result = calculate_aheip(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 5
 
 
 def test_medi_output_length():
