@@ -8,7 +8,7 @@
   },
   {
     "name": "Vitamin B12",
-    "unit": "mg",
+    "unit": "μg",
     "mean": 5.15,
     "sd": 2.7,
     "effect": 0.106
@@ -22,7 +22,7 @@
   },
   {
     "name": "Beta-carotene",
-    "unit": "mg",
+    "unit": "μg",
     "mean": 3718,
     "sd": 1720,
     "effect": -0.584
@@ -78,7 +78,7 @@
   },
   {
     "name": "Folic acid",
-    "unit": "mg",
+    "unit": "μg",
     "mean": 273.0,
     "sd": 70.7,
     "effect": -0.19
@@ -183,7 +183,7 @@
   },
   {
     "name": "Selenium",
-    "unit": "mg",
+    "unit": "μg",
     "mean": 67.0,
     "sd": 25.1,
     "effect": -0.191
@@ -225,7 +225,7 @@
   },
   {
     "name": "Vitamin D",
-    "unit": "mg",
+    "unit": "μg",
     "mean": 6.26,
     "sd": 2.21,
     "effect": -0.446
