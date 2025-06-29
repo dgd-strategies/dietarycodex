@@ -1,6 +1,6 @@
 # Dietary Index Web Calculator
 
-**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, DASH, AHEI, MEDI, PHDI, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
+**A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, DASH, DASHI, AHEI, AMED, MEDI, PHDI, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
