@@ -64,3 +64,32 @@ pub fn print_scores_as_json_allow_partial(nv: &NutritionVector) -> String {
     let result = evaluate_allow_partial(nv);
     serde_json::to_string_pretty(&result).unwrap_or_else(|_| "{}".to_string())
 }
+
+/// Collect skipped scores and their reasons sorted by name.
+pub fn skipped_scores(result: &ScoreResult) -> Vec<(String, String)> {
+    let mut skipped: Vec<(String, String)> = result
+        .ordered_names
+        .iter()
+        .filter_map(|name| {
+            result.scores.get(name).and_then(|s| match s {
+                ScorerStatus::Skipped { reason } => Some((name.clone(), reason.clone())),
+                _ => None,
+            })
+        })
+        .collect();
+    skipped.sort_by(|a, b| a.0.cmp(&b.0));
+    skipped
+}
+
+/// Format skipped scores for human-readable output.
+pub fn format_skipped_scores(result: &ScoreResult) -> Option<String> {
+    let skipped = skipped_scores(result);
+    if skipped.is_empty() {
+        return None;
+    }
+    let mut out = String::from("Skipped scores:\n");
+    for (name, reason) in skipped {
+        out.push_str(&format!("  {}: {}\n", name, reason));
+    }
+    Some(out)
+}

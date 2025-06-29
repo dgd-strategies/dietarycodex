@@ -7,6 +7,8 @@
 //! `--allow-partial --verbose-partial`, skipped scores are grouped and printed
 //! in alphabetical order before the JSON result so missing fields are easy to
 //! spot.
+//! Helper functions like [`format_skipped_scores`](crate::eval::format_skipped_scores)
+//! can be used to present this information outside of the CLI.
 
 use crate::nutrition_vector::NutritionVector;
 
