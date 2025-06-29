@@ -1,7 +1,30 @@
-use super::{capped_score, DietScore};
+use super::{capped_score, DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct MindScorer;
+
+impl FieldDeps for MindScorer {
+    fn name() -> &'static str {
+        "MIND"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &[
+            "vegetables_g",
+            "berries_g",
+            "nuts_g",
+            "whole_grains_g",
+            "fish_g",
+            "poultry_g",
+            "mono_fat_g",
+            "red_meat_g",
+            "fast_food_g",
+            "sugar_g",
+            "cheese_g",
+            "butter_g",
+        ]
+    }
+}
 
 impl DietScore for MindScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -34,23 +57,10 @@ impl DietScore for MindScorer {
     }
 
     fn name(&self) -> &'static str {
-        "MIND"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &[
-            "vegetables_g",
-            "berries_g",
-            "nuts_g",
-            "whole_grains_g",
-            "fish_g",
-            "poultry_g",
-            "mono_fat_g",
-            "red_meat_g",
-            "fast_food_g",
-            "sugar_g",
-            "cheese_g",
-            "butter_g",
-        ]
+        <Self as FieldDeps>::required_fields()
     }
 }

@@ -1,7 +1,29 @@
-use super::DietScore;
+use super::{DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct DiiScorer;
+
+impl FieldDeps for DiiScorer {
+    fn name() -> &'static str {
+        "DII"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &[
+            "saturated_fat_g",
+            "trans_fat_g",
+            "sugar_g",
+            "fiber_g",
+            "vitamin_c_mg",
+            "vitamin_a_mcg",
+            "vitamin_e_mg",
+            "omega3_g",
+            "zinc_mg",
+            "selenium_mcg",
+            "magnesium_mg",
+        ]
+    }
+}
 
 impl DietScore for DiiScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -24,22 +46,10 @@ impl DietScore for DiiScorer {
     }
 
     fn name(&self) -> &'static str {
-        "DII"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &[
-            "saturated_fat_g",
-            "trans_fat_g",
-            "sugar_g",
-            "fiber_g",
-            "vitamin_c_mg",
-            "vitamin_a_mcg",
-            "vitamin_e_mg",
-            "omega3_g",
-            "zinc_mg",
-            "selenium_mcg",
-            "magnesium_mg",
-        ]
+        <Self as FieldDeps>::required_fields()
     }
 }

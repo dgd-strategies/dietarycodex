@@ -1,7 +1,28 @@
-use super::{capped_score, DietScore};
+use super::{capped_score, DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct PhdiScorer;
+
+impl FieldDeps for PhdiScorer {
+    fn name() -> &'static str {
+        "PHDI"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &[
+            "vegetables_g",
+            "legumes_g",
+            "whole_grains_g",
+            "fat_g",
+            "saturated_fat_g",
+            "trans_fat_g",
+            "red_meat_g",
+            "sugar_g",
+            "refined_grains_g",
+            "energy_kcal",
+        ]
+    }
+}
 
 impl DietScore for PhdiScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -27,21 +48,10 @@ impl DietScore for PhdiScorer {
     }
 
     fn name(&self) -> &'static str {
-        "PHDI"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &[
-            "vegetables_g",
-            "legumes_g",
-            "whole_grains_g",
-            "fat_g",
-            "saturated_fat_g",
-            "trans_fat_g",
-            "red_meat_g",
-            "sugar_g",
-            "refined_grains_g",
-            "energy_kcal",
-        ]
+        <Self as FieldDeps>::required_fields()
     }
 }

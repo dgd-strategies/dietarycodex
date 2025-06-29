@@ -1,7 +1,25 @@
-use super::{capped_score, DietScore};
+use super::{capped_score, DietScore, FieldDeps};
 use crate::nutrition_vector::NutritionVector;
 
 pub struct Acs2020Scorer;
+
+impl FieldDeps for Acs2020Scorer {
+    fn name() -> &'static str {
+        "ACS2020"
+    }
+
+    fn required_fields() -> &'static [&'static str] {
+        &[
+            "vegetables_g",
+            "total_fruits_g",
+            "legumes_g",
+            "whole_grains_g",
+            "red_meat_g",
+            "sugar_g",
+            "alcohol_g",
+        ]
+    }
+}
 
 impl DietScore for Acs2020Scorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
@@ -16,18 +34,10 @@ impl DietScore for Acs2020Scorer {
     }
 
     fn name(&self) -> &'static str {
-        "ACS2020"
+        <Self as FieldDeps>::name()
     }
 
     fn required_fields(&self) -> &'static [&'static str] {
-        &[
-            "vegetables_g",
-            "total_fruits_g",
-            "legumes_g",
-            "whole_grains_g",
-            "red_meat_g",
-            "sugar_g",
-            "alcohol_g",
-        ]
+        <Self as FieldDeps>::required_fields()
     }
 }
