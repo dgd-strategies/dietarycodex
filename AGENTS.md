@@ -5,11 +5,13 @@ This file provides guidance and context to the AI Codex agent when contributing 
 
 ## Project Overview
 DietaryCodex is a browser-first tool for computing multiple diet-quality indices
-(DII, MIND, HEI‑2015, DASH). The GitHub Pages site runs the Python scoring
-modules through **Pyodide**, so users can upload a CSV and get results entirely
-client side. The same modules under `compute/` double as a Python library for
-offline or programmatic use. A tiny FastAPI app is included solely for local
-tests and development, but the project aims to avoid any long‑running server in
+(DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2). The initial version runs the Python scoring modules
+through **Pyodide** so users can upload a CSV and get results entirely client
+side. A Rust port exists under `rust/` and is intended for a WebAssembly
+frontend that will eventually replace Pyodide once feature parity is reached.
+The same modules under `compute/` double as a Python library for offline or
+programmatic use. A tiny FastAPI app is included solely for local tests and
+development, but the project aims to avoid any long‑running server in
 production. Pre-commit checks (`black`, `isort`, `flake8`) and pytest provide
 quality assurance.
 
@@ -68,23 +70,9 @@ When the AI agent runs, reference this file to:
 - Follow the development workflow and commands
 - Verify API endpoint signatures in `compute/api.py`
 
-## Current OKRs
-- Keep scoring fully client side using Pyodide.
-- Ship a default CSV template that loads automatically.
-- Document calculations and validation steps clearly.
-- Enforce code quality via pre-commit and pytest in CI.
-- Maintain reference validation datasets under `data/` with tests that
-  automatically run via the pre-commit hook.
+## Current OKR
+Deliver a web page that runs entirely client side. Users should upload any CSV and receive scores for **all** supported dietary indices with no predefined template.
 
 ## UI Standard
 - Keep note of "AGENT_STYLE.md" particularly built for OpenAI Codex
 - This file keeps track and organizes the owner's central OKRs required in styling
-
-## Multi-language Library
-DietaryCodex aims to provide equivalent scoring modules in multiple languages.
-The Python implementation is the source of truth, but R, Julia, JavaScript/TypeScript,
-Go, Rust, Java/Kotlin, C#\F#, C++, Scala, Ruby/Lua, and Haskell/OCaml ports are
-expected. **Whenever the logic or signature of a scoring function changes in one
-language, update all other language implementations to match.** This keeps the
-API consistent so users get identical results no matter which language they run.
-See [docs/multi_language.md](docs/multi_language.md) for coordination details.
