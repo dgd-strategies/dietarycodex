@@ -1,3 +1,5 @@
+//! Available scores: AHEI, HEI, DASH, DASHI, aMED, DII, ACS2020, PHDI, MIND
+
 use crate::nutrition_vector::NutritionVector;
 
 pub trait DietScore {
@@ -7,6 +9,10 @@ pub trait DietScore {
 
 pub fn capped_score(value: f64, max: f64) -> f64 {
     (value / max * 10.0).clamp(0.0, 10.0)
+}
+
+pub fn format_score_name<T: DietScore>(scorer: &T) -> String {
+    scorer.name().to_string()
 }
 
 pub mod ahei;

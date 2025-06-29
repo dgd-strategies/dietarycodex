@@ -10,6 +10,10 @@ use dietarycodex::scores::acs2020::Acs2020Scorer;
 use dietarycodex::scores::mind::MindScorer;
 use dietarycodex::scores::phdi::PhdiScorer;
 
+const EXPECTED_NAMES: &[&str] = &[
+    "AHEI", "HEI", "DASH", "DASHI", "aMED", "DII", "PHDI", "ACS2020", "MIND",
+];
+
 #[test]
 fn hei_score_not_nan() {
     let nv = NutritionVector {
@@ -83,14 +87,14 @@ fn evaluate_returns_dash() {
         ..Default::default()
     };
     let scores = evaluate_all_scores(&nv);
-    assert!(scores.contains_key("DASH"));
+    assert!(scores.scores.contains_key("DASH"));
 }
 
 #[test]
 fn evaluate_returns_dashi() {
     let nv = NutritionVector::default();
     let scores = evaluate_all_scores(&nv);
-    assert!(scores.contains_key("DASHI"));
+    assert!(scores.scores.contains_key("DASHI"));
 }
 
 #[test]
@@ -110,7 +114,7 @@ fn evaluate_returns_dii() {
         ..Default::default()
     };
     let scores = evaluate_all_scores(&nv);
-    assert!(scores.contains_key("DII"));
+    assert!(scores.scores.contains_key("DII"));
     let scorer = DiiScorer;
     let val = scorer.score(&nv);
     assert!(!val.is_nan());
@@ -137,7 +141,7 @@ fn acs2020_score_not_nan() {
 fn evaluate_returns_acs2020() {
     let nv = NutritionVector::default();
     let scores = evaluate_all_scores(&nv);
-    assert!(scores.contains_key("ACS2020"));
+    assert!(scores.scores.contains_key("ACS2020"));
 }
 
 #[test]
@@ -164,7 +168,7 @@ fn phdi_score_not_nan() {
 fn evaluate_returns_phdi() {
     let nv = NutritionVector::default();
     let scores = evaluate_all_scores(&nv);
-    assert!(scores.contains_key("PHDI"));
+    assert!(scores.scores.contains_key("PHDI"));
 }
 
 #[test]
@@ -193,5 +197,15 @@ fn mind_score_not_nan() {
 fn evaluate_returns_mind() {
     let nv = NutritionVector::default();
     let scores = evaluate_all_scores(&nv);
-    assert!(scores.contains_key("MIND"));
+    assert!(scores.scores.contains_key("MIND"));
+}
+
+#[test]
+fn default_evaluates_all_scores() {
+    let nv = NutritionVector::default();
+    let result = evaluate_all_scores(&nv);
+    for name in EXPECTED_NAMES {
+        assert!(result.scores.contains_key(*name), "missing {name}");
+    }
+    assert_eq!(result.ordered_names, EXPECTED_NAMES.iter().map(|s| s.to_string()).collect::<Vec<_>>());
 }

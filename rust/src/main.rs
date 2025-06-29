@@ -1,4 +1,4 @@
-use dietarycodex::eval::evaluate_all_scores;
+use dietarycodex::eval::print_scores_as_json;
 use dietarycodex::nutrition_vector::NutritionVector;
 use std::fs;
 use std::env;
@@ -11,7 +11,7 @@ fn main() -> anyhow::Result<()> {
     }
     let data = fs::read_to_string(&args[1])?;
     let nv = NutritionVector::from_fdc_json(&data)?;
-    let scores = evaluate_all_scores(&nv);
-    println!("{}", serde_json::to_string_pretty(&scores)?);
+    let json = print_scores_as_json(&nv);
+    println!("{}", json);
     Ok(())
 }
