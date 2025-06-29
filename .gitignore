@@ -9,3 +9,5 @@ __pycache__/
 data/detailed_dii_table_20240606.csv
 *.rda
 rust/target/
+/pkg
+!/docs
