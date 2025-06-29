@@ -189,6 +189,46 @@
       const lines = data.map(row => headers.map(h => row[h]).join(','));
       return [headers.join(','), ...lines].join('\n');
     }
+
+    function applyColumnMapping(data) {
+      const map = JSON.parse(localStorage.getItem('colMap') || '{}');
+      return data.map(row => {
+        const out = { ...row };
+        for (const [dst, src] of Object.entries(map)) {
+          if (src in row && !(dst in row)) {
+            out[dst] = row[src];
+          }
+        }
+        return out;
+      });
+    }
+
+    function showMappingUI(missing, headers) {
+      const saved = JSON.parse(localStorage.getItem('colMap') || '{}');
+      let html = '<h3>Map Columns</h3><form id="mapForm">';
+      missing.forEach(col => {
+        html += `<div class='mb-2'><label class='me-2'>${col}</label>`;
+        html += `<select class='form-select d-inline w-auto' data-key='${col}'>`;
+        html += "<option value=''>--</option>";
+        headers.forEach(h => {
+          const sel = saved[col] === h ? 'selected' : '';
+          html += `<option ${sel}>${h}</option>`;
+        });
+        html += '</select></div>';
+      });
+      html += "<button type='submit' class='btn btn-primary mt-2'>Save Mapping</button></form>";
+      resultBox.innerHTML = html;
+      document.getElementById('mapForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const selects = document.querySelectorAll('#mapForm select');
+        selects.forEach(sel => {
+          if (sel.value) saved[sel.dataset.key] = sel.value;
+        });
+        localStorage.setItem('colMap', JSON.stringify(saved));
+        resultBox.innerHTML = '';
+        computeFile(currentData, currentName);
+      });
+    }
     dropzone.addEventListener('click', () => {
       const input = document.createElement('input');
       input.type = 'file';
@@ -258,8 +298,10 @@
     async function computeFile(data, name) {
       loading.style.display = 'block';
       try {
+        const headers = Object.keys(data[0] || {});
+        const mapped = applyColumnMapping(data);
         const py = await loadPy();
-        const jsonData = JSON.stringify(data).replace(/'/g, "\\'");
+        const jsonData = JSON.stringify(mapped).replace(/'/g, "\\'");
         const pyRes = await py.runPythonAsync(`
 import pandas as pd, json
 from compute.dii import calculate_dii, DII_PARAMETER_KEYS
@@ -321,7 +363,8 @@ json.dumps(out)
         const missing = info.missing || {};
         if (computed.length === 0) {
           const allMissing = [...new Set(Object.values(missing).flat())];
-          resultBox.innerHTML = `<div class='alert alert-danger'>Missing required columns (${allMissing.length}): ${allMissing.join(', ')}</div>`;
+          loading.style.display = 'none';
+          showMappingUI(allMissing, headers);
           return;
         }
         let summary = '<h3>Summary Statistics:</h3><ul>';
