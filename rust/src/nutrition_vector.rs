@@ -31,6 +31,7 @@ pub struct NutritionVector {
     pub selenium_mcg: f64,
     pub magnesium_mg: f64,
     pub trans_fat_g: f64,
+    pub alcohol_g: f64,
 }
 
 impl NutritionVector {
@@ -74,6 +75,7 @@ impl NutritionVector {
             nv.selenium_mcg = *map.get("Selenium, Se").unwrap_or(&0.0);
             nv.magnesium_mg = map.get("Magnesium, Mg").unwrap_or(&0.0) * 1000.0;
             nv.trans_fat_g = *map.get("Fatty acids, total trans").unwrap_or(&0.0);
+            nv.alcohol_g = *map.get("Alcohol, ethyl").unwrap_or(&0.0);
         }
         Ok(nv)
     }

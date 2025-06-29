@@ -14,6 +14,7 @@ pub mod amed;
 pub mod dash;
 pub mod dii;
 pub mod hei;
+pub mod acs2020;
 pub mod registry;
 
 pub use registry::all_scorers;
