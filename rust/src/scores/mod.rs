@@ -6,3 +6,7 @@ pub trait DietScore {
 }
 
 pub mod ahei;
+pub mod hei;
+pub mod registry;
+
+pub use registry::all_scorers;
