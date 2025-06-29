@@ -6,14 +6,14 @@ import pandas as pd
 
 def load_parameters(filename: str) -> list:
     """
-    Load a JSON parameter file from the compute directory.
+    Load a JSON parameter file from the root data directory.
 
     Args:
         filename: Name of the JSON file (e.g., 'dii_parameters.json').
     Returns:
         A list of parameter definitions loaded from JSON.
     """
-    path = Path(__file__).parent / filename
+    path = Path(__file__).parent.parent / "data" / filename
     if not path.exists():
         raise FileNotFoundError(f"Parameters file not found: {path}")
     return json.loads(path.read_text())

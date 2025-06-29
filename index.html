@@ -77,7 +77,7 @@
                 <ol class="mb-0">
                     <li>
                         Prepare your CSV using template
-                        <a href="assets/template.csv">the provided template</a>
+                        <a href="data/template.csv">the provided template</a>
                         (download and replace the sample values with your own
                         nutrient data).
                     </li>
@@ -128,7 +128,8 @@
             await py.loadPackage(['pandas', 'numpy']);
             const files = ['base.py','dii.py','dash.py','mind.py','hei.py','dii_parameters.json'];
             for (const f of files) {
-              const resp = await fetch('./compute/' + f);
+              const prefix = f === 'dii_parameters.json' ? './data/' : './compute/';
+              const resp = await fetch(prefix + f);
               const text = await resp.text();
               const dir = '/tmp/compute';
               try { py.FS.stat(dir); } catch { py.FS.mkdirTree(dir); }
@@ -219,7 +220,7 @@
       pyStatus.textContent = 'Local compute ready';
       pyStatus.className = 'ms-auto small text-success';
       try {
-        const res = await fetch('./assets/template.csv');
+        const res = await fetch('./data/template.csv');
         if (!res.ok) throw new Error(`template load ${res.status}`);
         const text = await res.text();
         const file = new File([text], 'template.csv', { type: 'text/csv' });
