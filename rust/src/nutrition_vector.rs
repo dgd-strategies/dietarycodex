@@ -15,6 +15,9 @@ pub struct NutritionVector {
     pub calcium_mg: f64,
     pub iron_mg: f64,
     pub vitamin_c_mg: f64,
+    pub total_fruits_g: f64,
+    pub whole_grains_g: f64,
+    pub refined_grains_g: f64,
 }
 
 impl NutritionVector {
@@ -24,16 +27,20 @@ impl NutritionVector {
         if let Some(items) = v.get("foodNutrients").and_then(|v| v.as_array()) {
             let mut map: HashMap<&str, f64> = HashMap::new();
             for item in items {
-                if let (Some(nutrient), Some(amount)) =
-                    (item.get("nutrient"), item.get("amount"))
-                {
+                if let (Some(nutrient), Some(amount)) = (item.get("nutrient"), item.get("amount")) {
                     let name = nutrient.get("name").and_then(|n| n.as_str()).unwrap_or("");
-                    let unit = nutrient.get("unitName").and_then(|n| n.as_str()).unwrap_or("");
+                    let unit = nutrient
+                        .get("unitName")
+                        .and_then(|n| n.as_str())
+                        .unwrap_or("");
                     let amount = amount.as_f64().unwrap_or(0.0);
-                    map.insert(name, match unit.to_ascii_lowercase().as_str() {
-                        "mg" => amount / 1000.0,
-                        _ => amount,
-                    });
+                    map.insert(
+                        name,
+                        match unit.to_ascii_lowercase().as_str() {
+                            "mg" => amount / 1000.0,
+                            _ => amount,
+                        },
+                    );
                 }
             }
             nv.energy_kcal = *map.get("Energy").unwrap_or(&0.0);
