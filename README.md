@@ -1,5 +1,7 @@
 # Dietary Index Web Calculator
 
+[![GitHub Pages](https://img.shields.io/badge/view-online-blue)](https://dgd-strategies.github.io/dietarycodex/)
+
 **A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The original frontend relied on Pyodide to run Python scoring modules entirely client side. The current version ships a WebAssembly module compiled from Rust, eliminating the Pyodide dependency and speeding up calculations.
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
