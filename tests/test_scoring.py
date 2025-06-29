@@ -2,6 +2,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from compute.acs2020 import (
+    ACS2020_V1_KEYS,
+    ACS2020_V2_KEYS,
+    calculate_acs2020_v1,
+    calculate_acs2020_v2,
+)
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
@@ -101,3 +107,22 @@ def test_phdi_output_length():
     result = calculate_phdi(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 3
+
+
+def test_acs2020_v1_output_length():
+    cols = ACS2020_V1_KEYS
+    df = make_dummy_df(cols, n=2)
+    df["gender"] = 1
+    result = calculate_acs2020_v1(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 2
+
+
+def test_acs2020_v2_output_length():
+    cols = ACS2020_V2_KEYS
+    df = make_dummy_df(cols, n=2)
+    df["gender"] = 1
+    df["TOTALKCAL_ACS2020"] = 2000
+    result = calculate_acs2020_v2(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 2

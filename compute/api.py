@@ -11,6 +11,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
+from compute.acs2020 import (
+    ACS2020_V1_KEYS,
+    ACS2020_V2_KEYS,
+    calculate_acs2020_v1,
+    calculate_acs2020_v2,
+)
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dii import calculate_dii, get_dii_parameters
@@ -48,6 +54,8 @@ REQUIRED_COLS = (
     + AHEI_COMPONENT_KEYS
     + MEDI_COMPONENT_KEYS
     + PHDI_COMPONENT_KEYS
+    + ACS2020_V1_KEYS
+    + ACS2020_V2_KEYS
 )
 
 app = FastAPI(
@@ -138,6 +146,12 @@ async def score_diet_indices(
     if "PHDI" in indices:
         logger.info("Computing PHDI...")
         results["PHDI"] = calculate_phdi(df)
+    if "ACS2020_V1" in indices:
+        logger.info("Computing ACS2020_V1...")
+        results["ACS2020_V1"] = calculate_acs2020_v1(df)
+    if "ACS2020_V2" in indices:
+        logger.info("Computing ACS2020_V2...")
+        results["ACS2020_V2"] = calculate_acs2020_v2(df)
 
     # Attach results to DataFrame
     for name, series in results.items():
