@@ -6,6 +6,7 @@ pub trait DietScore {
 }
 
 pub mod ahei;
+pub mod dash;
 pub mod hei;
 pub mod registry;
 
