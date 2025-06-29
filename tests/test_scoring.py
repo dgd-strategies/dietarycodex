@@ -14,6 +14,7 @@ from compute.amed import AMED_COMPONENT_KEYS, calculate_amed
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
 from compute.dashi import DASHI_COMPONENT_KEYS, calculate_dashi
 from compute.dii import calculate_dii, get_dii_parameters
+from compute.hcns import HCNS_MIND_MAP, calculate_mind_from_hcns
 from compute.hei import (
     HEI_COMPONENT_KEYS,
     calculate_hei_2015,
@@ -81,6 +82,14 @@ def test_mind_output_length():
     result = calculate_mind(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 7
+
+
+def test_hcns_mind_output_length():
+    cols = [c for cols in HCNS_MIND_MAP.values() for c in cols]
+    df = make_dummy_df(cols, n=5)
+    result = calculate_mind_from_hcns(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 5
 
 
 def test_dash_output_length():
