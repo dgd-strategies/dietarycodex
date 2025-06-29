@@ -19,6 +19,10 @@ pub struct NutritionVector {
     pub vegetables_g: f64,
     pub whole_grains_g: f64,
     pub refined_grains_g: f64,
+    pub legumes_g: f64,
+    pub fish_g: f64,
+    pub red_meat_g: f64,
+    pub mono_fat_g: f64,
 }
 
 impl NutritionVector {
