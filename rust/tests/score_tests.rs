@@ -1,4 +1,4 @@
-use dietarycodex::eval::{evaluate_all_scores, evaluate_allow_partial};
+use dietarycodex::eval::{evaluate_all_scores, evaluate_allow_partial, ScorerStatus};
 use dietarycodex::nutrition_vector::NutritionVector;
 use dietarycodex::scores::amed::AMedScorer;
 use dietarycodex::scores::dash::DashScorer;
@@ -90,7 +90,10 @@ fn evaluate_returns_dash() {
         ..Default::default()
     };
     let scores = evaluate_allow_partial(&nv);
-    assert!(scores.scores.contains_key("DASH"));
+    match scores.scores.get("DASH") {
+        Some(ScorerStatus::Complete(_)) => {}
+        _ => panic!("DASH score not computed"),
+    }
 }
 
 #[test]
@@ -116,7 +119,10 @@ fn evaluate_returns_dii() {
         ..Default::default()
     };
     let scores = evaluate_allow_partial(&nv);
-    assert!(scores.scores.contains_key("DII"));
+    match scores.scores.get("DII") {
+        Some(ScorerStatus::Complete(_)) => {}
+        _ => panic!("DII score not computed"),
+    }
     let scorer = DiiScorer;
     let val = scorer.evaluate(&nv);
     assert!(!val.is_nan());
@@ -225,8 +231,37 @@ fn allow_partial_skips_missing() {
         ..Default::default()
     };
     let result = evaluate_allow_partial(&nv);
-    assert!(result.scores.contains_key("AHEI"));
-    assert!(!result.scores.contains_key("DASH"));
+    match result.scores.get("AHEI") {
+        Some(ScorerStatus::Complete(_)) => {}
+        _ => panic!("AHEI should be computed"),
+    }
+    match result.scores.get("DASH") {
+        Some(ScorerStatus::Skipped { .. }) => {}
+        _ => panic!("DASH should be skipped"),
+    }
+}
+
+#[test]
+fn skipped_reason_lists_missing_fields() {
+    let nv = NutritionVector {
+        fiber_g: Some(5.0),
+        ..Default::default()
+    };
+    let result = evaluate_allow_partial(&nv);
+    match result.scores.get("AHEI") {
+        Some(ScorerStatus::Skipped { reason }) => {
+            assert!(reason.contains("fat_g"));
+            assert!(reason.contains("saturated_fat_g"));
+        }
+        _ => panic!("AHEI should be skipped"),
+    }
+    match result.scores.get("DASH") {
+        Some(ScorerStatus::Skipped { reason }) => {
+            assert!(reason.contains("sodium_mg"));
+            assert!(reason.contains("energy_kcal"));
+        }
+        _ => panic!("DASH should be skipped"),
+    }
 }
 
 #[test]
