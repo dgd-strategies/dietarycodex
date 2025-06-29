@@ -102,7 +102,9 @@ Refer to our validation rules and scientific methods: [validation.md](validation
 
 ## CSV Template
 
-Download the master template for user uploads: [template.csv](../data/template.csv)
+An optional reference template is available: [template.csv](../data/template.csv).
+Use it only to see all supported column names. The web app works with any CSV
+and will prompt for column mapping if headers differ.
 
 ## Automatic Column Mapping
 

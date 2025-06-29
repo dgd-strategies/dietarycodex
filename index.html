@@ -76,19 +76,18 @@
             <div class="mb-4">
                 <ol class="mb-0">
                     <li>
-                        Prepare your CSV using template
-                        <a href="data/template.csv">the provided template</a>
-                        (download and replace the sample values with your own
-                        nutrient data).
+                        Upload any CSV with nutrient columns. If headers don't
+                        match the expected names, you'll be prompted to map them
+                        after the initial upload.
                     </li>
                     <li>Drag it below or use the file picker.</li>
                     <li>Download the scored file and review the charts.</li>
                 </ol>
                 <div class="alert alert-light border rounded-4 mt-3" role="note">
-                    <strong>About the template:</strong> this CSV outlines all
-                    required nutrient columns. Use it as a guide so the scoring
-                    engine recognizes your data. Delete the example rows and add
-                    your own records before uploading.
+                    <strong>Sample template:</strong>
+                    <a href="data/template.csv">template.csv</a> lists every
+                    recognized column. Use it only as a reference for optional
+                    column names.
                 </div>
             </div>
             <div id="dropzone" class="mb-3">Drag & drop CSV here, or click to select file</div>
@@ -126,7 +125,7 @@
         pyReady = loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' })
           .then(async py => {
             await py.loadPackage(['pandas', 'numpy']);
-            const files = ['base.py','dii.py','dash.py','mind.py','hei.py','dii_parameters.json'];
+            const files = ['base.py','dii.py','dash.py','mind.py','hei.py','mapping.py','dii_parameters.json'];
             for (const f of files) {
               const prefix = f === 'dii_parameters.json' ? './data/' : './compute/';
               const resp = await fetch(prefix + f);
@@ -313,9 +312,13 @@ from compute.hei import (
     HEI_COMPONENT_KEYS,
 )
 from compute.dash import calculate_dash, DASH_COMPONENT_KEYS
+from compute.mapping import USDA_HEI_MAP, USDA_DASH_MAP, USDA_DII_MAP, apply_mapping
 from compute.base import compute_summary_stats
 data = json.loads('${jsonData}')
 df = pd.DataFrame(data)
+# Automatically rename common USDA/FNDDS columns
+for m in (USDA_HEI_MAP, USDA_DASH_MAP, USDA_DII_MAP):
+    df = apply_mapping(df, m)
 stats = {}
 missing = {}
 def check(cols):
@@ -361,8 +364,8 @@ json.dumps(out)
         const idx = rows[0].reduce((m,h,i) => (m[h]=i,m), {});
         const computed = Object.keys(info.stats || {});
         const missing = info.missing || {};
-        if (computed.length === 0) {
-          const allMissing = [...new Set(Object.values(missing).flat())];
+        const allMissing = [...new Set(Object.values(missing).flat())];
+        if (allMissing.length) {
           loading.style.display = 'none';
           showMappingUI(allMissing, headers);
           return;
