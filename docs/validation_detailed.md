@@ -2,6 +2,8 @@
 
 This document expands on the statistical foundations and scientific references used to verify each diet-quality index.
 It is intended as a reference for researchers and future contributors who require a deep understanding of the algorithms.
+The algorithms are ported from the [`dietaryindex` R package](https://jamesjiadazhan.github.io/dietaryindex_manual/index.html), which provides example datasets used here for cross-validation.
+
 
 ---
 
