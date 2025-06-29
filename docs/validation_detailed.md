@@ -43,7 +43,14 @@ It is intended as a reference for researchers and future contributors who requir
 - **Scoring**: Linear scaling to 10 points per component with gender-specific cut points for whole grains and alcohol. Sodium is scored on cohort-specific deciles.
 - **Range**: 0–110 when all components are summed.
 - **Validation**: The Python port mirrors the published R implementation from the `dietaryindex` package. Synthetic inputs cover gender and sodium decile edge cases.
-## 6. MED Index in Serving Sizes (MEDI)
+## 6. Alternate Mediterranean Diet Score (aMED)
+
+- **Components**: Fruit, vegetables, whole grains, legumes, nuts, fish, red/processed meat, monounsaturated-to-saturated fat ratio, and alcohol.
+- **Scoring**: Each component receives 1 point when the participant's intake is at or above the cohort median for healthy components, below the median for red/processed meat, and 1 point for 10–25 g of alcohol per day.
+- **Range**: 0–9 when alcohol is included.
+- **Validation**: Median-based logic ported from the R `dietaryindex` package.
+
+## 7. MED Index in Serving Sizes (MEDI)
 
 - **Components**: Olive oil, fruit, vegetables, legumes, nuts, fish/seafood, alcohol,
   sugar-sweetened beverages, sweets, discretionary fats, and red/processed meat.
@@ -52,21 +59,21 @@ It is intended as a reference for researchers and future contributors who requir
 - **Validation**: Ported directly from the R `dietaryindex` package.
 
 
-## 7. Healthy Eating Index 2020
+## 8. Healthy Eating Index 2020
 
 - **Components**: 13 dietary elements similar to HEI‑2015 but with updated cut points.
 - **Variants**: Standard HEI‑2020 for adults and HEI‑Toddlers‑2020 for children aged 1–2 years.
 - **Range**: 0–100.
 - **Validation**: Thresholds and scoring logic are ported from the R `dietaryindex` package.
 
-## 8. Planetary Health Diet Index (PHDI)
+## 9. Planetary Health Diet Index (PHDI)
 
 - **Origin**: Proposed by the EAT‑Lancet Commission for sustainable diets.
 - **Scoring**: Components scaled from 0–10 (legumes and soy max 5) with gender‑specific cut points for whole grains.
 - **Range**: 0–140 when summed across all components.
 - **Validation**: Implemented according to the R `dietaryindex` package which serves as the reference implementation.
 
-## 9. American Cancer Society 2020 Diet Score
+## 10. American Cancer Society 2020 Diet Score
 
 - **Variants**: `ACS2020_V1` using the percent of calories from highly processed foods and refined grains, and `ACS2020_V2` using servings per 1000 kcal.
 - **Scoring**: Components are ranked by gender-specific quartiles. Healthy foods earn up to 0.75 or 3 points depending on the component, while unhealthy foods are reverse scored. Sugar-sweetened beverages have fixed cut points.

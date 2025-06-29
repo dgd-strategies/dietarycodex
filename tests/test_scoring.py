@@ -10,7 +10,9 @@ from compute.acs2020 import (
 )
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
 from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
+from compute.amed import AMED_COMPONENT_KEYS, calculate_amed
 from compute.dash import DASH_COMPONENT_KEYS, calculate_dash
+from compute.dashi import DASHI_COMPONENT_KEYS, calculate_dashi
 from compute.dii import calculate_dii, get_dii_parameters
 from compute.hei import (
     HEI_COMPONENT_KEYS,
@@ -89,6 +91,14 @@ def test_dash_output_length():
     assert len(result) == 6
 
 
+def test_dashi_output_length():
+    cols = DASHI_COMPONENT_KEYS
+    df = make_dummy_df(cols, n=5)
+    result = calculate_dashi(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 5
+
+
 def test_ahei_output_length():
     cols = AHEI_COMPONENT_KEYS
     df = make_dummy_df(cols, n=6)
@@ -102,6 +112,14 @@ def test_aheip_output_length():
     cols = AHEIP_COMPONENT_KEYS
     df = make_dummy_df(cols, n=5)
     result = calculate_aheip(df)
+    assert isinstance(result, pd.Series)
+    assert len(result) == 5
+
+
+def test_amed_output_length():
+    cols = AMED_COMPONENT_KEYS
+    df = make_dummy_df(cols, n=5)
+    result = calculate_amed(df)
     assert isinstance(result, pd.Series)
     assert len(result) == 5
 
