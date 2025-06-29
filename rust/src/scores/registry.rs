@@ -1,6 +1,6 @@
 use super::{
     acs2020::Acs2020Scorer, ahei::Ahei, amed::AMedScorer, dash::DashScorer, dii::DiiScorer,
-    hei::HeiScorer, DietScore,
+    hei::HeiScorer, phdi::PhdiScorer, DietScore,
 };
 
 pub fn all_scorers() -> Vec<Box<dyn DietScore>> {
@@ -10,6 +10,7 @@ pub fn all_scorers() -> Vec<Box<dyn DietScore>> {
         Box::new(DashScorer),
         Box::new(AMedScorer),
         Box::new(DiiScorer),
+        Box::new(PhdiScorer),
         Box::new(Acs2020Scorer),
     ]
 }

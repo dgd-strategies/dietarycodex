@@ -6,6 +6,7 @@ use dietarycodex::scores::hei::HeiScorer;
 use dietarycodex::scores::DietScore;
 use dietarycodex::scores::dii::DiiScorer;
 use dietarycodex::scores::acs2020::Acs2020Scorer;
+use dietarycodex::scores::phdi::PhdiScorer;
 
 #[test]
 fn hei_score_not_nan() {
@@ -113,4 +114,31 @@ fn evaluate_returns_acs2020() {
     let nv = NutritionVector::default();
     let scores = evaluate_all_scores(&nv);
     assert!(scores.contains_key("ACS2020"));
+}
+
+#[test]
+fn phdi_score_not_nan() {
+    let nv = NutritionVector {
+        vegetables_g: 250.0,
+        legumes_g: 80.0,
+        whole_grains_g: 70.0,
+        fat_g: 40.0,
+        saturated_fat_g: 10.0,
+        trans_fat_g: 0.5,
+        red_meat_g: 20.0,
+        sugar_g: 30.0,
+        refined_grains_g: 100.0,
+        energy_kcal: 2000.0,
+        ..Default::default()
+    };
+    let scorer = PhdiScorer;
+    let val = scorer.score(&nv);
+    assert!(!val.is_nan());
+}
+
+#[test]
+fn evaluate_returns_phdi() {
+    let nv = NutritionVector::default();
+    let scores = evaluate_all_scores(&nv);
+    assert!(scores.contains_key("PHDI"));
 }
