@@ -10,9 +10,12 @@ use dietarycodex::scores::acs2020::Acs2020Scorer;
 use dietarycodex::scores::mind::MindScorer;
 use dietarycodex::scores::phdi::PhdiScorer;
 
-const EXPECTED_NAMES: &[&str] = &[
-    "AHEI", "HEI", "DASH", "DASHI", "aMED", "DII", "PHDI", "ACS2020", "MIND",
-];
+fn expected_names() -> Vec<String> {
+    dietarycodex::register_scores!()
+        .into_iter()
+        .map(|s| s.name().to_string())
+        .collect()
+}
 
 #[test]
 fn hei_score_not_nan() {
@@ -204,8 +207,9 @@ fn evaluate_returns_mind() {
 fn default_evaluates_all_scores() {
     let nv = NutritionVector::default();
     let result = evaluate_all_scores(&nv);
-    for name in EXPECTED_NAMES {
-        assert!(result.scores.contains_key(*name), "missing {name}");
+    let expected = expected_names();
+    for name in &expected {
+        assert!(result.scores.contains_key(name.as_str()), "missing {name}");
     }
-    assert_eq!(result.ordered_names, EXPECTED_NAMES.iter().map(|s| s.to_string()).collect::<Vec<_>>());
+    assert_eq!(result.ordered_names, expected);
 }
