@@ -37,7 +37,7 @@ jobs:
           cp static/index.html dist/
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
