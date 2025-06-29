@@ -1,5 +1,6 @@
 use dietarycodex::eval::evaluate_all_scores;
 use dietarycodex::nutrition_vector::NutritionVector;
+use dietarycodex::scores::amed::AMedScorer;
 use dietarycodex::scores::dash::DashScorer;
 use dietarycodex::scores::hei::HeiScorer;
 use dietarycodex::scores::DietScore;
@@ -29,6 +30,23 @@ fn dash_score_not_nan() {
         ..Default::default()
     };
     let scorer = DashScorer;
+    let val = scorer.score(&nv);
+    assert!(!val.is_nan());
+}
+
+#[test]
+fn amed_score_not_nan() {
+    let nv = NutritionVector {
+        vegetables_g: 250.0,
+        legumes_g: 100.0,
+        total_fruits_g: 150.0,
+        whole_grains_g: 80.0,
+        fish_g: 80.0,
+        mono_fat_g: 30.0,
+        red_meat_g: 50.0,
+        ..Default::default()
+    };
+    let scorer = AMedScorer;
     let val = scorer.score(&nv);
     assert!(!val.is_nan());
 }
