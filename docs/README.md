@@ -152,6 +152,18 @@ before validation.
 - **Optional API**: `make dev`
 - **CI**: GitHub Actions runs on push/PR (`.github/workflows/ci.yml`)
 
+## Troubleshooting
+
+### RuntimeError: unreachable
+
+This usually means the WebAssembly module panicked. Follow these steps:
+
+- Use a modern browser like Chrome or Firefox.
+- Serve the page via `python -m http.server` instead of opening it directly.
+- Open the browser console to read the panic message (enabled by the panic hook).
+
+If the page stays on **Loading WASM...**, the module failed to load.
+
 ---
 
 

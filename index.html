@@ -122,10 +122,17 @@
     let wasmReady = null;
     async function loadWasm() {
       if (!wasmReady) {
-        wasmReady = import('./assets/wasm/dietarycodex.js').then(async m => {
-          await m.default();
-          return m;
-        });
+        wasmReady = import('./assets/wasm/dietarycodex.js')
+          .then(async m => {
+            await m.default();
+            return m;
+          })
+          .catch(err => {
+            wasmStatus.textContent = 'WASM load failed';
+            wasmStatus.className = 'ms-auto small text-danger';
+            console.error('WASM init failed', err);
+            throw err;
+          });
       }
       return wasmReady;
     }
@@ -244,9 +251,14 @@
 
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
-      await loadWasm();
-      wasmStatus.textContent = 'Local compute ready';
-      wasmStatus.className = 'ms-auto small text-success';
+      try {
+        await loadWasm();
+        wasmStatus.textContent = 'Local compute ready';
+        wasmStatus.className = 'ms-auto small text-success';
+      } catch (err) {
+        // wasmStatus updated in loadWasm
+        return;
+      }
       try {
         const res = await fetch('./data/template.csv');
         if (!res.ok) throw new Error(`template load ${res.status}`);
