@@ -36,8 +36,10 @@ impl DietScore for MindScorer {
         let poultry = capped_score(nv.poultry_g.unwrap_or(0.0), 100.0) / 10.0;
         let olive_oil = capped_score(nv.mono_fat_g.unwrap_or(0.0), 20.0) / 10.0;
 
-        let red_meat = (1.0 - capped_score(nv.red_meat_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
-        let fast_food = (1.0 - capped_score(nv.fast_food_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
+        let red_meat =
+            (1.0 - capped_score(nv.red_meat_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
+        let fast_food =
+            (1.0 - capped_score(nv.fast_food_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
         let sweets = (1.0 - capped_score(nv.sugar_g.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
         let cheese = (1.0 - capped_score(nv.cheese_g.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
         let butter = (1.0 - capped_score(nv.butter_g.unwrap_or(0.0), 20.0) / 10.0).clamp(0.0, 1.0);

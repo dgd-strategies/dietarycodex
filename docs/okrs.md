@@ -12,6 +12,7 @@ This document outlines the **Objectives and Key Results** guiding ongoing develo
 - Provide clear instructions in the README and docs.
 - Document calculation methods in `validation.md` and `validation_detailed.md`.
 - Keep validation datasets under `data/` to enable automated regression tests.
+- Maintain a tested Rust implementation mirroring the Python algorithms.
 - Add examples and screenshots as features mature.
 
 ## Objective 3 – Code Quality & Automation

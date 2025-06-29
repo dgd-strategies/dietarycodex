@@ -52,6 +52,7 @@ Open the hosted site or `index.html` locally. A service worker provides a demo `
 │   ├── ahei.py             # Alternative Healthy Eating Index
 │   ├── medi.py             # Mediterranean Diet Index
 │   └── dii_parameters.json # Moved to data/
+├── rust/                   # Rust crate with parity implementations
 ├── docs/                   # Documentation files
 │   ├── README.md            # This file
 │   ├── validation.md       # Scoring methods & rules
@@ -152,7 +153,8 @@ before validation.
 The scoring algorithms are being ported to several languages beyond Python. Each
 language module should expose the same functions (`calculate_dii`,
 `calculate_mind`, `calculate_hei_2015`, `calculate_dash`). When one
-implementation changes, every other port must be updated to stay in sync. See
+implementation changes, every other port must be updated to stay in sync. A
+complete Rust port lives under `rust/` and includes its own test suite. See
 [multi_language.md](multi_language.md) for the list of supported languages and
 workflow tips.
 

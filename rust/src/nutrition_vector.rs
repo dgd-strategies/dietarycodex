@@ -109,7 +109,9 @@ impl NutritionVector {
             nv.sodium_mg = map.get("Sodium, Na").map(|v| v * 1000.0);
             nv.calcium_mg = map.get("Calcium, Ca").map(|v| v * 1000.0);
             nv.iron_mg = map.get("Iron, Fe").map(|v| v * 1000.0);
-            nv.vitamin_c_mg = map.get("Vitamin C, total ascorbic acid").map(|v| v * 1000.0);
+            nv.vitamin_c_mg = map
+                .get("Vitamin C, total ascorbic acid")
+                .map(|v| v * 1000.0);
             nv.omega3_g = map.get("Fatty acids, total polyunsaturated").copied();
             nv.vitamin_a_mcg = map.get("Vitamin A, RAE").copied();
             nv.vitamin_e_mg = map.get("Vitamin E (alpha-tocopherol)").map(|v| v * 1000.0);

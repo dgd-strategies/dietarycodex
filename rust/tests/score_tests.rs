@@ -1,3 +1,4 @@
+use csv::Reader;
 use dietarycodex::eval::{
     evaluate_all_scores, evaluate_allow_partial, format_skipped_scores,
     print_scores_as_json_allow_partial, ScorerStatus,
@@ -13,6 +14,7 @@ use dietarycodex::scores::mind::MindScorer;
 use dietarycodex::scores::phdi::PhdiScorer;
 use dietarycodex::scores::DietScore;
 use serde_json;
+use std::path::Path;
 
 fn expected_names() -> Vec<String> {
     dietarycodex::register_scores!()
@@ -447,4 +449,51 @@ fn verbose_partial_output_stable() {
         sorted_fields.sort();
         assert_eq!(fields, sorted_fields);
     }
+}
+
+fn load_nv_from_template() -> NutritionVector {
+    use std::collections::HashMap;
+
+    let path = Path::new("../data/template.csv");
+    let mut rdr = Reader::from_path(path).expect("open template.csv");
+    let mut rows = rdr.deserialize::<HashMap<String, String>>();
+    let map = rows.next().expect("row").expect("parse row");
+    fn p(map: &HashMap<String, String>, key: &str) -> Option<f64> {
+        map.get(key).and_then(|v| v.parse().ok())
+    }
+    NutritionVector {
+        energy_kcal: p(&map, "energy_kcal"),
+        saturated_fat_g: p(&map, "saturated_fat_g"),
+        sodium_mg: p(&map, "sodium_mg"),
+        total_fruits_g: p(&map, "fruits_g"),
+        vegetables_g: p(&map, "vegetables_g"),
+        whole_grains_g: p(&map, "whole_grains_g"),
+        fiber_g: p(&map, "fiber_g"),
+        magnesium_mg: p(&map, "Magnesium"),
+        omega3_g: p(&map, "n-3 fatty acid"),
+        selenium_mcg: p(&map, "Selenium"),
+        sugar_g: p(&map, "added_sugars_g"),
+        trans_fat_g: p(&map, "Trans fat"),
+        vitamin_a_mcg: p(&map, "Vitamin A"),
+        vitamin_c_mg: p(&map, "vit_c_mg"),
+        vitamin_e_mg: p(&map, "Vitamin E"),
+        zinc_mg: p(&map, "Zinc"),
+        ..Default::default()
+    }
+}
+
+#[test]
+fn dash_score_from_template() {
+    let nv = load_nv_from_template();
+    let scorer = DashScorer;
+    let val = scorer.evaluate(&nv);
+    assert!(!val.is_nan());
+}
+
+#[test]
+fn dii_score_from_template() {
+    let nv = load_nv_from_template();
+    let scorer = DiiScorer;
+    let val = scorer.evaluate(&nv);
+    assert!(!val.is_nan());
 }

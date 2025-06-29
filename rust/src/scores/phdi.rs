@@ -29,13 +29,17 @@ impl DietScore for PhdiScorer {
         let veg = capped_score(nv.vegetables_g.unwrap_or(0.0), 300.0);
         let legumes = capped_score(nv.legumes_g.unwrap_or(0.0), 100.0);
         let grains = capped_score(nv.whole_grains_g.unwrap_or(0.0), 90.0);
-        let unsat_fat_g = (nv.fat_g.unwrap_or(0.0) - nv.saturated_fat_g.unwrap_or(0.0) - nv.trans_fat_g.unwrap_or(0.0)).max(0.0);
+        let unsat_fat_g = (nv.fat_g.unwrap_or(0.0)
+            - nv.saturated_fat_g.unwrap_or(0.0)
+            - nv.trans_fat_g.unwrap_or(0.0))
+        .max(0.0);
         let unsat_fat = capped_score(unsat_fat_g, 20.0);
         let red_meat = (10.0 - capped_score(nv.red_meat_g.unwrap_or(0.0), 100.0)).clamp(0.0, 10.0);
         let sugar = (10.0 - capped_score(nv.sugar_g.unwrap_or(0.0), 50.0)).clamp(0.0, 10.0);
-        let refined = (10.0 - capped_score(nv.refined_grains_g.unwrap_or(0.0), 150.0)).clamp(0.0, 10.0);
+        let refined =
+            (10.0 - capped_score(nv.refined_grains_g.unwrap_or(0.0), 150.0)).clamp(0.0, 10.0);
         let energy = if let Some(kcal) = nv.energy_kcal {
-            if kcal >= 1500.0 && kcal <= 2500.0 {
+            if (1500.0..=2500.0).contains(&kcal) {
                 10.0
             } else {
                 0.0

@@ -27,4 +27,7 @@ Every language implementation must expose these functions with the same behavior
 
 When any algorithm or function signature changes, **update all language versions at the same time**. Use the Python modules as the authoritative reference and port changes promptly.
 
+The Rust implementation is located under `rust/` and mirrors the Python API. Run
+`cargo test` to execute its validation suite.
+
 The web app relies on Pyodide running the Python code, so keep the browser UI backward compatible even as new language ports are added.

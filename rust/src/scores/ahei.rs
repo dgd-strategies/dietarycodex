@@ -1,5 +1,5 @@
-use crate::nutrition_vector::NutritionVector;
 use super::{DietScore, FieldDeps};
+use crate::nutrition_vector::NutritionVector;
 
 pub struct Ahei;
 

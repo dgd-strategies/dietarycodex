@@ -137,7 +137,7 @@ The algorithms are ported from the [`dietaryindex` R package](https://jamesjiada
 - **Variants**: `ACS2020_V1` using the percent of calories from highly processed foods and refined grains, and `ACS2020_V2` using servings per 1000 kcal.
 - **Scoring**: Components are ranked by gender-specific quartiles. Healthy foods earn up to 0.75 or 3 points depending on the component, while unhealthy foods are reverse scored. Sugar-sweetened beverages have fixed cut points.
 - **Range**: 0–12 when all components are summed.
-- **Validation**: The Python functions mirror the R implementations in the `dietaryindex` package. Example validation datasets (`ACS2020_V1_validation.csv`, `ACS2020_V2_validation.csv`) are included in the repository.
+- **Validation**: The Python functions mirror the R implementations in the `dietaryindex` package. Example validation datasets (`ACS2020_V1_validation.csv`, `ACS2020_V2_validation.csv`) are included in the repository. The Rust crate exercises the same datasets in its tests to ensure equivalent results.
 - **References**: Kushi LH et al. CA Cancer J Clin. 2020.
 - **Tables**:
   - [ACS2020_V1 Algorithm](scoring_algorithms.md)

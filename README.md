@@ -2,6 +2,9 @@
 
 **A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, DASH, DASHI, AHEI, AMED, MEDI, PHDI, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The GitHub Pages site uses Pyodide so it works without any backend server.
 
+In addition to the Python implementation, a fully tested Rust crate lives under
+`rust/` for high-performance use cases.
+
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
 For a complete documentation index, see [docs/README.md](docs/README.md).
@@ -47,6 +50,7 @@ pre-commit install
 │   ├── mind.py              # MIND diet calculation module
 │   ├── dash.py              # DASH diet calculation module
 │   └── ahei.py              # Alternative Healthy Eating Index module
+├── rust/                   # Rust crate with parity scoring logic
 ├── tests/
 │   └── test_scoring.py      # Unit tests for scoring functions
 └── .github/
@@ -72,12 +76,15 @@ pre-commit install
   black .
   isort .
   flake8
+  cargo fmt -- --check
+  cargo clippy -- -D warnings
   ```
 
 - **Testing**:
 
 ```bash
 pytest tests/ --cov
+cargo test --manifest-path rust/Cargo.toml
 ```
 
 - **Pre-commit** hooks run automatically on `git commit` and include the
