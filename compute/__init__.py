@@ -8,3 +8,4 @@ from .hei import (  # noqa: F401
     calculate_hei_toddlers_2020,
 )
 from .medi import MEDI_COMPONENT_KEYS, calculate_medi  # noqa: F401
+from .phdi import PHDI_COMPONENT_KEYS, calculate_phdi  # noqa: F401

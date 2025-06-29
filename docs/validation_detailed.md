@@ -59,6 +59,13 @@ It is intended as a reference for researchers and future contributors who requir
 - **Range**: 0–100.
 - **Validation**: Thresholds and scoring logic are ported from the R `dietaryindex` package.
 
+## 8. Planetary Health Diet Index (PHDI)
+
+- **Origin**: Proposed by the EAT‑Lancet Commission for sustainable diets.
+- **Scoring**: Components scaled from 0–10 (legumes and soy max 5) with gender‑specific cut points for whole grains.
+- **Range**: 0–140 when summed across all components.
+- **Validation**: Implemented according to the R `dietaryindex` package which serves as the reference implementation.
+
 ---
 
 ## Cross‑validation Workflow

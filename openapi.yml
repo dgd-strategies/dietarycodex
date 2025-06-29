@@ -28,7 +28,7 @@ paths:
           in: query
           description: |
             Optional comma-separated list of indices to compute.
-            Valid values: DII, MIND, HEI_2015, HEI_2020, HEI_TODDLERS_2020, DASH, AHEI, MEDI.
+            Valid values: DII, MIND, HEI_2015, HEI_2020, HEI_TODDLERS_2020, DASH, AHEI, MEDI, PHDI.
           required: false
           schema:
             type: array
