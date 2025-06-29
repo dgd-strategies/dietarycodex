@@ -16,6 +16,7 @@ pub struct NutritionVector {
     pub iron_mg: f64,
     pub vitamin_c_mg: f64,
     pub total_fruits_g: f64,
+    pub vegetables_g: f64,
     pub whole_grains_g: f64,
     pub refined_grains_g: f64,
 }
