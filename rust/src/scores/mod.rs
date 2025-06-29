@@ -5,6 +5,7 @@ use crate::nutrition_vector::NutritionVector;
 pub trait DietScore {
     fn name(&self) -> &'static str;
     fn evaluate(&self, nv: &NutritionVector) -> f64;
+    fn required_fields(&self) -> &'static [&'static str];
 }
 
 pub fn capped_score(value: f64, max: f64) -> f64 {
