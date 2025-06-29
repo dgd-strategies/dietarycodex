@@ -15,18 +15,21 @@ It is intended as a reference for researchers and future contributors who requir
   4. Multiply by the literature-derived inflammatory effect weight.
   5. Sum across all parameters for the final DII score.
 - **Validation**: The integration tests compare computed scores to a curated reference table extracted from the original publication.
+- **References**: Shivappa N et al. Public Health Nutr. 2014; Hébert JR et al. Adv Nutr. 2019.
 
 ## 2. MIND Diet Score
 
 - **Components**: 10 brain-healthy and 5 unhealthy food groups.
 - **Scoring**: Each component contributes 0, 0.5, or 1 point based on weekly consumption thresholds.
 - **Total Range**: 0–15.
+- **References**: Morris MC et al. Alzheimers Dement. 2015.
 - **Validation Strategy**: Synthetic datasets exercise edge cases (all healthy vs. all unhealthy) to verify that the score spans the expected range.
 
 ## 3. Healthy Eating Index 2015 (HEI‑2015)
 
 - **Components**: 13 dietary elements measured per 1,000 kcal.
 - **Method**: Density-based scoring with component‑specific cut points.
+- **References**: Krebs-Smith SM et al. J Acad Nutr Diet. 2018.
 - **Total Range**: 0–100.
 - **Validation**: Reference results from the R `dietaryindex` package are included
   in `data/HEI2015_VALIDATION.csv`, `data/HEI2020_VALIDATION.csv`, and
@@ -35,22 +38,26 @@ It is intended as a reference for researchers and future contributors who requir
 ## 4. DASH Score
 
 - **Components**: Fruits, vegetables, whole grains, low‑fat dairy, nuts/legumes, sodium, red/processed meats, and sweetened beverages.
+- **References**: Fung TT et al. JAMA. 2008.
 - **Scoring**: Quintile ranking (reversed for moderation components) following Fung et al. (2008).
 - **Range**: 8–40.
 - **Validation**: Population quintiles from NHANES will be used to verify distributional properties.
 
 ## 5. Alternative Healthy Eating Index (AHEI)
 
+- **References**: Chiuve SE et al. J Nutr. 2012.
 - **Components**: Vegetables, fruit, whole grains, nuts/legumes, omega‑3 fats, polyunsaturated fat, sugar‑sweetened beverages, red/processed meat, trans fat, sodium, and alcohol.
 - **Scoring**: Linear scaling to 10 points per component with gender-specific cut points for whole grains and alcohol. Sodium is scored on cohort-specific deciles.
 - **Range**: 0–110 when all components are summed.
 - **Validation**: Reference results from the R `dietaryindex` package are included in `data/AHEI_VALIDATION.csv`.
 
+- **References**: McCullough ML et al. AJCN. 2002.
 ### AHEI (serving-based variant, AHEIP)
 
 - **Components**: Vegetables, whole fruit, white-to-red meat ratio, fiber, trans fat, polyunsaturated-to-saturated fat ratio, calcium, folate, and iron.
 - **Range**: 0–90 when summed.
 - **Validation**: Reference values from `data/AHEIP_VALIDATION.csv` ensure parity with the R implementation.
+- **References**: Fung TT et al. Arch Intern Med. 2009.
 ## 6. Alternate Mediterranean Diet Score (aMED)
 
 - **Components**: Fruit, vegetables, whole grains, legumes, nuts, fish, red/processed meat, monounsaturated-to-saturated fat ratio, and alcohol.
@@ -58,6 +65,7 @@ It is intended as a reference for researchers and future contributors who requir
 - **Range**: 0–9 when alcohol is included.
 - **Validation**: Median-based logic ported from the R `dietaryindex` package.
 
+- **References**: Estruch R et al. N Engl J Med. 2013.
 ## 7. MED Index in Serving Sizes (MEDI)
 
 - **Components**: Olive oil, fruit, vegetables, legumes, nuts, fish/seafood, alcohol,
@@ -65,6 +73,7 @@ It is intended as a reference for researchers and future contributors who requir
 - **Scoring**: Each component earns 1 point when the PREDIMED threshold is met; otherwise 0.
 - **Range**: 0–11 (10 if alcohol is excluded).
 - **Validation**: Ported directly from the R `dietaryindex` package.
+- **References**: U.S. Department of Agriculture HEI‑2020 Documentation.
 
 
 ## 8. Healthy Eating Index 2020
@@ -73,6 +82,7 @@ It is intended as a reference for researchers and future contributors who requir
 - **Variants**: Standard HEI‑2020 for adults and HEI‑Toddlers‑2020 for children aged 1–2 years.
 - **Range**: 0–100.
 - **Validation**: Thresholds and scoring logic are ported from the R `dietaryindex` package.
+- **References**: U.S. Department of Agriculture HEI‑2020 documentation.
 
 ## 9. Planetary Health Diet Index (PHDI)
 
@@ -80,6 +90,7 @@ It is intended as a reference for researchers and future contributors who requir
 - **Scoring**: Components scaled from 0–10 (legumes and soy max 5) with gender‑specific cut points for whole grains.
 - **Range**: 0–140 when summed across all components.
 - **Validation**: Implemented according to the R `dietaryindex` package which
+- **References**: Cacau LT et al. Nutrients. 2023; EAT‑Lancet Commission.
   serves as the reference implementation. A small sample dataset
   (`PHDI_VALIDATION.csv`) is included in this repository for automated
   cross‑checks.
@@ -90,6 +101,7 @@ It is intended as a reference for researchers and future contributors who requir
 - **Scoring**: Components are ranked by gender-specific quartiles. Healthy foods earn up to 0.75 or 3 points depending on the component, while unhealthy foods are reverse scored. Sugar-sweetened beverages have fixed cut points.
 - **Range**: 0–12 when all components are summed.
 - **Validation**: The Python functions mirror the R implementations in the `dietaryindex` package. Example validation datasets (`ACS2020_V1_validation.csv`, `ACS2020_V2_validation.csv`) are included in the repository.
+- **References**: Kushi LH et al. CA Cancer J Clin. 2020.
 
 ---
 
