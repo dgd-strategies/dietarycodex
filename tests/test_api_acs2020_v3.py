@@ -1,17 +1,20 @@
-import pandas as pd
-from fastapi.testclient import TestClient
 from unittest.mock import patch
 
-from compute.api import app
+import pandas as pd
+from fastapi.testclient import TestClient
+
 from compute.acs2020 import ACS2020_V3_KEYS
+from compute.api import app
 
 client = TestClient(app)
+
 
 def make_df(n=2):
     df = pd.DataFrame({col: [1] * n for col in ACS2020_V3_KEYS})
     df["gender"] = 1
     df["TOTALKCAL_ACS2020"] = 2000
     return df
+
 
 def test_acs2020_v3_invoked(tmp_path):
     df = make_df()
