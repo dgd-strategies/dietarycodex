@@ -37,6 +37,7 @@ pub struct NutritionVector {
     pub selenium_mcg: Option<f64>,
     pub magnesium_mg: Option<f64>,
     pub trans_fat_g: Option<f64>,
+    #[serde(alias = "ALCOHOL")]
     pub alcohol_g: Option<f64>,
 }
 

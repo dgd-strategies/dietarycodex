@@ -448,3 +448,10 @@ fn verbose_partial_output_stable() {
         assert_eq!(fields, sorted_fields);
     }
 }
+
+#[test]
+fn deserialize_alias_alcohol() {
+    let json = r#"{\"ALCOHOL\": 12.5}"#;
+    let nv: NutritionVector = serde_json::from_str(json).unwrap();
+    assert_eq!(nv.alcohol_g, Some(12.5));
+}
