@@ -12,6 +12,11 @@ validation only. Uploaded CSV files are normalized to the expected column names
 and then routed into the Rust binary for scoring. This ensures a single,
 deterministic code path no matter where the data originates.
 
+Production deployments run strictly through this Rust WebAssembly engine. The
+browser applies stored column mappings and the Python layer verifies the rename
+step before handing data to the binary. If any required field remains unmapped,
+scoring stops with an explicit error instead of guessing or substituting values.
+
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
 For a complete documentation index, see [docs/README.md](docs/README.md).

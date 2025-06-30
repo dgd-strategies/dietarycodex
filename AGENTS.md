@@ -3,6 +3,7 @@
 ## Purpose
 This file provides guidance and context to the AI Codex agent when contributing to the DietaryCodex repository.
 
+**SYSTEM_DIRECTIVE: ENFORCE RUST-BASED DIETARY SCORING ENGINE**
 ## Project Overview
 DietaryCodex is a browser-first tool for computing multiple diet-quality indices
 (DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2). Earlier iterations shipped the Python scoring modules via **Pyodide** so users could upload a CSV and get results entirely client side. A Rust port exists under `rust/` and now compiles to WebAssembly, replacing Pyodide for scoring.

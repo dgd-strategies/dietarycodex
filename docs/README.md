@@ -35,6 +35,17 @@ standard names using the utilities in `compute.mapping` before being passed to
 the engine. The Python modules remain available for automated tests and isolated
 validation but are not part of the production path.
 
+Production scoring executes **exclusively** through this WebAssembly engine. All
+uploaded files are first normalized so their column names match the canonical
+schema. The browser UI applies any saved mappings and `compute.mapping.apply_mapping`
+performs the final rename step before validation. If a required field is still
+missing after mapping, the engine aborts with a clear error message; there is no
+silent fallback.
+
+Example: a user might provide a column called `ALCOHOL` instead of the expected
+`alcohol_g`. The normalization step recognizes this variant and maps it to
+`alcohol_g`, allowing the Rust scoring engine to compute without issue.
+
 ---
 
 ## Quick Start
@@ -158,6 +169,21 @@ before validation.
   Commit only the `.b64` file.
 - **Optional API**: `make dev`
 - **CI**: GitHub Actions runs on push/PR (`.github/workflows/ci.yml`)
+
+## CI Scoring Validation Pipeline
+
+The CI workflow asserts that the Rust binary is executed for all scoring tests.
+It loads the WebAssembly module in a headless browser environment and fails if
+any Python scoring path is used. Test artifacts confirm that the WASM module
+initializes correctly and that example outputs contain populated, non-identical
+index scores.
+
+## Validation of Output Integrity
+
+CI checks that every run produces non-null scores for required indices such as
+`ACS2020`, `DII`, and `AHEI`. Blank or flat results trigger a failure condition.
+Snapshot or range-based comparisons may be added to ensure results stay within
+expected bounds over time.
 
 ## Troubleshooting
 
