@@ -459,7 +459,14 @@ fn verbose_partial_output_stable() {
 
 #[test]
 fn deserialize_alias_alcohol() {
-    let json = r#"{\"ALCOHOL\": 12.5}"#;
+    let json = r#"{"ALCOHOL": 12.5}"#;
     let nv: NutritionVector = serde_json::from_str(json).unwrap();
     assert_eq!(nv.alcohol_g, Some(12.5));
+}
+
+#[test]
+fn deserialize_alias_alcohol_intake() {
+    let json = r#"{"alcohol_intake": 3.0}"#;
+    let nv: NutritionVector = serde_json::from_str(json).unwrap();
+    assert_eq!(nv.alcohol_g, Some(3.0));
 }

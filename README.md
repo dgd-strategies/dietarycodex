@@ -12,6 +12,11 @@ validation only. Uploaded CSV files are normalized to the expected column names
 and then routed into the Rust binary for scoring. This ensures a single,
 deterministic code path no matter where the data originates.
 
+The engine now recognizes common field aliases. For example,
+`alcohol_intake` is accepted as `alcohol_g` when parsing input
+JSON or CSV data. This helps integrate real-world exports without
+manual column renaming.
+
 Production deployments run strictly through this Rust WebAssembly engine. The
 browser applies stored column mappings and the Python layer verifies the rename
 step before handing data to the binary. If any required field remains unmapped,

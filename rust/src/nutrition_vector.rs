@@ -37,44 +37,44 @@ pub struct NutritionVector {
     pub selenium_mcg: Option<f64>,
     pub magnesium_mg: Option<f64>,
     pub trans_fat_g: Option<f64>,
-    #[serde(alias = "ALCOHOL")]
+    #[serde(alias = "ALCOHOL", alias = "alcohol_intake")]
     pub alcohol_g: Option<f64>,
 }
 
 static ALL_FIELD_NAMES: &[&str] = &[
-    "energy_kcal",
-    "fat_g",
-    "saturated_fat_g",
-    "carbs_g",
-    "fiber_g",
-    "sugar_g",
-    "protein_g",
-    "sodium_mg",
-    "calcium_mg",
-    "iron_mg",
-    "vitamin_c_mg",
-    "total_fruits_g",
-    "vegetables_g",
-    "whole_grains_g",
-    "refined_grains_g",
-    "legumes_g",
-    "fish_g",
-    "red_meat_g",
-    "mono_fat_g",
+    "alcohol_g",
     "berries_g",
-    "cheese_g",
     "butter_g",
-    "poultry_g",
+    "calcium_mg",
+    "carbs_g",
+    "cheese_g",
+    "energy_kcal",
     "fast_food_g",
+    "fat_g",
+    "fiber_g",
+    "fish_g",
+    "iron_mg",
+    "legumes_g",
+    "magnesium_mg",
+    "mono_fat_g",
     "nuts_g",
     "omega3_g",
-    "vitamin_a_mcg",
-    "vitamin_e_mg",
-    "zinc_mg",
+    "poultry_g",
+    "protein_g",
+    "red_meat_g",
+    "refined_grains_g",
+    "saturated_fat_g",
     "selenium_mcg",
-    "magnesium_mg",
+    "sodium_mg",
+    "sugar_g",
+    "total_fruits_g",
     "trans_fat_g",
-    "alcohol_g",
+    "vegetables_g",
+    "vitamin_a_mcg",
+    "vitamin_c_mg",
+    "vitamin_e_mg",
+    "whole_grains_g",
+    "zinc_mg",
 ];
 
 impl NutritionVector {
@@ -110,7 +110,9 @@ impl NutritionVector {
             nv.sodium_mg = map.get("Sodium, Na").map(|v| v * 1000.0);
             nv.calcium_mg = map.get("Calcium, Ca").map(|v| v * 1000.0);
             nv.iron_mg = map.get("Iron, Fe").map(|v| v * 1000.0);
-            nv.vitamin_c_mg = map.get("Vitamin C, total ascorbic acid").map(|v| v * 1000.0);
+            nv.vitamin_c_mg = map
+                .get("Vitamin C, total ascorbic acid")
+                .map(|v| v * 1000.0);
             nv.omega3_g = map.get("Fatty acids, total polyunsaturated").copied();
             nv.vitamin_a_mcg = map.get("Vitamin A, RAE").copied();
             nv.vitamin_e_mg = map.get("Vitamin E (alpha-tocopherol)").map(|v| v * 1000.0);
