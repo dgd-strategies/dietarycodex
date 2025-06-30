@@ -53,3 +53,8 @@ repos:
         entry: bash scripts/premerge_preview.sh
         language: system
         pass_filenames: false
+      - id: wasm-fallback-check
+        name: detect Rust fallback
+        entry: bash scripts/check_wasm_fallback.sh
+        language: system
+        pass_filenames: false
