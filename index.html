@@ -178,9 +178,13 @@
     }
     function computeStats(values) {
       const n = values.length;
+      if (!n) return null;
       const mean = values.reduce((a,b) => a + b, 0) / n;
-      const sq = values.map(v => (v - mean)**2);
-      const std = Math.sqrt(sq.reduce((a,b) => a + b, 0) / (n - 1));
+      let std = 0;
+      if (n > 1) {
+        const sq = values.map(v => (v - mean)**2);
+        std = Math.sqrt(sq.reduce((a,b) => a + b, 0) / (n - 1));
+      }
       return {
         mean: mean.toFixed(2),
         std: std.toFixed(2),
