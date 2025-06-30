@@ -21,6 +21,9 @@ ACS2020_V2_KEYS = ACS2020_V1_KEYS[:-2] + [
     "TOTALKCAL_ACS2020",
 ]
 
+# Placeholder components for a future ACS2020 version 3 implementation.
+ACS2020_V3_KEYS = ACS2020_V2_KEYS
+
 
 def _quartile_ranks(series: pd.Series, gender: pd.Series) -> pd.Series:
     def rank_group(s: pd.Series) -> pd.Series:
@@ -114,3 +117,13 @@ def calculate_acs2020_v2(df: pd.DataFrame) -> pd.Series:
 
     total = veg + veg_items + frt + frt_items + wgrain + red_meat + hpfrg + ssb
     return total
+
+
+def calculate_acs2020_v3(df: pd.DataFrame) -> pd.Series:
+    """Placeholder for ACS2020 version 3.
+
+    This stub reuses the version 2 algorithm until official cut points are
+    finalized.
+    """
+    validate_dataframe(df, ACS2020_V3_KEYS)
+    return calculate_acs2020_v2(df)
