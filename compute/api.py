@@ -14,8 +14,10 @@ from fastapi.staticfiles import StaticFiles
 from compute.acs2020 import (
     ACS2020_V1_KEYS,
     ACS2020_V2_KEYS,
+    ACS2020_V3_KEYS,
     calculate_acs2020_v1,
     calculate_acs2020_v2,
+    calculate_acs2020_v3,
 )
 from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
 from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
@@ -74,6 +76,7 @@ REQUIRED_COLS = (
     + PHDI_V2_COMPONENT_KEYS
     + ACS2020_V1_KEYS
     + ACS2020_V2_KEYS
+    + ACS2020_V3_KEYS
 )
 
 app = FastAPI(
@@ -185,6 +188,9 @@ async def score_diet_indices(
     if "ACS2020_V2" in indices:
         logger.info("Computing ACS2020_V2...")
         results["ACS2020_V2"] = calculate_acs2020_v2(df)
+    if "ACS2020_V3" in indices:
+        logger.info("Computing ACS2020_V3...")
+        results["ACS2020_V3"] = calculate_acs2020_v3(df)
 
     # Attach results to DataFrame
     for name, series in results.items():
