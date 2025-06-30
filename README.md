@@ -4,6 +4,14 @@
 
 **A browser-based tool for computing multiple diet-quality scores (DII, MIND, HEI-2015, HEI-2020, HEI-Toddlers-2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) from nutrition CSV data**. The original frontend relied on Pyodide to run Python scoring modules entirely client side. The current version ships a WebAssembly module compiled from Rust, eliminating the Pyodide dependency and speeding up calculations.
 
+### Rust Scoring Pipeline
+
+All public calculations flow through the Rust engine compiled to WebAssembly. The
+Python modules under `compute/` remain for regression tests and offline
+validation only. Uploaded CSV files are normalized to the expected column names
+and then routed into the Rust binary for scoring. This ensures a single,
+deterministic code path no matter where the data originates.
+
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
 For a complete documentation index, see [docs/README.md](docs/README.md).

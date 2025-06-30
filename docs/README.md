@@ -28,6 +28,13 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
 The **Dietary Index Web Calculator** lets users compute multiple diet-quality
 indices (DII, MIND, HEI‑2015, HEI‑2020, HEI‑Toddlers‑2020, AHEI, AHEIP, AMED, DASH, DASHI, MEDI, MEDI_V2, PHDI, PHDI_V2, ACS2020_V1, ACS2020_V2) right in the browser. Earlier versions executed the Python scoring modules using **Pyodide**. Now the frontend loads a WebAssembly module compiled from Rust for the core calculations. A minimal FastAPI backend exists only for automated tests.
 
+### Rust Scoring Pipeline
+
+All scoring runs through this Rust WebAssembly module. CSV columns are mapped to
+standard names using the utilities in `compute.mapping` before being passed to
+the engine. The Python modules remain available for automated tests and isolated
+validation but are not part of the production path.
+
 ---
 
 ## Quick Start
