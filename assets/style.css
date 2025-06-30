@@ -136,3 +136,10 @@
       font-weight: 600;
     }
     .error { color: var(--accent); font-weight: bold; }
+    .card,
+    .accordion {
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0,45,114,0.05);
+      border: none;
+    }
+    .accordion-button { font-weight: 600; }
