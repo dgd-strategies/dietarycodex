@@ -32,9 +32,12 @@ jobs:
 
       - name: Copy files to dist/
         run: |
-          mkdir -p dist/pkg
+          mkdir -p dist/pkg dist/assets dist/data
           cp -r rust/pkg/* dist/pkg/
-          cp static/index.html dist/
+          cp index.html dist/
+          cp -r assets/* dist/assets/
+          cp data/template.csv dist/data/
+          cp sw.js dist/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
