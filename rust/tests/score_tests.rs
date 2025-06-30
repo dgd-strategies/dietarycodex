@@ -304,6 +304,14 @@ fn metadata_sorted() {
     }
 }
 
+#[test]
+fn all_field_names_sorted() {
+    let fields = NutritionVector::all_field_names();
+    let mut sorted = fields.to_vec();
+    sorted.sort();
+    assert_eq!(fields, sorted.as_slice());
+}
+
 fn all_fields_nv() -> NutritionVector {
     NutritionVector {
         energy_kcal: Some(2000.0),
