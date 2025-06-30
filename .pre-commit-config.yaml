@@ -48,3 +48,8 @@ repos:
         entry: bash scripts/check_template_scores.sh
         language: system
         pass_filenames: false
+      - id: preview-build
+        name: build preview site
+        entry: bash scripts/premerge_preview.sh
+        language: system
+        pass_filenames: false
