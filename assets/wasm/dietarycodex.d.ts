@@ -2,12 +2,16 @@
 /* eslint-disable */
 export function init(): void;
 export function score_json(json: string): any;
+export function required_fields(): any;
+export function missing_fields(json: string): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly score_json: (a: number, b: number) => [number, number, number];
+  readonly required_fields: () => any;
+  readonly missing_fields: (a: number, b: number) => [number, number, number];
   readonly init: () => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

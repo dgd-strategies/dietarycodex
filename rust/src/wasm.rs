@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use serde::{Deserialize, Serialize};
+use serde_json;
 use console_error_panic_hook;
 use crate::nutrition_vector::NutritionVector;
 use crate::eval::{evaluate_allow_partial, ScorerStatus};
@@ -27,4 +28,17 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
         out.push(row);
     }
     serde_wasm_bindgen::to_value(&out).map_err(|e| JsValue::from_str(&e.to_string()))
+}
+
+#[wasm_bindgen]
+pub fn required_fields() -> JsValue {
+    serde_wasm_bindgen::to_value(NutritionVector::all_field_names()).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn missing_fields(json: &str) -> Result<JsValue, JsValue> {
+    let nv: NutritionVector = serde_json::from_str(json)
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+    let missing = nv.missing_fields();
+    serde_wasm_bindgen::to_value(&missing).map_err(|e| JsValue::from_str(&e.to_string()))
 }

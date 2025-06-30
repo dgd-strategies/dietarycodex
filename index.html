@@ -103,7 +103,10 @@
                 <table id="previewTable">
                 </table>
             </div>
-            <button id="scoreBtn" class="btn btn-primary mb-2" disabled>Score & Download</button>
+            <div class="d-flex gap-2 mb-2">
+                <button id="scoreBtn" class="btn btn-primary" disabled>Score</button>
+                <button id="downloadBtn" class="btn btn-secondary" disabled>Download CSV</button>
+            </div>
             <div id="loading">⏳ Scoring in progress...</div>
             <div id="result"></div>
             <div id="charts"></div>
@@ -117,9 +120,12 @@
     const loading = document.getElementById('loading');
     const wasmStatus = document.getElementById('wasmStatus');
     const scoreBtn = document.getElementById('scoreBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
     let currentData = null;
     let currentName = 'template.csv';
     let wasmReady = null;
+    let required = [];
+    let scoredCsv = null;
     async function loadWasm() {
       if (!wasmReady) {
         wasmReady = import('./pkg/dietarycodex.js')
@@ -249,10 +255,22 @@
       if (currentData) computeFile(currentData, currentName);
     });
 
+    downloadBtn.addEventListener('click', () => {
+      if (!scoredCsv) return;
+      const blob = new Blob([scoredCsv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentName.replace(/\.csv$/, '') + '_scores.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        await loadWasm();
+        const wasm = await loadWasm();
+        required = wasm.required_fields();
         wasmStatus.textContent = 'Local compute ready';
         wasmStatus.className = 'ms-auto small text-success';
       } catch (err) {
@@ -300,6 +318,12 @@
       try {
         const mapped = applyColumnMapping(data);
         const wasm = await loadWasm();
+        const missing = wasm.missing_fields(JSON.stringify(mapped[0]||{}));
+        if (missing.length) {
+          resultBox.innerHTML = `<div class='error'>Missing columns: ${missing.join(', ')}</div>`;
+          downloadBtn.disabled = true;
+          return;
+        }
         const scoreRows = wasm.score_json(JSON.stringify(mapped));
         const combined = mapped.map((r,i) => ({...r, ...(scoreRows[i]||{})}));
         const csvText = jsonToCsv(combined);
@@ -316,13 +340,8 @@
         });
         summary += '</ul>';
         resultBox.innerHTML = summary;
-        const blob = new Blob([csvText], {type:'text/csv'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name.replace(/\.csv$/, '') + '_scores.csv';
-        a.click();
-        URL.revokeObjectURL(url);
+        scoredCsv = csvText;
+        downloadBtn.disabled = false;
       } catch(err) {
         console.error('Scoring failed', err);
         let msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
