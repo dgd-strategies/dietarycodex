@@ -182,6 +182,8 @@ index scores.
 
 CI checks that every run produces non-null scores for required indices such as
 `ACS2020`, `DII`, and `AHEI`. Blank or flat results trigger a failure condition.
+Unit tests also verify that computed index values vary across rows rather than
+remaining constant.
 Snapshot or range-based comparisons may be added to ensure results stay within
 expected bounds over time.
 
