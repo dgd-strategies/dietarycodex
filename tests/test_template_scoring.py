@@ -1,14 +1,19 @@
 import pandas as pd
-from compute.dii import calculate_dii
-from compute.ahei import calculate_ahei, AHEI_COMPONENT_KEYS
-from compute.aheip import calculate_aheip, AHEIP_COMPONENT_KEYS
+
+from compute.acs2020 import calculate_acs2020_v1, calculate_acs2020_v2
+from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
+from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
+from compute.amed import calculate_amed
 from compute.dash import calculate_dash
 from compute.dashi import calculate_dashi
-from compute.amed import calculate_amed
+from compute.dii import calculate_dii
+from compute.hei import (
+    calculate_hei_2015,
+    calculate_hei_2020,
+    calculate_hei_toddlers_2020,
+)
 from compute.medi import calculate_medi, calculate_medi_v2
-from compute.hei import calculate_hei_2015, calculate_hei_2020, calculate_hei_toddlers_2020
 from compute.phdi import calculate_phdi, calculate_phdi_v2
-from compute.acs2020 import calculate_acs2020_v1, calculate_acs2020_v2
 
 
 def load_template():
