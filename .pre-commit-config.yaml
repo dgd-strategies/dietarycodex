@@ -43,3 +43,8 @@ repos:
         entry: pytest -q
         language: system
         pass_filenames: false
+      - id: check-template
+        name: validate template csv
+        entry: bash scripts/check_template_scores.sh
+        language: system
+        pass_filenames: false
