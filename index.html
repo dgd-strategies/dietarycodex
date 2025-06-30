@@ -350,7 +350,8 @@
           downloadBtn.disabled = true;
           return;
         }
-        const scoreRows = wasm.score_json(JSON.stringify(mapped));
+        const rawRows = wasm.score_json(JSON.stringify(mapped));
+        const scoreRows = rawRows.map(r => Object.fromEntries(r));
         const combined = mapped.map((r,i) => ({...r, ...(scoreRows[i]||{})}));
         const csvText = jsonToCsv(combined);
         const scoreNames = Object.keys(scoreRows[0] || {});
