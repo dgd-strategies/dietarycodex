@@ -267,19 +267,27 @@
     }
     async function loadWasm() {
       if (!wasmReady) {
-        const load = () => import('./pkg/dietarycodex.js')
-          .catch(() => import('./assets/wasm/dietarycodex.js'));
-        wasmReady = load()
-          .then(async m => {
-            await m.default();
-            return m;
-          })
-          .catch(err => {
-            wasmStatus.textContent = 'WASM load failed';
-            wasmStatus.className = 'ms-auto small text-danger';
-            console.error('WASM init failed', err);
-            throw err;
-          });
+        wasmReady = (async () => {
+          try {
+            const mod = await import('./pkg/dietarycodex.js');
+            await mod.default();
+            return mod;
+          } catch (_) {
+            try {
+              const mod = await import('./assets/wasm/dietarycodex.js');
+              const res = await fetch('./assets/wasm/dietarycodex_bg.wasm.b64');
+              const b64 = await res.text();
+              const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+              mod.initSync(bytes);
+              return mod;
+            } catch (err) {
+              wasmStatus.textContent = 'WASM load failed';
+              wasmStatus.className = 'ms-auto small text-danger';
+              console.error('WASM init failed', err);
+              throw err;
+            }
+          }
+        })();
       }
       return wasmReady;
     }
@@ -665,6 +673,7 @@
       progressBar.style.width = '30%';
       statusBox.textContent = 'Scoring...';
       statusBox.className = 'text-info';
+      console.info('Scoring started', { rows: data.length });
       try {
         const mapped = prepareForScoring(applyColumnMapping(data));
         const wasm = await loadWasm();
@@ -732,6 +741,7 @@
           statusInfo[idx] = vals.length ? 'valid' : 'NaN';
         });
         summaryJson = JSON.stringify({column_mapping: colMap, missing_columns: [], status: statusInfo, warnings: []}, null, 2);
+        console.info('Scoring succeeded', { indices: scoreNames.length });
         setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 300);
       } catch(err) {
         console.error('Scoring failed', err);
