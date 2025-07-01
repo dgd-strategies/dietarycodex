@@ -590,8 +590,9 @@
       const text = await file.text();
       currentData = csvToJson(text);
       const mapped = applyColumnMapping(currentData);
-      const headers = Object.keys(mapped[0] || {});
-      detectUnits(headers, mapped);
+      const origHeaders = Object.keys(mapped[0] || {});
+      detectUnits(origHeaders, mapped);
+      let headers = Object.keys(mapped[0] || {});
       const sample = mapped.slice(0,5);
       let html = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
       html += '<tr>' + headers.map(h => {
@@ -616,9 +617,10 @@
       const wasm = await loadWasm();
       const audit = runSchemaAudit(mapped);
       const previewForMissing = prepareForScoring(mapped);
+      const finalHeaders = Object.keys(previewForMissing[0] || {});
       const missing = wasm.missing_fields(JSON.stringify(previewForMissing[0]||{}));
-      const sugg = suggestMapping(missing, headers);
-      let diag = `<div><b>Detected columns:</b> ${headers.join(', ')}</div>`;
+      const sugg = suggestMapping(missing, origHeaders);
+      let diag = `<div><b>Detected columns:</b> ${finalHeaders.join(', ')}</div>`;
       diag += `<div><b>Required columns:</b> ${required.join(', ')}</div>`;
       if (audit.extra.length) {
         diag += `<div class='text-info mt-2'>Extra columns: ${audit.extra.join(', ')}</div>`;
