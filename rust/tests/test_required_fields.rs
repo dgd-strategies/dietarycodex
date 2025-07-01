@@ -7,6 +7,10 @@ fn template_contains_required_fields() {
     let header_line = csv_text.lines().next().expect("empty csv");
     let headers: Vec<&str> = header_line.split(',').map(|s| s.trim()).collect();
     for field in NutritionVector::all_field_names() {
-        assert!(headers.contains(&field), "template.csv missing required column {}", field);
+        assert!(
+            headers.contains(&field),
+            "template.csv missing required column {}",
+            field
+        );
     }
 }

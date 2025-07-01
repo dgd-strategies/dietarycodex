@@ -1,6 +1,6 @@
 use dietarycodex::nutrition_vector::NutritionVector;
-use std::collections::HashMap;
 use serde_json;
+use std::collections::HashMap;
 use std::fs;
 
 fn full_map() -> HashMap<String, f64> {
@@ -41,7 +41,9 @@ fn unmapped_field_fails() {
     map.insert("alcohol_content".to_string(), 1.0);
     let err = NutritionVector::from_map(&map).unwrap_err();
     assert!(err.missing_canonical_fields.contains(&"alcohol_g"));
-    assert!(err.unmapped_aliases.contains(&"alcohol_content".to_string()));
+    assert!(err
+        .unmapped_aliases
+        .contains(&"alcohol_content".to_string()));
 }
 
 #[test]

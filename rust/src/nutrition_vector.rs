@@ -1,7 +1,7 @@
+use once_cell::sync::Lazy;
 use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
-use once_cell::sync::Lazy;
 #[cfg(feature = "hot_reload_aliases")]
 use std::sync::RwLock;
 
@@ -46,8 +46,8 @@ pub struct NutritionVector {
 
 static REQUIRED_COLUMNS_JSON: &str = include_str!("../../schema/required_columns.json");
 static ALL_FIELD_NAMES: Lazy<Vec<&'static str>> = Lazy::new(|| {
-    let vals: Vec<String> = serde_json::from_str(REQUIRED_COLUMNS_JSON)
-        .expect("invalid required_columns.json");
+    let vals: Vec<String> =
+        serde_json::from_str(REQUIRED_COLUMNS_JSON).expect("invalid required_columns.json");
     vals.into_iter()
         .map(|s| Box::leak(s.into_boxed_str()) as &'static str)
         .collect()
@@ -69,15 +69,17 @@ static FIELD_ALIAS_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(||
             .copied()
             .find(|f| *f == canonical)
             .unwrap_or_else(|| panic!("alias {} refers to unknown field {}", alias, canonical));
-        map.insert(Box::leak(alias.to_ascii_lowercase().into_boxed_str()), canonical_static);
+        map.insert(
+            Box::leak(alias.to_ascii_lowercase().into_boxed_str()),
+            canonical_static,
+        );
     }
     map
 });
 
 #[cfg(feature = "hot_reload_aliases")]
-static FIELD_ALIAS_MAP: Lazy<RwLock<HashMap<String, &'static str>>> = Lazy::new(|| {
-    RwLock::new(load_alias_map())
-});
+static FIELD_ALIAS_MAP: Lazy<RwLock<HashMap<String, &'static str>>> =
+    Lazy::new(|| RwLock::new(load_alias_map()));
 
 #[cfg(feature = "hot_reload_aliases")]
 fn load_alias_map() -> HashMap<String, &'static str> {
@@ -86,7 +88,8 @@ fn load_alias_map() -> HashMap<String, &'static str> {
 
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../schema/field_aliases.json");
     let data = fs::read_to_string(path).expect("read field_aliases.json");
-    let raw: HashMap<String, String> = serde_json::from_str(&data).expect("invalid field_aliases.json");
+    let raw: HashMap<String, String> =
+        serde_json::from_str(&data).expect("invalid field_aliases.json");
     let mut map: HashMap<String, &'static str> = HashMap::new();
     for &field in ALL_FIELD_NAMES.iter() {
         map.insert(field.to_string(), field);
@@ -111,7 +114,9 @@ pub fn reload_aliases() {
 
 #[cfg(not(feature = "hot_reload_aliases"))]
 fn canonical_field(name: &str) -> Option<&'static str> {
-    FIELD_ALIAS_MAP.get(&name.to_ascii_lowercase() as &str).copied()
+    FIELD_ALIAS_MAP
+        .get(&name.to_ascii_lowercase() as &str)
+        .copied()
 }
 
 #[cfg(feature = "hot_reload_aliases")]

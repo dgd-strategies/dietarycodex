@@ -1,4 +1,5 @@
 use super::{capped_score, DietScore, FieldDeps};
+use crate::contracts;
 use crate::nutrition_vector::NutritionVector;
 
 pub struct Acs2020Scorer;
@@ -9,15 +10,7 @@ impl FieldDeps for Acs2020Scorer {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &[
-            "alcohol_g",
-            "legumes_g",
-            "red_meat_g",
-            "sugar_g",
-            "total_fruits_g",
-            "vegetables_g",
-            "whole_grains_g",
-        ]
+        contracts::required_fields("ACS2020")
     }
 }
 

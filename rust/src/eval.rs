@@ -1,17 +1,19 @@
+use crate::contracts;
 use crate::nutrition_vector::{NutritionVector, SchemaError};
 use crate::scores::all_scorers;
 use serde::Serialize;
 use std::collections::HashMap;
 
-#[derive(Debug, Serialize, PartialEq)]
-pub enum ScorerStatus {
-    Complete(f64),
-    Skipped { reason: String },
+#[derive(Debug, Serialize, PartialEq, Clone)]
+pub struct ScoreInfo {
+    pub value: Option<f64>,
+    pub valid: bool,
+    pub explanation: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
 pub struct ScoreResult {
-    pub scores: HashMap<String, ScorerStatus>,
+    pub scores: HashMap<String, ScoreInfo>,
     pub ordered_names: Vec<String>,
 }
 
@@ -37,15 +39,32 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
             .filter(|f| missing.contains(f))
             .collect();
         missing_fields.sort();
-        let status = if missing_fields.is_empty() {
-            ScorerStatus::Complete(calc.evaluate(nv))
+        let info = if missing_fields.is_empty() {
+            let value = calc.evaluate(nv);
+            let range = contracts::range(&name);
+            let mut valid = true;
+            let mut explanation = None;
+            if value.is_nan() {
+                valid = false;
+                explanation = Some("logic bug: produced NaN".to_string());
+            } else if !range[0].is_nan() && (value < range[0] || value > range[1]) {
+                valid = false;
+                explanation = Some(format!("out of range [{}, {}]", range[0], range[1]));
+            }
+            ScoreInfo {
+                value: Some(value),
+                valid,
+                explanation,
+            }
         } else {
-            ScorerStatus::Skipped {
-                reason: format!("missing fields: {}", missing_fields.join(", ")),
+            ScoreInfo {
+                value: None,
+                valid: false,
+                explanation: Some(format!("missing fields: {}", missing_fields.join(", "))),
             }
         };
         ordered.push(name.clone());
-        results.insert(name, status);
+        results.insert(name, info);
     }
     ScoreResult {
         scores: results,
@@ -71,9 +90,12 @@ pub fn skipped_scores(result: &ScoreResult) -> Vec<(String, String)> {
         .ordered_names
         .iter()
         .filter_map(|name| {
-            result.scores.get(name).and_then(|s| match s {
-                ScorerStatus::Skipped { reason } => Some((name.clone(), reason.clone())),
-                _ => None,
+            result.scores.get(name).and_then(|s| {
+                if s.value.is_none() {
+                    Some((name.clone(), s.explanation.clone().unwrap_or_default()))
+                } else {
+                    None
+                }
             })
         })
         .collect();

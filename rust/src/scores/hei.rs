@@ -1,4 +1,5 @@
 use super::{DietScore, FieldDeps};
+use crate::contracts;
 use crate::nutrition_vector::NutritionVector;
 
 pub struct HeiScorer;
@@ -9,7 +10,7 @@ impl FieldDeps for HeiScorer {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &["sodium_mg", "total_fruits_g", "whole_grains_g"]
+        contracts::required_fields("HEI")
     }
 }
 

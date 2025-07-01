@@ -1,4 +1,5 @@
 use super::{capped_score, DietScore, FieldDeps};
+use crate::contracts;
 use crate::nutrition_vector::NutritionVector;
 
 pub struct DashiScorer;
@@ -9,13 +10,7 @@ impl FieldDeps for DashiScorer {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &[
-            "calcium_mg",
-            "sodium_mg",
-            "total_fruits_g",
-            "vegetables_g",
-            "whole_grains_g",
-        ]
+        contracts::required_fields("DASHI")
     }
 }
 
