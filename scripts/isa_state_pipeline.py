@@ -49,15 +49,22 @@ def detect_missing_fields(schema: Dict[str, Any]) -> List[str]:
     return list(missing)
 
 
-def update_state() -> None:
+def compute_state() -> tuple[Dict[str, Any], Dict[str, Any]]:
+    """Return the state and todo structures without writing them."""
     schema = gather_schema_info()
     state = load_json(STATE_FILE)
     state["timestamp"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     state.setdefault("observed_changes", [])
     state.setdefault("recent_mappings", [])
     state["scoring_priority"] = schema.get("scoring_priority.json", {})
-    save_json(STATE_FILE, state)
     todo = {"missing_fields": detect_missing_fields(schema)}
+    return state, todo
+
+
+def update_state() -> None:
+    """Write the computed ISA state to disk."""
+    state, todo = compute_state()
+    save_json(STATE_FILE, state)
     save_json(TODO_FILE, todo)
 
 

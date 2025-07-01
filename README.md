@@ -153,6 +153,13 @@ pytest tests/ --cov
   New mappings are written to `schema/food_components.json` and a session log is
   appended to `codex_session_enrichment.log`.
 
+- **Record session directives** whenever Codex receives notable instructions:
+  ```bash
+  python scripts/session_directives.py "short summary" --commit $(git rev-parse HEAD)
+  ```
+  The log lives at `.codex/session_directives.log` and automatically archives
+  older entries.
+
 ---
 
 ## Validation

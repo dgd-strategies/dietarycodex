@@ -2,7 +2,6 @@
 """Synchronously refresh ISA state before running hooks."""
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -14,8 +13,6 @@ def main() -> None:
     from scripts.isa_state_pipeline import update_state
 
     update_state()
-    # Stage changes so subsequent hooks see the updated state
-    os.system("git add ISA_STATE.json schema_todo.json")
 
 
 if __name__ == "__main__":

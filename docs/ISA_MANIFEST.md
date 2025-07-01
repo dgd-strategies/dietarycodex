@@ -7,13 +7,14 @@ scoring contracts up to date without manual effort.
 
 The implementation is lightweight. A background script collects new field
 aliases and records proposed changes under `.codex/` so maintainers can
-review them. Pre-commit hooks run these checks automatically. Following a
-user override, Codex may also spawn ephemeral, session-scoped ISA threads
-whenever the primary user initiates a session.
+review them. Following a user override, Codex may also spawn ephemeral,
+session-scoped ISA threads whenever the primary user initiates a session.
 
-`scripts/isa_state_pipeline.py` powers these updates. It runs in a
-background thread during pre-commit to update `ISA_STATE.json` and
-`schema_todo.json` with any missing canonical fields.
+`scripts/isa_state_pipeline.py` powers these updates. The state file is
+refreshed **before** pre-commit runs and committed if changes occur.
+Pre-commit only validates that `ISA_STATE.json` and `schema_todo.json`
+match the computed values; it will fail if they are outdated but will not
+write to disk.
 
 ## Last Update
 
