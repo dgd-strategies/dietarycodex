@@ -23,5 +23,5 @@ const rows = lines.slice(1).map(line => {
 });
 
 const raw = score_json(JSON.stringify(rows));
-const data = raw.map(m => Object.fromEntries(m));
+const data = raw.rows.map(r => Object.fromEntries(r.scores));
 console.log(JSON.stringify(data));

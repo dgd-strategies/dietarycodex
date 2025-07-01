@@ -1,5 +1,5 @@
 use crate::contracts;
-use crate::nutrition_vector::{NutritionVector, SchemaError};
+use crate::nutrition_vector::{InputTrace, NutritionVector, SchemaError};
 use crate::scores::all_scorers;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -15,6 +15,7 @@ pub struct ScoreInfo {
 pub struct ScoreResult {
     pub scores: HashMap<String, ScoreInfo>,
     pub ordered_names: Vec<String>,
+    pub trace: InputTrace,
 }
 
 pub fn evaluate_all_scores(nv: &NutritionVector) -> Result<ScoreResult, SchemaError> {
@@ -69,6 +70,7 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
     ScoreResult {
         scores: results,
         ordered_names: ordered,
+        trace: InputTrace::from_nv(nv),
     }
 }
 

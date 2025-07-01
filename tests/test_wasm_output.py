@@ -47,8 +47,8 @@ const data = JSON.stringify([{{
   alcohol_g: 1
 }}]);
 const raw = score_json(data);
-const plain = raw.map(r => Object.fromEntries(r));
-console.log(plain[0].DII && plain[0].DII.value !== undefined);
+const scores = Object.fromEntries(raw.rows[0].scores);
+console.log(scores.DII !== undefined);
 """
     )
     output = subprocess.check_output(["node", script], text=True).strip()
@@ -100,8 +100,8 @@ const data = JSON.stringify([{{
   trans_fat_g: 1
 }}]);
 const raw = score_json(data);
-const plain = raw.map(r => Object.fromEntries(r));
-console.log(plain[0].DII && plain[0].DII.value !== undefined);
+const scores = Object.fromEntries(raw.rows[0].scores);
+console.log(scores.DII !== undefined);
 """
     )
     output = subprocess.check_output(["node", script], text=True).strip()
