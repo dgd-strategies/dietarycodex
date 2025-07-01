@@ -1,4 +1,4 @@
-use crate::nutrition_vector::NutritionVector;
+use crate::nutrition_vector::{NutritionVector, SchemaError};
 use crate::scores::all_scorers;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -15,10 +15,10 @@ pub struct ScoreResult {
     pub ordered_names: Vec<String>,
 }
 
-pub fn evaluate_all_scores(nv: &NutritionVector) -> Result<ScoreResult, Vec<&'static str>> {
+pub fn evaluate_all_scores(nv: &NutritionVector) -> Result<ScoreResult, SchemaError> {
     let missing = nv.missing_fields();
     if !missing.is_empty() {
-        return Err(missing);
+        return Err(SchemaError::new(missing, Vec::new()));
     }
     Ok(evaluate_allow_partial(nv))
 }
@@ -56,7 +56,7 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
 pub fn print_scores_as_json(nv: &NutritionVector) -> String {
     match evaluate_all_scores(nv) {
         Ok(result) => serde_json::to_string_pretty(&result).unwrap_or_else(|_| "{}".to_string()),
-        Err(missing) => serde_json::to_string_pretty(&missing).unwrap_or_else(|_| "{}".to_string()),
+        Err(err) => serde_json::to_string_pretty(&err).unwrap_or_else(|_| "{}".to_string()),
     }
 }
 

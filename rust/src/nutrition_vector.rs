@@ -2,6 +2,8 @@ use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
 use once_cell::sync::Lazy;
+#[cfg(feature = "hot_reload_aliases")]
+use std::sync::RwLock;
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct NutritionVector {
@@ -52,6 +54,8 @@ static ALL_FIELD_NAMES: Lazy<Vec<&'static str>> = Lazy::new(|| {
 });
 
 static FIELD_ALIASES_JSON: &str = include_str!("../../schema/field_aliases.json");
+
+#[cfg(not(feature = "hot_reload_aliases"))]
 static FIELD_ALIAS_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {
     let raw: HashMap<String, String> =
         serde_json::from_str(FIELD_ALIASES_JSON).expect("invalid field_aliases.json");
@@ -70,8 +74,53 @@ static FIELD_ALIAS_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(||
     map
 });
 
+#[cfg(feature = "hot_reload_aliases")]
+static FIELD_ALIAS_MAP: Lazy<RwLock<HashMap<String, &'static str>>> = Lazy::new(|| {
+    RwLock::new(load_alias_map())
+});
+
+#[cfg(feature = "hot_reload_aliases")]
+fn load_alias_map() -> HashMap<String, &'static str> {
+    use std::fs;
+    use std::path::Path;
+
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../schema/field_aliases.json");
+    let data = fs::read_to_string(path).expect("read field_aliases.json");
+    let raw: HashMap<String, String> = serde_json::from_str(&data).expect("invalid field_aliases.json");
+    let mut map: HashMap<String, &'static str> = HashMap::new();
+    for &field in ALL_FIELD_NAMES.iter() {
+        map.insert(field.to_string(), field);
+    }
+    for (alias, canonical) in raw {
+        let canonical_static = ALL_FIELD_NAMES
+            .iter()
+            .copied()
+            .find(|f| *f == canonical)
+            .unwrap_or_else(|| panic!("alias {} refers to unknown field {}", alias, canonical));
+        map.insert(alias.to_ascii_lowercase(), canonical_static);
+    }
+    map
+}
+
+#[cfg(feature = "hot_reload_aliases")]
+pub fn reload_aliases() {
+    let new_map = load_alias_map();
+    let mut guard = FIELD_ALIAS_MAP.write().unwrap();
+    *guard = new_map;
+}
+
+#[cfg(not(feature = "hot_reload_aliases"))]
 fn canonical_field(name: &str) -> Option<&'static str> {
     FIELD_ALIAS_MAP.get(&name.to_ascii_lowercase() as &str).copied()
+}
+
+#[cfg(feature = "hot_reload_aliases")]
+fn canonical_field(name: &str) -> Option<&'static str> {
+    FIELD_ALIAS_MAP
+        .read()
+        .unwrap()
+        .get(&name.to_ascii_lowercase())
+        .copied()
 }
 
 fn guess_canonical(name: &str) -> Option<&'static str> {
@@ -82,10 +131,39 @@ fn guess_canonical(name: &str) -> Option<&'static str> {
         .find(|f| lower.contains(f.trim_end_matches("_g")))
 }
 
-#[derive(Debug, PartialEq)]
+use serde::Serialize;
+
+#[derive(Debug, PartialEq, Serialize)]
 pub struct SchemaError {
-    pub missing_fields: Vec<&'static str>,
-    pub suggestions: Vec<(String, &'static str)>,
+    pub missing_canonical_fields: Vec<&'static str>,
+    pub unmapped_aliases: Vec<String>,
+    pub index_dependencies: HashMap<&'static str, Vec<&'static str>>,
+}
+
+impl SchemaError {
+    pub fn new(missing: Vec<&'static str>, unmapped: Vec<String>) -> Self {
+        use crate::scores::registry::all_score_metadata;
+        let mut deps: HashMap<&'static str, Vec<&'static str>> = HashMap::new();
+        let metas = all_score_metadata();
+        for field in &missing {
+            let indices: Vec<&'static str> = metas
+                .iter()
+                .filter_map(|m| {
+                    if m.required_fields.contains(field) {
+                        Some(m.name)
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+            deps.insert(*field, indices);
+        }
+        SchemaError {
+            missing_canonical_fields: missing,
+            unmapped_aliases: unmapped,
+            index_dependencies: deps,
+        }
+    }
 }
 
 impl NutritionVector {
@@ -138,25 +216,21 @@ impl NutritionVector {
 
     pub fn from_map(data: &HashMap<String, f64>) -> Result<Self, SchemaError> {
         let mut obj = serde_json::Map::new();
-        let mut suggestions = Vec::new();
+        let mut unmapped = Vec::new();
         for (k, v) in data {
             match canonical_field(k) {
                 Some(canon) => {
                     obj.insert(canon.to_string(), serde_json::json!(v));
                 }
                 None => {
-                    if let Some(guess) = guess_canonical(k) {
-                        suggestions.push((k.clone(), guess));
-                    } else {
-                        suggestions.push((k.clone(), ""));
-                    }
+                    unmapped.push(k.clone());
                 }
             }
         }
         let nv: NutritionVector = serde_json::from_value(Value::Object(obj)).unwrap_or_default();
         let missing = nv.missing_fields();
-        if !missing.is_empty() || !suggestions.is_empty() {
-            return Err(SchemaError { missing_fields: missing, suggestions });
+        if !missing.is_empty() || !unmapped.is_empty() {
+            return Err(SchemaError::new(missing, unmapped));
         }
         Ok(nv)
     }

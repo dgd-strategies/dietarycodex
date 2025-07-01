@@ -222,8 +222,8 @@ fn returns_err_with_missing_fields() {
         ..Default::default()
     };
     let err = evaluate_all_scores(&nv).unwrap_err();
-    assert!(err.contains(&"fat_g"));
-    assert!(err.contains(&"saturated_fat_g"));
+    assert!(err.missing_canonical_fields.contains(&"fat_g"));
+    assert!(err.missing_canonical_fields.contains(&"saturated_fat_g"));
 }
 
 #[test]
