@@ -1,12 +1,12 @@
+use crate::acs2020_ingest::{is_acs2020_sheet, resolve_acs2020_headers};
 use crate::eval::evaluate_allow_partial;
+use crate::hcsn_ingest::{is_hcsn_sheet, resolve_hcsn_headers};
+use crate::nhanes_ingest::{is_nhanes_sheet, resolve_nhanes_headers};
 use crate::nutrition_vector::{InputTrace, NutritionVector};
 use crate::unmapped_monitor::UNMAPPED_MONITOR;
-use crate::nhanes_ingest::{is_nhanes_sheet, resolve_nhanes_headers};
-use crate::acs2020_ingest::{is_acs2020_sheet, resolve_acs2020_headers};
-use crate::hcsn_ingest::{is_hcsn_sheet, resolve_hcsn_headers};
-use serde_json::Value;
 use console_error_panic_hook;
 use serde_json;
+use serde_json::Value;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -16,8 +16,18 @@ pub fn init() {
 
 #[wasm_bindgen]
 pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
+    let val: Value = serde_json::from_str(json).map_err(|e| JsValue::from_str(&e.to_string()))?;
+    let data_val = match &val {
+        Value::Array(_) => val.clone(),
+        Value::Object(map) => map
+            .get("values")
+            .cloned()
+            .ok_or_else(|| JsValue::from_str("expected array or object with 'values'"))?,
+        _ => return Err(JsValue::from_str("invalid json")),
+    };
+    let arr_str = serde_json::to_string(&data_val).unwrap();
     let mut records: Vec<std::collections::HashMap<String, Value>> =
-        serde_json::from_str(json).map_err(|e| JsValue::from_str(&e.to_string()))?;
+        serde_json::from_str(&arr_str).map_err(|e| JsValue::from_str(&e.to_string()))?;
 
     if let Some(first) = records.first() {
         let headers: Vec<String> = first.keys().cloned().collect();
@@ -72,9 +82,12 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
     }
 
     let mut out: Vec<RowOutput> = Vec::new();
-    let mut score_counts: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
-    let mut missing_counts: std::collections::HashMap<&'static str, usize> = std::collections::HashMap::new();
-    let mut alias_counts: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
+    let mut score_counts: std::collections::HashMap<String, usize> =
+        std::collections::HashMap::new();
+    let mut missing_counts: std::collections::HashMap<&'static str, usize> =
+        std::collections::HashMap::new();
+    let mut alias_counts: std::collections::HashMap<String, usize> =
+        std::collections::HashMap::new();
 
     for map in records {
         let (nv, trace) = NutritionVector::from_partial_map(&map);
@@ -140,7 +153,10 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
         most_missing: miss_vec,
         alias_hits: alias_vec,
     };
-    let result = Output { rows: out, coverage };
+    let result = Output {
+        rows: out,
+        coverage,
+    };
     serde_wasm_bindgen::to_value(&result).map_err(|e| JsValue::from_str(&e.to_string()))
 }
 

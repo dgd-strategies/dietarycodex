@@ -88,6 +88,11 @@
                 </div>
                 <div id="diagnostics" class="my-3 small"></div>
                 <div id="statusBox" class="my-2"></div>
+                <div id="progressWrap" class="progress mb-2" style="display:none;">
+                    <div id="progressBar"
+                         class="progress-bar progress-bar-striped progress-bar-animated"
+                         style="width:0%"></div>
+                </div>
                 <div class="d-flex gap-2 mb-2">
                     <button id="scoreBtn" class="btn btn-primary" disabled>Score</button>
                     <button id="downloadBtn" class="btn btn-secondary" disabled>Download CSV</button>
@@ -238,6 +243,8 @@
     const downloadBtn = document.getElementById('downloadBtn');
     const downloadJsonBtn = document.getElementById('downloadJsonBtn');
     const summaryHeader = document.getElementById('summaryHeader');
+    const progressWrap = document.getElementById('progressWrap');
+    const progressBar = document.getElementById('progressBar');
     const sumFile = document.getElementById('sumFile');
     const sumIndices = document.getElementById('sumIndices');
     const sumNaNs = document.getElementById('sumNaNs');
@@ -379,6 +386,20 @@
       return str.toLowerCase().replace(/[^a-z0-9]/g, '');
     }
 
+    function levenshtein(a, b) {
+      const m = a.length, n = b.length;
+      const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+      for (let i = 0; i <= m; i++) dp[i][0] = i;
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+        }
+      }
+      return dp[m][n];
+    }
+
     function suggestMapping(missing, headers) {
       const normHeaders = headers.map(h => normalize(h));
       const suggestions = {};
@@ -387,25 +408,22 @@
         let best = null;
         let bestDist = Infinity;
         normHeaders.forEach((nh, idx) => {
-          if (nh.includes(nm) || nm.includes(nh)) {
+          const d = levenshtein(nm, nh);
+          if (d < bestDist) {
             best = headers[idx];
-            bestDist = 0;
-          } else {
-            const d = Math.abs(nh.length - nm.length);
-            if (d < bestDist && nh[0] === nm[0]) {
-              best = headers[idx];
-              bestDist = d;
-            }
+            bestDist = d;
           }
         });
-        if (best) suggestions[m] = best;
+        if (best && bestDist <= Math.max(nm.length, best.length) / 2) {
+          suggestions[m] = best;
+        }
       });
       return suggestions;
     }
 
     function showMappingUI(missing, headers) {
       const saved = JSON.parse(localStorage.getItem('colMap') || '{}');
-      let html = '<h3>Map Columns</h3><form id="mapForm">';
+      let html = '<div class="alert alert-warning"><h5>Confirm Column Mapping</h5><form id="mapForm">';
       missing.forEach(col => {
         html += `<div class='mb-2'><label class='me-2'>${col}</label>`;
         html += `<select class='form-select d-inline w-auto' data-key='${col}'>`;
@@ -416,7 +434,7 @@
         });
         html += '</select></div>';
       });
-      html += "<button type='submit' class='btn btn-primary mt-2'>Save Mapping</button></form>";
+      html += "<button type='submit' class='btn btn-primary mt-2'>Save Mapping</button></form></div>";
       resultBox.innerHTML = html;
       document.getElementById('mapForm').addEventListener('submit', e => {
         e.preventDefault();
@@ -481,6 +499,11 @@
         // wasmStatus updated in loadWasm
         return;
       }
+      const last = localStorage.getItem('lastScoreTime');
+      if (last) {
+        sumTime.textContent = `Last score: ${last}`;
+        summaryHeader.classList.remove('d-none');
+      }
       try {
         const res = await fetch('./data/template.csv');
         if (!res.ok) throw new Error(`template load ${res.status}`);
@@ -529,7 +552,7 @@
       }
       if (missing.length) {
         diag += `<div class='text-warning mt-2'>Missing columns: ${missing.join(', ')}</div>`;
-        diag += `<form id='mapForm' class='mt-2'>`;
+        diag += `<div class='alert alert-warning mt-2'><form id='mapForm'>`;
         missing.forEach(col => {
           diag += `<div class='mb-2'><label class='me-2'>${col}</label>`;
           diag += `<select class='form-select d-inline w-auto' data-key='${col}'>`;
@@ -540,7 +563,7 @@
           });
           diag += '</select></div>';
         });
-        diag += "<button type='submit' class='btn btn-primary btn-sm'>Save Mapping</button></form>";
+        diag += "<button type='submit' class='btn btn-primary btn-sm'>Save Mapping</button></form></div>";
       }
       diagnostics.innerHTML = diag;
       const form = document.getElementById('mapForm');
@@ -558,7 +581,13 @@
    }
 
     async function computeFile(data, name) {
+      if (!Array.isArray(data)) {
+        resultBox.innerHTML = "<div class='alert alert-danger'>Invalid input format</div>";
+        return;
+      }
       loading.style.display = 'block';
+      progressWrap.style.display = 'block';
+      progressBar.style.width = '30%';
       statusBox.textContent = 'Scoring...';
       statusBox.className = 'text-info';
       try {
@@ -566,16 +595,13 @@
         const wasm = await loadWasm();
         const missing = wasm.missing_fields(JSON.stringify(mapped[0]||{}));
         if (missing.length) {
-          resultBox.innerHTML = `<div class='error'>Missing columns: ${missing.join(', ')}</div>`;
-          downloadBtn.disabled = true;
-          downloadJsonBtn.disabled = true;
-          statusBox.textContent = 'Failed: missing columns';
-          statusBox.className = 'text-danger';
+          statusBox.textContent = 'Scoring with missing columns';
+          statusBox.className = 'text-warning';
           showMappingUI(missing, Object.keys(mapped[0] || {}));
-          return;
         }
-        const rawRows = wasm.score_json(JSON.stringify(mapped));
-        const scoreRows = rawRows.map(r => Object.fromEntries(r));
+        const res = wasm.score_json(JSON.stringify(mapped));
+        const rowData = Array.isArray(res) ? res : (res.rows || []);
+        const scoreRows = rowData.map(r => r.scores || Object.fromEntries(r));
         const combined = mapped.map((r,i) => ({...r, ...(scoreRows[i]||{})}));
         const csvText = jsonToCsv(combined);
         const scoreNames = Object.keys(scoreRows[0] || {});
@@ -610,6 +636,8 @@
         const time = new Date().toLocaleTimeString();
         statusBox.textContent = `Scoring complete at ${time}`;
         statusBox.className = 'text-success';
+        progressBar.style.width = '100%';
+        localStorage.setItem('lastScoreTime', time);
         let success = 0; let nanCt = 0;
         scoreNames.forEach(idx => {
           const valsAll = scoreRows.map(r => r[idx]);
@@ -629,14 +657,17 @@
           statusInfo[idx] = vals.length ? 'valid' : 'NaN';
         });
         summaryJson = JSON.stringify({column_mapping: colMap, missing_columns: [], status: statusInfo, warnings: []}, null, 2);
+        setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 300);
       } catch(err) {
         console.error('Scoring failed', err);
         let msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-        resultBox.innerHTML = `<div class='error'><b>${msg}</b></div>`;
+        resultBox.innerHTML = `<div class='alert alert-danger'><b>Scoring failed:</b> ${msg}<br />Check the console and column mapping for details.</div>`;
         statusBox.textContent = 'Scoring failed';
         statusBox.className = 'text-danger';
+        progressBar.style.width = '100%';
       } finally {
         loading.style.display = 'none';
+        setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 300);
       }
     }
         </script>
