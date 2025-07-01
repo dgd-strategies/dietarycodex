@@ -20,7 +20,9 @@ LOG_DIR = Path("logs/knowledge_sync")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 SOURCES = {
-    "nutriverse/dietaryindex": "https://raw.githubusercontent.com/nutriverse/dietaryindex/main/README.md",
+    "nutriverse/dietaryindex": (
+        "https://raw.githubusercontent.com/nutriverse/" "dietaryindex/main/README.md"
+    ),
     # Additional sources can be added here
 }
 

@@ -117,3 +117,10 @@ This phase enforces output validation in the Rust scoring engine and ensures eve
 | ACS2020_V1 | 2 |
 | ACS2020_V2 | 2 |
 | ACS2020_V3 | 2 |
+
+## Intelligent System Agent
+The repository includes a lightweight "Intelligent System Agent" (ISA)
+that records proposed schema updates under `.codex/`.  See
+[docs/ISA_MANIFEST.md](docs/ISA_MANIFEST.md) for details on its scope and
+recent activity.  ISA actions run as part of the pre-commit hook but do
+not persist any background daemon.

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#!/usr/bin/env python3
 """Review unmapped field log and suggest updates to food_components.json."""
 
 from __future__ import annotations
