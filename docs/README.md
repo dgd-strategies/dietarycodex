@@ -16,6 +16,7 @@ Welcome to the documentation portal for the **Dietary Index Web Calculator**. Th
   - [OpenAPI Spec](#openapi-spec)
 - [Validation & Scoring Standards](#validation--scoring-standards)
 - [CSV Template](#csv-template)
+- [Mapping Autonomy](MAPPING_AUTONOMY.md)
 - [Development Workflow](#development-workflow)
 - [Contributing](#contributing)
 - [Roadmap & OKRs](okrs.md)
@@ -169,6 +170,8 @@ before validation.
   Commit only the `.b64` file.
 - **Optional API**: `make dev`
 - **CI**: GitHub Actions runs on push/PR (`.github/workflows/ci.yml`)
+- **Review Unmapped Fields**: run `scripts/review_unmapped.py` to generate
+  pending food mappings based on `data/unmapped_fields.json`.
 
 ## CI Scoring Validation Pipeline
 

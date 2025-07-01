@@ -7,3 +7,4 @@ pub mod acs2020_ingest;
 pub mod hcsn_ingest;
 pub mod wasm;
 pub mod food_item_resolver;
+pub mod unmapped_monitor;

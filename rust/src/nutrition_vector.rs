@@ -3,6 +3,7 @@ use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
 use crate::food_item_resolver::{FOOD_RESOLVER, TranslationEntry};
+use crate::unmapped_monitor::UNMAPPED_MONITOR;
 use log::info;
 #[cfg(feature = "hot_reload_aliases")]
 use std::sync::RwLock;
@@ -348,6 +349,7 @@ impl NutritionVector {
                         }
                     } else {
                         info!("TODO: map food field {}", k);
+                        UNMAPPED_MONITOR.log(k, Some(*v));
                         unmapped.push(k.clone());
                     }
                 }
@@ -419,6 +421,7 @@ impl NutritionVector {
                     }
                 } else {
                     info!("TODO: map food field {}", k);
+                    UNMAPPED_MONITOR.log(k, Some(num));
                 }
             }
         }
