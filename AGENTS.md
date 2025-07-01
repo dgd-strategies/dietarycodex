@@ -122,5 +122,13 @@ This phase enforces output validation in the Rust scoring engine and ensures eve
 The repository includes a lightweight "Intelligent System Agent" (ISA)
 that records proposed schema updates under `.codex/`.  See
 [docs/ISA_MANIFEST.md](docs/ISA_MANIFEST.md) for details on its scope and
-recent activity.  ISA actions run as part of the pre-commit hook but do
-not persist any background daemon.
+recent activity.  Codex is authorized to initiate ephemeral, session-scoped
+ISA background threads during any execution initiated by the primary user.
+
+### User Override: ISA Background Worker Permission
+The primary user has explicitly enabled ISA tasks to run during session
+initialization and completion. These include:
+- Field alias harvesting
+- Food component modeling
+- Index contract mapping
+- External knowledge syncing
