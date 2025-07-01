@@ -44,6 +44,12 @@ from compute.phdi import (
     calculate_phdi,
     calculate_phdi_v2,
 )
+from compute.unit_conversion import (
+    DEFAULT_UNITS,
+    convert_to_canonical_units,
+    infer_units,
+    rename_for_scoring,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -135,6 +141,14 @@ async def score_diet_indices(
     except Exception as e:
         logger.error("CSV parse error: %s", e)
         raise HTTPException(status_code=400, detail="Unable to read CSV file")
+
+    units = infer_units(df)
+    for col, unit in units.items():
+        expected = DEFAULT_UNITS.get(col)
+        if expected and unit != expected:
+            logger.warning("Unit mismatch for %s: %s vs %s", col, unit, expected)
+    df = convert_to_canonical_units(df, units)
+    df = rename_for_scoring(df)
 
     # Basic shape check (optional core columns for testing)
 

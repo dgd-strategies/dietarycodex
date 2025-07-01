@@ -14,10 +14,12 @@ from compute.hei import (
 )
 from compute.medi import calculate_medi, calculate_medi_v2
 from compute.phdi import calculate_phdi, calculate_phdi_v2
+from compute.unit_conversion import rename_for_scoring
 
 
 def load_template():
     df = pd.read_csv("data/template.csv")
+    df = rename_for_scoring(df)
     if "gender" not in df:
         df["gender"] = 1
     if "total_kcal" not in df:
