@@ -20,6 +20,7 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
         scores: std::collections::BTreeMap<String, Option<f64>>,
         validity: std::collections::BTreeMap<String, (bool, Option<String>)>,
         trace: InputTrace,
+        errors: Vec<crate::eval::IndexError>,
     }
 
     let mut out: Vec<RowOutput> = Vec::new();
@@ -56,6 +57,7 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
             scores: scores_map,
             validity: validity_map,
             trace: result.trace,
+            errors: result.errors,
         });
     }
 

@@ -87,6 +87,11 @@ Deliver a web page that runs entirely client side. Users should upload any CSV a
 ## Q3.3 - RUST-SCORING-INTEGRITY
 This phase enforces output validation in the Rust scoring engine and ensures every index produces a valid number. A new document [`docs/SCORING_CONTRACTS.md`](docs/SCORING_CONTRACTS.md) lists expected ranges and required fields.
 
+### Canonical Input Schema
+* `data/template.csv` defines the authoritative header names and order.
+* All aliases listed in `schema/field_aliases.json` are resolved once at ingest
+  time, producing this canonical set.
+
 ### Test Coverage Matrix
 | Index | Dummy Rows |
 |-------|-----------|
