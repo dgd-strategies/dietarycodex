@@ -91,6 +91,8 @@ This phase enforces output validation in the Rust scoring engine and ensures eve
 * `data/template.csv` defines the authoritative header names and order.
 * All aliases listed in `schema/field_aliases.json` are resolved once at ingest
   time, producing this canonical set.
+* Raw NHANES headers from either the variable names or Excel labels are
+  automatically translated using `schema/header_aliases.json`.
 
 ### Test Coverage Matrix
 | Index | Dummy Rows |

@@ -1,5 +1,6 @@
 use crate::eval::evaluate_allow_partial;
 use crate::nutrition_vector::{InputTrace, NutritionVector};
+use crate::nhanes_ingest::{is_nhanes_sheet, resolve_nhanes_headers};
 use serde_json::Value;
 use console_error_panic_hook;
 use serde_json;
@@ -12,8 +13,26 @@ pub fn init() {
 
 #[wasm_bindgen]
 pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
-    let records: Vec<std::collections::HashMap<String, Value>> =
+    let mut records: Vec<std::collections::HashMap<String, Value>> =
         serde_json::from_str(json).map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+    if let Some(first) = records.first() {
+        let headers: Vec<String> = first.keys().cloned().collect();
+        if is_nhanes_sheet(&headers) {
+            let map = resolve_nhanes_headers(&headers);
+            for row in &mut records {
+                let mut new_row = std::collections::HashMap::new();
+                for (k, v) in row.iter() {
+                    if let Some(&canon) = map.get(k) {
+                        new_row.insert(canon.to_string(), v.clone());
+                    } else {
+                        new_row.insert(k.clone(), v.clone());
+                    }
+                }
+                *row = new_row;
+            }
+        }
+    }
 
     #[derive(serde::Serialize)]
     struct RowOutput {
