@@ -30,5 +30,5 @@ def test_template_parses_alcohol():
     rows = parse_js_style(text)
     assert rows
     first = rows[0]
-    assert "alcohol" in first
-    assert first["alcohol"] == 100
+    assert "alcohol_g" in first
+    assert first["alcohol_g"] == 100

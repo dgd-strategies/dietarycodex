@@ -36,6 +36,17 @@ browser applies stored column mappings and the Python layer verifies the rename
 step before handing data to the binary. If any required field remains unmapped,
 scoring stops with an explicit error instead of guessing or substituting values.
 
+### Canonical Columns and Units
+
+All data is converted to a canonical schema defined by
+[schema/default_units.json](schema/default_units.json) and
+[schema/required_columns.json](schema/required_columns.json).
+Every canonical field name includes its measurement unit as a suffix
+(e.g., `alcohol_g`, `sodium_mg`, `energy_kcal`). These files are
+non‑optional and must remain in sync with the Rust scoring engine.
+Any CSV lacking these columns is normalized by the unit conversion
+pipeline before scoring.
+
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
 For a complete documentation index, see [docs/README.md](docs/README.md).

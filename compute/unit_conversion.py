@@ -1,3 +1,12 @@
+"""Helper utilities for normalizing measurement units.
+
+TODO: Migrate this module to Rust.
+
+This Python implementation is a fallback used when running the scoring
+pipeline outside of the WebAssembly build. The Rust version will live in
+``rust/src`` and expose equivalent functions via a Python FFI layer.
+"""
+
 import json
 from pathlib import Path
 from typing import Dict, Tuple

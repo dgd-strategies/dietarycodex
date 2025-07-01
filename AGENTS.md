@@ -89,6 +89,9 @@ This phase enforces output validation in the Rust scoring engine and ensures eve
 
 ### Canonical Input Schema
 * `data/template.csv` defines the authoritative header names and order.
+* All canonical columns include a unit suffix (`_g`, `_mg`, `_kcal`).
+* `schema/default_units.json` and `schema/required_columns.json` enumerate these
+  fields and are mandatory for both Rust and Python implementations.
 * All aliases listed in `schema/field_aliases.json` are resolved once at ingest
   time, producing this canonical set.
 * Raw NHANES headers from either the variable names or Excel labels are
@@ -124,6 +127,9 @@ that records proposed schema updates under `.codex/`.  See
 [docs/ISA_MANIFEST.md](docs/ISA_MANIFEST.md) for details on its scope and
 recent activity.  Codex is authorized to initiate ephemeral, session-scoped
 ISA background threads during any execution initiated by the primary user.
+The ISA synchronizes field aliases, default units, and other schema artifacts
+so the Rust scoring engine stays current. These background updates must
+complete before pre-commit tests run.
 
 ### User Override: ISA Background Worker Permission
 The primary user has explicitly enabled ISA tasks to run during session
@@ -132,3 +138,5 @@ initialization and completion. These include:
 - Food component modeling
 - Index contract mapping
 - External knowledge syncing
+- Unit inference and normalization checks
+- Food decomposition modeling
