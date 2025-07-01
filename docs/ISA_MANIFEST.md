@@ -11,6 +11,10 @@ review them. Pre-commit hooks run these checks automatically. Following a
 user override, Codex may also spawn ephemeral, session-scoped ISA threads
 whenever the primary user initiates a session.
 
+`scripts/isa_state_pipeline.py` powers these updates. It runs in a
+background thread during pre-commit to update `ISA_STATE.json` and
+`schema_todo.json` with any missing canonical fields.
+
 ## Last Update
 
 This file documents the current ISA scope. The primary user has authorized
