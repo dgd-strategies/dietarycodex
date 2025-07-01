@@ -201,12 +201,12 @@ for comp_set in (_HEI_COMPONENTS, _HEI2020_COMPONENTS, _HEI2020_TODDLER_COMPONEN
             HEI_COMPONENT_KEYS.append(comp["key"])
 
 # Ensure energy is included
-HEI_COMPONENT_KEYS.append("energy_kcal")
+HEI_COMPONENT_KEYS.append("energy")
 
 
 def _calculate_hei(df: pd.DataFrame, components: list) -> pd.Series:
     """Generic HEI calculation given component definitions."""
-    energy = df["energy_kcal"]
+    energy = df["energy"]
     scores = pd.DataFrame(index=df.index)
 
     for comp in components:

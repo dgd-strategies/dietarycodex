@@ -66,6 +66,11 @@ If running commands manually, install the requirements and pre-commit hooks firs
 pip install -r requirements.txt
 pre-commit install
 ```
+Before running pre-commit you **must** refresh the ISA state:
+```bash
+python scripts/isa_state_pipeline.py
+```
+The hook then runs `cargo test` along with the Python suite.
 
 ---
 

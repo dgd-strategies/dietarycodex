@@ -15,6 +15,10 @@ run this script **before** invoking pre-commit. The hook now only checks
 that `ISA_STATE.json` and `schema_todo.json` match the computed values and
 fails if they are outdated.
 
+All schema artifacts reference base field names with no unit suffix.
+Incoming data may include `_g` or `_mg` headers, but these are normalized
+before validation.
+
 ## Last Update
 
 This file documents the current ISA scope. The primary user has authorized

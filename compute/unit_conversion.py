@@ -58,7 +58,5 @@ def convert_to_canonical_units(df: pd.DataFrame, units: Dict[str, str]) -> pd.Da
 
 
 def rename_for_scoring(df: pd.DataFrame) -> pd.DataFrame:
-    rename = {
-        col: f"{col}_{DEFAULT_UNITS[col]}" for col in df.columns if col in DEFAULT_UNITS
-    }
-    return df.rename(columns=rename)
+    """Legacy no-op retained for backward compatibility."""
+    return df

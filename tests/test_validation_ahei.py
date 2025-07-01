@@ -10,14 +10,14 @@ def test_ahei_matches_reference():
     mapping = {
         "vegetable": "veg_serv",
         "fruit": "fruit_serv",
-        "whole_grain": "whole_grain_g",
+        "whole_grain": "whole_grain",
         "nut_legume": "nuts_legumes_serv",
-        "n3_fat": "n3_fat_mg",
+        "n3_fat": "n3_fat",
         "pufa": "pufa_pct_energy",
         "ssb_fruit_juice": "ssb_fruit_juice_serv",
         "red_processed_meat": "red_processed_meat_serv",
         "trans_fat": "trans_fat_pct",
-        "sodium": "sodium_mg",
+        "sodium": "sodium",
         "alcohol": "alcohol_serv",
         "kcal": "total_kcal",
     }

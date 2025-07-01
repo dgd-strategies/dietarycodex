@@ -48,7 +48,6 @@ from compute.unit_conversion import (
     DEFAULT_UNITS,
     convert_to_canonical_units,
     infer_units,
-    rename_for_scoring,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -57,12 +56,12 @@ logger = logging.getLogger(__name__)
 # Core required columns
 CORE_COLS = [
     "id",
-    "energy_kcal",
-    "protein_g",
-    "fat_g",
-    "carb_g",
-    "fiber_g",
-    "vit_c_mg",
+    "energy",
+    "protein",
+    "fat",
+    "carbs",
+    "fiber",
+    "vitamin_c",
 ]
 
 # Dynamically build full required columns list for validation
@@ -148,7 +147,6 @@ async def score_diet_indices(
         if expected and unit != expected:
             logger.warning("Unit mismatch for %s: %s vs %s", col, unit, expected)
     df = convert_to_canonical_units(df, units)
-    df = rename_for_scoring(df)
 
     # Basic shape check (optional core columns for testing)
 
