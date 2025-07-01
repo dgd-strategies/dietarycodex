@@ -33,3 +33,14 @@ fn trace_consistency() {
         .unwrap();
     assert!(dash_reason.contains("saturated_fat_g"));
 }
+
+#[test]
+fn partial_map_conflicting_alias() {
+    let mut map = HashMap::new();
+    map.insert("alcohol_g".to_string(), Value::from(10.0));
+    map.insert("alc".to_string(), Value::from(5.0));
+    let (_nv, trace) = NutritionVector::from_partial_map(&map);
+    assert!(trace
+        .conflicting_aliases
+        .contains(&("alc".to_string(), "alcohol_g")));
+}

@@ -142,6 +142,7 @@ use serde::Serialize;
 pub struct SchemaError {
     pub missing_canonical_fields: Vec<&'static str>,
     pub unmapped_aliases: Vec<String>,
+    pub conflicting_aliases: Vec<(String, &'static str)>,
     pub index_dependencies: HashMap<&'static str, Vec<&'static str>>,
 }
 
@@ -150,6 +151,7 @@ pub struct InputTrace {
     pub used_fields: Vec<&'static str>,
     pub missing_fields: Vec<&'static str>,
     pub aliases_applied: Vec<(String, &'static str)>,
+    pub conflicting_aliases: Vec<(String, &'static str)>,
 }
 
 impl InputTrace {
@@ -164,12 +166,17 @@ impl InputTrace {
             used_fields: used,
             missing_fields: missing,
             aliases_applied: Vec::new(),
+            conflicting_aliases: Vec::new(),
         }
     }
 }
 
 impl SchemaError {
-    pub fn new(missing: Vec<&'static str>, unmapped: Vec<String>) -> Self {
+    pub fn new(
+        missing: Vec<&'static str>,
+        unmapped: Vec<String>,
+        conflicts: Vec<(String, &'static str)>,
+    ) -> Self {
         use crate::scores::registry::all_score_metadata;
         let mut deps: HashMap<&'static str, Vec<&'static str>> = HashMap::new();
         let metas = all_score_metadata();
@@ -189,6 +196,7 @@ impl SchemaError {
         SchemaError {
             missing_canonical_fields: missing,
             unmapped_aliases: unmapped,
+            conflicting_aliases: conflicts,
             index_dependencies: deps,
         }
     }
@@ -245,9 +253,12 @@ impl NutritionVector {
     pub fn from_map(data: &HashMap<String, f64>) -> Result<Self, SchemaError> {
         let mut obj = serde_json::Map::new();
         let mut unmapped = Vec::new();
+        let mut conflicts = Vec::new();
+        let mut counts: std::collections::HashMap<&str, Vec<String>> = std::collections::HashMap::new();
         for (k, v) in data {
             match canonical_field(k) {
                 Some(canon) => {
+                    counts.entry(canon).or_default().push(k.clone());
                     obj.insert(canon.to_string(), serde_json::json!(v));
                 }
                 None => {
@@ -255,10 +266,19 @@ impl NutritionVector {
                 }
             }
         }
+        for (canon, names) in counts {
+            if names.len() > 1 {
+                for alias in names {
+                    if alias != canon {
+                        conflicts.push((alias, canon));
+                    }
+                }
+            }
+        }
         let nv: NutritionVector = serde_json::from_value(Value::Object(obj)).unwrap_or_default();
         let missing = nv.missing_fields();
-        if !missing.is_empty() || !unmapped.is_empty() {
-            return Err(SchemaError::new(missing, unmapped));
+        if !missing.is_empty() || !unmapped.is_empty() || !conflicts.is_empty() {
+            return Err(SchemaError::new(missing, unmapped, conflicts));
         }
         Ok(nv)
     }
@@ -266,12 +286,24 @@ impl NutritionVector {
     pub fn from_partial_map(data: &HashMap<String, Value>) -> (Self, InputTrace) {
         let mut obj = serde_json::Map::new();
         let mut aliases = Vec::new();
+        let mut conflicts = Vec::new();
+        let mut counts: std::collections::HashMap<&str, Vec<String>> = std::collections::HashMap::new();
         for (k, v) in data {
             if let Some(canon) = canonical_field(k) {
+                counts.entry(canon).or_default().push(k.clone());
                 if canon != k.as_str() {
                     aliases.push((k.clone(), canon));
                 }
                 obj.insert(canon.to_string(), v.clone());
+            }
+        }
+        for (canon, names) in counts {
+            if names.len() > 1 {
+                for alias in names {
+                    if alias != canon {
+                        conflicts.push((alias, canon));
+                    }
+                }
             }
         }
         let nv: NutritionVector = serde_json::from_value(Value::Object(obj)).unwrap_or_default();
@@ -287,6 +319,7 @@ impl NutritionVector {
                 used_fields: used,
                 missing_fields: missing,
                 aliases_applied: aliases,
+                conflicting_aliases: conflicts,
             },
         )
     }

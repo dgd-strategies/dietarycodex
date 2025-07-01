@@ -47,6 +47,15 @@ fn unmapped_field_fails() {
 }
 
 #[test]
+fn canonical_and_alias_conflict() {
+    let mut map = HashMap::new();
+    map.insert("alc".to_string(), 5.0);
+    map.insert("alcohol_g".to_string(), 10.0);
+    let err = NutritionVector::from_map(&map).unwrap_err();
+    assert!(err.conflicting_aliases.contains(&("alc".to_string(), "alcohol_g")));
+}
+
+#[test]
 fn alias_map_covers_all_fields() {
     use std::fs;
     let data = fs::read_to_string("../schema/field_aliases.json").expect("read aliases");

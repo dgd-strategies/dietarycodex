@@ -121,7 +121,7 @@ Refer to our validation rules and scientific methods: [validation.md](validation
 ## CSV Template
 
 An optional reference template is available: [template.csv](../data/template.csv).
-Use it only to see all supported column names. The web app works with any CSV
+It lists the canonical field names derived from the scoring contracts. Use it only to see all supported column names. The web app works with any CSV
 and will prompt for column mapping if headers differ.
 
 ## Automatic Column Mapping

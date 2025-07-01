@@ -21,7 +21,7 @@ pub struct ScoreResult {
 pub fn evaluate_all_scores(nv: &NutritionVector) -> Result<ScoreResult, SchemaError> {
     let missing = nv.missing_fields();
     if !missing.is_empty() {
-        return Err(SchemaError::new(missing, Vec::new()));
+        return Err(SchemaError::new(missing, Vec::new(), Vec::new()));
     }
     Ok(evaluate_allow_partial(nv))
 }
