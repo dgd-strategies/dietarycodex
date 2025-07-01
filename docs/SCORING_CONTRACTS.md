@@ -49,3 +49,8 @@ HCSN files follow the same pattern. Column aliases defined in `schema/hcsn_field
 | `pastry_sweets_servings` | `sugar_g` |
 | `fried_food_servings` | `fast_food_g` |
 | `olive_oil_daily_use` | `mono_fat_g` |
+
+The canonical contract rules consumed by the scoring engine are stored in
+[`schema/contracts.json`](../schema/contracts.json). The Intelligent
+System Agent writes any proposed adjustments to `.codex/contracts/` for
+maintainer review.
