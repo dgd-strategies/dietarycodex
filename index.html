@@ -42,6 +42,15 @@
                target="_blank">Learn more about HOBI</a>
         </header>
         <main class="container py-4">
+            <div id="summaryHeader"
+                 class="sticky-top bg-white border rounded-4 p-2 mb-3 d-none">
+                <div class="d-flex flex-wrap gap-2 small fw-bold">
+                    <span id="sumFile"></span>
+                    <span id="sumIndices"></span>
+                    <span id="sumNaNs"></span>
+                    <span id="sumTime" class="ms-auto"></span>
+                </div>
+            </div>
             <div class="card shadow-sm p-4">
                 <div class="controls d-flex flex-wrap gap-2 align-items-center mb-3">
                     <span>All scores calculate automatically if columns exist.</span>
@@ -82,6 +91,7 @@
                 <div class="d-flex gap-2 mb-2">
                     <button id="scoreBtn" class="btn btn-primary" disabled>Score</button>
                     <button id="downloadBtn" class="btn btn-secondary" disabled>Download CSV</button>
+                    <button id="downloadJsonBtn" class="btn btn-secondary" disabled>Export JSON</button>
                 </div>
                 <div id="loading">⏳ Scoring in progress...</div>
                 <div id="result"></div>
@@ -90,6 +100,29 @@
                 <div id="charts"></div>
             </div>
         </main>
+        <div class="modal fade"
+             id="downloadModal"
+             tabindex="-1"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Preview Scores</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="downloadPreview" style="overflow-x:auto;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="confirmDownload" class="btn btn-primary">Save CSV</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <section class="container py-4" id="about">
             <div class="accordion" id="aboutAccordion">
                 <div class="accordion-item">
@@ -203,11 +236,20 @@
     const wasmStatus = document.getElementById('wasmStatus');
     const scoreBtn = document.getElementById('scoreBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    const downloadJsonBtn = document.getElementById('downloadJsonBtn');
+    const summaryHeader = document.getElementById('summaryHeader');
+    const sumFile = document.getElementById('sumFile');
+    const sumIndices = document.getElementById('sumIndices');
+    const sumNaNs = document.getElementById('sumNaNs');
+    const sumTime = document.getElementById('sumTime');
+    const confirmDownload = document.getElementById('confirmDownload');
+    const downloadPreview = document.getElementById('downloadPreview');
     let currentData = null;
     let currentName = 'template.csv';
     let wasmReady = null;
     let required = [];
     let scoredCsv = null;
+    let summaryJson = null;
     async function loadWasm() {
       if (!wasmReady) {
         const load = () => import('./pkg/dietarycodex.js')
@@ -279,6 +321,40 @@
       return [headers.join(','), ...lines].join('\n');
     }
 
+    function showDownloadPreview() {
+      const rows = scoredCsv.trim().split(/\r?\n/).map(r => r.split(','));
+      const headers = rows[0];
+      const sample = rows.slice(1,6);
+      let html = '<table class="table"><thead><tr>';
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += '</tr></thead><tbody>';
+      sample.forEach(r => {
+        html += '<tr>' + r.map(c => {
+          const val = c === '' ? 'NaN' : c;
+          const nan = val === 'NaN' || val === 'nan';
+          return nan ? `<td><span class='text-danger' title='Missing or invalid value'>${val}</span></td>` : `<td>${val}</td>`;
+        }).join('') + '</tr>';
+      });
+      html += '</tbody></table>';
+      downloadPreview.innerHTML = html;
+      const modal = new bootstrap.Modal(document.getElementById('downloadModal'));
+      modal.show();
+      confirmDownload.onclick = () => {
+        modal.hide();
+        triggerCsvDownload();
+      };
+    }
+
+    function triggerCsvDownload() {
+      const blob = new Blob([scoredCsv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentName.replace(/\.csv$/, '') + '_scores.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     function applyColumnMapping(data) {
       const map = JSON.parse(localStorage.getItem('colMap') || '{}');
       return data.map(row => {
@@ -290,6 +366,13 @@
         }
         return out;
       });
+    }
+
+    function runSchemaAudit(rows) {
+      const headers = Object.keys(rows[0] || {});
+      const missing = required.filter(f => !headers.includes(f));
+      const extra = headers.filter(h => !required.includes(h));
+      return { missing, extra };
     }
 
     function normalize(str) {
@@ -373,11 +456,16 @@
 
     downloadBtn.addEventListener('click', () => {
       if (!scoredCsv) return;
-      const blob = new Blob([scoredCsv], {type:'text/csv'});
+      showDownloadPreview();
+    });
+
+    downloadJsonBtn.addEventListener('click', () => {
+      if (!summaryJson) return;
+      const blob = new Blob([summaryJson], {type:'application/json'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = currentName.replace(/\.csv$/, '') + '_scores.csv';
+      a.download = currentName.replace(/\.csv$/, '') + '_summary.json';
       a.click();
       URL.revokeObjectURL(url);
     });
@@ -431,10 +519,14 @@
 
       const wasm = await loadWasm();
       const mapped = applyColumnMapping(currentData);
+      const audit = runSchemaAudit(mapped);
       const missing = wasm.missing_fields(JSON.stringify(mapped[0]||{}));
       const sugg = suggestMapping(missing, headers);
       let diag = `<div><b>Detected columns:</b> ${headers.join(', ')}</div>`;
       diag += `<div><b>Required columns:</b> ${required.join(', ')}</div>`;
+      if (audit.extra.length) {
+        diag += `<div class='text-info mt-2'>Extra columns: ${audit.extra.join(', ')}</div>`;
+      }
       if (missing.length) {
         diag += `<div class='text-warning mt-2'>Missing columns: ${missing.join(', ')}</div>`;
         diag += `<form id='mapForm' class='mt-2'>`;
@@ -476,8 +568,10 @@
         if (missing.length) {
           resultBox.innerHTML = `<div class='error'>Missing columns: ${missing.join(', ')}</div>`;
           downloadBtn.disabled = true;
+          downloadJsonBtn.disabled = true;
           statusBox.textContent = 'Failed: missing columns';
           statusBox.className = 'text-danger';
+          showMappingUI(missing, Object.keys(mapped[0] || {}));
           return;
         }
         const rawRows = wasm.score_json(JSON.stringify(mapped));
@@ -512,8 +606,29 @@
         resultBox.innerHTML = summary;
         scoredCsv = csvText;
         downloadBtn.disabled = false;
-        statusBox.textContent = `Scoring complete at ${new Date().toLocaleTimeString()}`;
+        downloadJsonBtn.disabled = false;
+        const time = new Date().toLocaleTimeString();
+        statusBox.textContent = `Scoring complete at ${time}`;
         statusBox.className = 'text-success';
+        let success = 0; let nanCt = 0;
+        scoreNames.forEach(idx => {
+          const valsAll = scoreRows.map(r => r[idx]);
+          const valid = valsAll.filter(v => v !== null && !isNaN(v));
+          if (valid.length) success++;
+          nanCt += valsAll.length - valid.length;
+        });
+        sumFile.textContent = currentName;
+        sumIndices.textContent = `Indices: ${success}/${scoreNames.length}`;
+        sumNaNs.textContent = `NaNs: ${nanCt}`;
+        sumTime.textContent = `Last score: ${time}`;
+        summaryHeader.classList.remove('d-none');
+        const colMap = JSON.parse(localStorage.getItem('colMap') || '{}');
+        const statusInfo = {};
+        scoreNames.forEach(idx => {
+          const vals = scoreRows.map(r => r[idx]).filter(v => v !== null && !isNaN(v));
+          statusInfo[idx] = vals.length ? 'valid' : 'NaN';
+        });
+        summaryJson = JSON.stringify({column_mapping: colMap, missing_columns: [], status: statusInfo, warnings: []}, null, 2);
       } catch(err) {
         console.error('Scoring failed', err);
         let msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
