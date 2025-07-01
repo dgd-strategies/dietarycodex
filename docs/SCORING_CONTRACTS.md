@@ -25,3 +25,4 @@ This document formalizes the expected output for each supported dietary index. F
 These ranges are approximate based on published methods. The Rust engine will emit structured errors if required fields are missing. No automatic fallback is permitted; all indices must receive complete data.
 
 The canonical list of contract rules, including ranges and required fields, lives in [../schema/contracts.json](../schema/contracts.json). This file is loaded by the Rust engine at runtime so tests and production builds share a single source of truth.
+Canonical field names always override any aliases provided during CSV normalization. Aliases exist solely for convenience and never replace their canonical counterparts.

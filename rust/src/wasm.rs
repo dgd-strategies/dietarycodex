@@ -31,6 +31,7 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
         let (nv, trace) = NutritionVector::from_partial_map(&map);
         let mut result = evaluate_allow_partial(&nv);
         result.trace.aliases_applied = trace.aliases_applied.clone();
+        result.trace.conflicting_aliases = trace.conflicting_aliases.clone();
 
         for field in &result.trace.missing_fields {
             *missing_counts.entry(*field).or_insert(0) += 1;
