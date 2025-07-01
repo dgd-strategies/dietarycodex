@@ -38,11 +38,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: refresh-isa-state
-        name: refresh ISA_STATE
-        entry: python scripts/refresh_isa_state.py
-        language: system
-        pass_filenames: false
       - id: isa-state
         name: validate ISA_STATE
         entry: python scripts/check_isa_state.py

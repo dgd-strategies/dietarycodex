@@ -19,6 +19,8 @@ def test_infer_and_convert_units():
     units = infer_units(df)
     assert units["energy"] == "kj"
     assert units["vitamin_c"] == "mcg"
+    # After inference the DataFrame should use base names
+    assert set(df.columns) == {"energy", "vitamin_c", "protein"}
     df = convert_to_canonical_units(df, units)
     df = rename_for_scoring(df)
     assert df["energy_kcal"].iloc[0] == pytest.approx(100)
