@@ -62,6 +62,13 @@ USDA_DII_MAP: dict[str, str] = {
     "VITE": "Vitamin E",
 }
 
+# Column case fixes for DII validation datasets
+DII_CASE_MAP: dict[str, str] = {
+    "vitamin B12": "Vitamin B12",
+    "vitamin B6": "Vitamin B6",
+    "Thyme_oregano": "Thyme/oregano",
+}
+
 # ---------------------------------------------------------------------------
 
 
@@ -80,3 +87,8 @@ def apply_mapping(df: pd.DataFrame, mapping: Mapping[str, str]) -> pd.DataFrame:
         logging.info("Columns left unmapped: %s", sorted(unmapped))
 
     return df.rename(columns=rename_map)
+
+
+def normalize_dii_headers(df: pd.DataFrame) -> pd.DataFrame:
+    """Normalize common DII column casing variations."""
+    return apply_mapping(df, DII_CASE_MAP)
