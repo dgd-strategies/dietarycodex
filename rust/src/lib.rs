@@ -6,3 +6,4 @@ pub mod nhanes_ingest;
 pub mod acs2020_ingest;
 pub mod hcsn_ingest;
 pub mod wasm;
+pub mod food_item_resolver;

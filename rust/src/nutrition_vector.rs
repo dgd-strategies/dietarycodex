@@ -2,6 +2,8 @@ use once_cell::sync::Lazy;
 use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
+use crate::food_item_resolver::{FOOD_RESOLVER, TranslationEntry};
+use log::info;
 #[cfg(feature = "hot_reload_aliases")]
 use std::sync::RwLock;
 
@@ -204,6 +206,7 @@ pub struct InputTrace {
     pub missing_fields: Vec<&'static str>,
     pub aliases_applied: Vec<(String, &'static str)>,
     pub conflicting_aliases: Vec<(String, &'static str)>,
+    pub translation_log: HashMap<&'static str, TranslationEntry>,
 }
 
 impl InputTrace {
@@ -219,6 +222,7 @@ impl InputTrace {
             missing_fields: missing,
             aliases_applied: Vec::new(),
             conflicting_aliases: Vec::new(),
+            translation_log: HashMap::new(),
         }
     }
 }
@@ -307,6 +311,7 @@ impl NutritionVector {
         let mut unmapped = Vec::new();
         let mut conflicts = Vec::new();
         let mut chosen: HashMap<&str, String> = HashMap::new();
+        let mut food_contrib: HashMap<&'static str, f64> = HashMap::new();
 
         let mut items: Vec<(&String, &f64)> = data.iter().collect();
         items.sort_by_key(|(k, _)| {
@@ -336,7 +341,26 @@ impl NutritionVector {
                         chosen.insert(canon, k.clone());
                     }
                 }
-                None => unmapped.push(k.clone()),
+                None => {
+                    if let Some(map) = FOOD_RESOLVER.resolve(k, *v) {
+                        for (field, val) in map {
+                            *food_contrib.entry(field).or_insert(0.0) += val;
+                        }
+                    } else {
+                        info!("TODO: map food field {}", k);
+                        unmapped.push(k.clone());
+                    }
+                }
+            }
+        }
+
+        for (field, val) in food_contrib {
+            if let Some(existing) = obj.get_mut(field) {
+                if let Some(num) = existing.as_f64() {
+                    *existing = serde_json::json!(num + val);
+                }
+            } else {
+                obj.insert(field.to_string(), serde_json::json!(val));
             }
         }
 
@@ -353,6 +377,8 @@ impl NutritionVector {
         let mut aliases = Vec::new();
         let mut conflicts = Vec::new();
         let mut chosen: HashMap<&str, String> = HashMap::new();
+        let mut translation: HashMap<&'static str, TranslationEntry> = HashMap::new();
+        let mut food_contrib: HashMap<&'static str, f64> = HashMap::new();
 
         let mut items: Vec<(&String, &Value)> = data.iter().collect();
         items.sort_by_key(|(k, _)| {
@@ -383,6 +409,26 @@ impl NutritionVector {
                     obj.insert(canon.to_string(), v.clone());
                     chosen.insert(canon, k.clone());
                 }
+            } else if let Some(num) = v.as_f64() {
+                if let Some(map) = FOOD_RESOLVER.resolve(k, num) {
+                    for (field, val) in map {
+                        *food_contrib.entry(field).or_insert(0.0) += val;
+                        let entry = translation.entry(field).or_default();
+                        entry.value += val;
+                        entry.source.push(k.clone());
+                    }
+                } else {
+                    info!("TODO: map food field {}", k);
+                }
+            }
+        }
+        for (field, val) in &food_contrib {
+            if let Some(existing) = obj.get_mut(*field) {
+                if let Some(num) = existing.as_f64() {
+                    *existing = serde_json::json!(num + val);
+                }
+            } else {
+                obj.insert(field.to_string(), serde_json::json!(val));
             }
         }
         let nv: NutritionVector = serde_json::from_value(Value::Object(obj)).unwrap_or_default();
@@ -399,6 +445,7 @@ impl NutritionVector {
                 missing_fields: missing,
                 aliases_applied: aliases,
                 conflicting_aliases: conflicts,
+                translation_log: translation,
             },
         )
     }
