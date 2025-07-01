@@ -307,11 +307,26 @@ fn metadata_sorted() {
 }
 
 #[test]
-fn all_field_names_sorted() {
+fn all_field_names_match_template_order() {
     let fields = NutritionVector::all_field_names();
-    let mut sorted = fields.to_vec();
-    sorted.sort();
-    assert_eq!(fields, sorted.as_slice());
+    let template = {
+        let line = std::fs::read_to_string("../data/template.csv")
+            .expect("read template");
+        line.lines()
+            .next()
+            .unwrap()
+            .split(',')
+            .map(|s| s.trim().to_string())
+            .collect::<Vec<String>>()
+    };
+    let mut canon_in_template = Vec::new();
+    for name in template {
+        if fields.contains(&name.as_str()) {
+            canon_in_template.push(name);
+        }
+    }
+    let from_fn: Vec<&str> = fields.to_vec();
+    assert_eq!(from_fn, canon_in_template.iter().map(|s| s.as_str()).collect::<Vec<_>>());
 }
 
 fn all_fields_nv() -> NutritionVector {

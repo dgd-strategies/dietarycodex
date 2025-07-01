@@ -11,11 +11,18 @@ pub struct ScoreInfo {
     pub explanation: Option<String>,
 }
 
+#[derive(Debug, Serialize, PartialEq, Clone)]
+pub struct IndexError {
+    pub index: String,
+    pub missing_fields: Vec<&'static str>,
+}
+
 #[derive(Debug, Serialize)]
 pub struct ScoreResult {
     pub scores: HashMap<String, ScoreInfo>,
     pub ordered_names: Vec<String>,
     pub trace: InputTrace,
+    pub errors: Vec<IndexError>,
 }
 
 pub fn evaluate_all_scores(nv: &NutritionVector) -> Result<ScoreResult, SchemaError> {
@@ -30,6 +37,7 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
     let calculators = all_scorers();
     let mut results = HashMap::new();
     let mut ordered = Vec::new();
+    let mut errors = Vec::new();
     let missing = nv.missing_fields();
     for calc in calculators {
         let name = calc.name().to_string();
@@ -64,6 +72,12 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
                 explanation: Some(format!("missing fields: {}", missing_fields.join(", "))),
             }
         };
+        if !missing_fields.is_empty() {
+            errors.push(IndexError {
+                index: name.clone(),
+                missing_fields: missing_fields.clone(),
+            });
+        }
         ordered.push(name.clone());
         results.insert(name, info);
     }
@@ -71,6 +85,7 @@ pub fn evaluate_allow_partial(nv: &NutritionVector) -> ScoreResult {
         scores: results,
         ordered_names: ordered,
         trace: InputTrace::from_nv(nv),
+        errors,
     }
 }
 

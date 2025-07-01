@@ -44,13 +44,65 @@ pub struct NutritionVector {
     pub alcohol_g: Option<f64>,
 }
 
-static REQUIRED_COLUMNS_JSON: &str = include_str!("../../schema/required_columns.json");
+static TEMPLATE_CSV: &str = include_str!("../../data/template.csv");
+/// Canonical field set derived from scoring contracts
+static CANONICAL_SET: &[&str] = &[
+    "alcohol_g",
+    "berries_g",
+    "butter_g",
+    "calcium_mg",
+    "carbs_g",
+    "cheese_g",
+    "energy_kcal",
+    "fast_food_g",
+    "fat_g",
+    "fiber_g",
+    "fish_g",
+    "iron_mg",
+    "legumes_g",
+    "magnesium_mg",
+    "mono_fat_g",
+    "nuts_g",
+    "omega3_g",
+    "poultry_g",
+    "protein_g",
+    "red_meat_g",
+    "refined_grains_g",
+    "saturated_fat_g",
+    "selenium_mcg",
+    "sodium_mg",
+    "sugar_g",
+    "total_fruits_g",
+    "trans_fat_g",
+    "vegetables_g",
+    "vitamin_a_mcg",
+    "vitamin_c_mg",
+    "vitamin_e_mg",
+    "whole_grains_g",
+    "zinc_mg",
+];
+
 static ALL_FIELD_NAMES: Lazy<Vec<&'static str>> = Lazy::new(|| {
-    let vals: Vec<String> =
-        serde_json::from_str(REQUIRED_COLUMNS_JSON).expect("invalid required_columns.json");
-    vals.into_iter()
-        .map(|s| Box::leak(s.into_boxed_str()) as &'static str)
-        .collect()
+    let header_line = TEMPLATE_CSV.lines().next().expect("template.csv empty");
+    let headers: Vec<&str> = header_line.split(',').map(|s| s.trim()).collect();
+    let mut fields = Vec::new();
+    for h in headers {
+        if CANONICAL_SET.contains(&h) {
+            fields.push(Box::leak(h.to_string().into_boxed_str()) as &'static str);
+        }
+    }
+    for required in CANONICAL_SET {
+        assert!(fields.contains(required), "template.csv missing {required}");
+    }
+    fields
+});
+
+static FIELD_ORDER_MAP: Lazy<HashMap<&'static str, usize>> = Lazy::new(|| {
+    let mut map = HashMap::new();
+    for (idx, field) in ALL_FIELD_NAMES.iter().enumerate() {
+        map.insert(*field, idx);
+    }
+    map
 });
 
 static FIELD_ALIASES_JSON: &str = include_str!("../../schema/field_aliases.json");
@@ -254,27 +306,40 @@ impl NutritionVector {
         let mut obj = serde_json::Map::new();
         let mut unmapped = Vec::new();
         let mut conflicts = Vec::new();
-        let mut counts: std::collections::HashMap<&str, Vec<String>> = std::collections::HashMap::new();
-        for (k, v) in data {
+        let mut chosen: HashMap<&str, String> = HashMap::new();
+
+        let mut items: Vec<(&String, &f64)> = data.iter().collect();
+        items.sort_by_key(|(k, _)| {
+            canonical_field(k)
+                .and_then(|c| FIELD_ORDER_MAP.get(c))
+                .copied()
+                .unwrap_or(usize::MAX)
+        });
+
+        for (k, v) in items {
             match canonical_field(k) {
                 Some(canon) => {
-                    counts.entry(canon).or_default().push(k.clone());
-                    obj.insert(canon.to_string(), serde_json::json!(v));
-                }
-                None => {
-                    unmapped.push(k.clone());
-                }
-            }
-        }
-        for (canon, names) in counts {
-            if names.len() > 1 {
-                for alias in names {
-                    if alias != canon {
-                        conflicts.push((alias, canon));
+                    if obj.contains_key(canon) {
+                        let current = chosen.get(canon).cloned().unwrap_or_else(|| canon.to_string());
+                        if k != canon {
+                            conflicts.push((k.clone(), canon));
+                        } else if current != canon {
+                            conflicts.push((current.clone(), canon));
+                        }
+                        let prefer_new = k == canon && current != canon;
+                        if prefer_new {
+                            obj.insert(canon.to_string(), serde_json::json!(v));
+                            chosen.insert(canon, k.clone());
+                        }
+                    } else {
+                        obj.insert(canon.to_string(), serde_json::json!(v));
+                        chosen.insert(canon, k.clone());
                     }
                 }
+                None => unmapped.push(k.clone()),
             }
         }
+
         let nv: NutritionVector = serde_json::from_value(Value::Object(obj)).unwrap_or_default();
         let missing = nv.missing_fields();
         if !missing.is_empty() || !unmapped.is_empty() || !conflicts.is_empty() {
@@ -287,22 +352,36 @@ impl NutritionVector {
         let mut obj = serde_json::Map::new();
         let mut aliases = Vec::new();
         let mut conflicts = Vec::new();
-        let mut counts: std::collections::HashMap<&str, Vec<String>> = std::collections::HashMap::new();
-        for (k, v) in data {
+        let mut chosen: HashMap<&str, String> = HashMap::new();
+
+        let mut items: Vec<(&String, &Value)> = data.iter().collect();
+        items.sort_by_key(|(k, _)| {
+            canonical_field(k)
+                .and_then(|c| FIELD_ORDER_MAP.get(c))
+                .copied()
+                .unwrap_or(usize::MAX)
+        });
+
+        for (k, v) in items {
             if let Some(canon) = canonical_field(k) {
-                counts.entry(canon).or_default().push(k.clone());
-                if canon != k.as_str() {
-                    aliases.push((k.clone(), canon));
-                }
-                obj.insert(canon.to_string(), v.clone());
-            }
-        }
-        for (canon, names) in counts {
-            if names.len() > 1 {
-                for alias in names {
-                    if alias != canon {
-                        conflicts.push((alias, canon));
+                if obj.contains_key(canon) {
+                    let current = chosen.get(canon).cloned().unwrap_or_else(|| canon.to_string());
+                    if k != canon {
+                        conflicts.push((k.clone(), canon));
+                    } else if current != canon {
+                        conflicts.push((current.clone(), canon));
                     }
+                    let prefer_new = k == canon && current != canon;
+                    if prefer_new {
+                        obj.insert(canon.to_string(), v.clone());
+                        chosen.insert(canon, k.clone());
+                    }
+                } else {
+                    if canon != k.as_str() {
+                        aliases.push((k.clone(), canon));
+                    }
+                    obj.insert(canon.to_string(), v.clone());
+                    chosen.insert(canon, k.clone());
                 }
             }
         }
