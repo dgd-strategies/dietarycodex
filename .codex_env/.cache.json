@@ -1,0 +1,6 @@
+{
+  "requirements_txt": "45f58a9cb701128dc0f6b6af8ffcc09bc4c69d025d5b1ac3d7568e974a29c5e8",
+  "cargo_toml": "9311a85e253fe98768b4e95892959bc5936755a4d689b79a86a4bbdc810c78df",
+  "pyproject_toml": "37ada302017a5df89f1e249fbad81cf5c33f469875272167f33db59f7edc1485",
+  "precommit_config": "ae7c081e9af86dfc18801d532bbcb14ae29e7da45deecc90f023c30b6c598f3b"
+}
