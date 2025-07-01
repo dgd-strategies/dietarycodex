@@ -61,7 +61,8 @@ pub fn all_score_metadata() -> Vec<ScoreMeta> {
         },
         ScoreMeta {
             name: <crate::scores::acs2020::Acs2020Scorer as FieldDeps>::name(),
-            required_fields: <crate::scores::acs2020::Acs2020Scorer as FieldDeps>::required_fields(),
+            required_fields: <crate::scores::acs2020::Acs2020Scorer as FieldDeps>::required_fields(
+            ),
         },
         ScoreMeta {
             name: <crate::scores::mind::MindScorer as FieldDeps>::name(),

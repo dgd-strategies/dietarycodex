@@ -48,7 +48,7 @@ const data = JSON.stringify([{{
 }}]);
 const raw = score_json(data);
 const plain = raw.map(r => Object.fromEntries(r));
-console.log(plain[0].DII !== undefined);
+console.log(plain[0].DII && plain[0].DII.value !== undefined);
 """
     )
     output = subprocess.check_output(["node", script], text=True).strip()
@@ -101,7 +101,7 @@ const data = JSON.stringify([{{
 }}]);
 const raw = score_json(data);
 const plain = raw.map(r => Object.fromEntries(r));
-console.log(plain[0].DII !== undefined);
+console.log(plain[0].DII && plain[0].DII.value !== undefined);
 """
     )
     output = subprocess.check_output(["node", script], text=True).strip()

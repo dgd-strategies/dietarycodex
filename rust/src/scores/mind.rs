@@ -1,4 +1,5 @@
 use super::{capped_score, DietScore, FieldDeps};
+use crate::contracts;
 use crate::nutrition_vector::NutritionVector;
 
 pub struct MindScorer;
@@ -9,20 +10,7 @@ impl FieldDeps for MindScorer {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &[
-            "berries_g",
-            "butter_g",
-            "cheese_g",
-            "fast_food_g",
-            "fish_g",
-            "mono_fat_g",
-            "nuts_g",
-            "poultry_g",
-            "red_meat_g",
-            "sugar_g",
-            "vegetables_g",
-            "whole_grains_g",
-        ]
+        contracts::required_fields("MIND")
     }
 }
 
@@ -36,8 +24,10 @@ impl DietScore for MindScorer {
         let poultry = capped_score(nv.poultry_g.unwrap_or(0.0), 100.0) / 10.0;
         let olive_oil = capped_score(nv.mono_fat_g.unwrap_or(0.0), 20.0) / 10.0;
 
-        let red_meat = (1.0 - capped_score(nv.red_meat_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
-        let fast_food = (1.0 - capped_score(nv.fast_food_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
+        let red_meat =
+            (1.0 - capped_score(nv.red_meat_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
+        let fast_food =
+            (1.0 - capped_score(nv.fast_food_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
         let sweets = (1.0 - capped_score(nv.sugar_g.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
         let cheese = (1.0 - capped_score(nv.cheese_g.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
         let butter = (1.0 - capped_score(nv.butter_g.unwrap_or(0.0), 20.0) / 10.0).clamp(0.0, 1.0);

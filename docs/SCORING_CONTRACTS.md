@@ -23,3 +23,5 @@ This document formalizes the expected output for each supported dietary index. F
 | ACS2020_V3 | 0–15 | `ACS2020_V3_KEYS` + `gender` | none |
 
 These ranges are approximate based on published methods. The Rust engine will emit structured errors if required fields are missing. No automatic fallback is permitted; all indices must receive complete data.
+
+The canonical list of contract rules, including ranges and required fields, lives in [../schema/contracts.json](../schema/contracts.json). This file is loaded by the Rust engine at runtime so tests and production builds share a single source of truth.

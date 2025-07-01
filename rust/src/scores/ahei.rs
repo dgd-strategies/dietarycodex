@@ -1,5 +1,6 @@
-use crate::nutrition_vector::NutritionVector;
 use super::{DietScore, FieldDeps};
+use crate::contracts;
+use crate::nutrition_vector::NutritionVector;
 
 pub struct Ahei;
 
@@ -9,7 +10,7 @@ impl FieldDeps for Ahei {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &["fat_g", "fiber_g", "saturated_fat_g"]
+        contracts::required_fields("AHEI")
     }
 }
 

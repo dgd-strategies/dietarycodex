@@ -1,4 +1,5 @@
 use super::{DietScore, FieldDeps};
+use crate::contracts;
 use crate::nutrition_vector::NutritionVector;
 
 pub struct DiiScorer;
@@ -9,19 +10,7 @@ impl FieldDeps for DiiScorer {
     }
 
     fn required_fields() -> &'static [&'static str] {
-        &[
-            "fiber_g",
-            "magnesium_mg",
-            "omega3_g",
-            "saturated_fat_g",
-            "selenium_mcg",
-            "sugar_g",
-            "trans_fat_g",
-            "vitamin_a_mcg",
-            "vitamin_c_mg",
-            "vitamin_e_mg",
-            "zinc_mg",
-        ]
+        contracts::required_fields("DII")
     }
 }
 

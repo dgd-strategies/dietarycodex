@@ -1,6 +1,6 @@
 use dietarycodex::eval::{
     evaluate_all_scores, evaluate_allow_partial, format_skipped_scores,
-    print_scores_as_json_allow_partial, ScorerStatus,
+    print_scores_as_json_allow_partial, ScoreInfo,
 };
 use dietarycodex::nutrition_vector::NutritionVector;
 use dietarycodex::scores::acs2020::Acs2020Scorer;
@@ -95,7 +95,7 @@ fn evaluate_returns_dash() {
     };
     let scores = evaluate_allow_partial(&nv);
     match scores.scores.get("DASH") {
-        Some(ScorerStatus::Complete(_)) => {}
+        Some(info) if info.value.is_some() => {}
         _ => panic!("DASH score not computed"),
     }
 }
@@ -124,7 +124,7 @@ fn evaluate_returns_dii() {
     };
     let scores = evaluate_allow_partial(&nv);
     match scores.scores.get("DII") {
-        Some(ScorerStatus::Complete(_)) => {}
+        Some(info) if info.value.is_some() => {}
         _ => panic!("DII score not computed"),
     }
     let scorer = DiiScorer;
@@ -236,11 +236,11 @@ fn allow_partial_skips_missing() {
     };
     let result = evaluate_allow_partial(&nv);
     match result.scores.get("AHEI") {
-        Some(ScorerStatus::Complete(_)) => {}
+        Some(info) if info.value.is_some() => {}
         _ => panic!("AHEI should be computed"),
     }
     match result.scores.get("DASH") {
-        Some(ScorerStatus::Skipped { .. }) => {}
+        Some(info) if info.value.is_none() => {}
         _ => panic!("DASH should be skipped"),
     }
 }
@@ -253,14 +253,16 @@ fn skipped_reason_lists_missing_fields() {
     };
     let result = evaluate_allow_partial(&nv);
     match result.scores.get("AHEI") {
-        Some(ScorerStatus::Skipped { reason }) => {
+        Some(info) if info.value.is_none() => {
+            let reason = info.explanation.as_ref().unwrap();
             assert!(reason.contains("fat_g"));
             assert!(reason.contains("saturated_fat_g"));
         }
         _ => panic!("AHEI should be skipped"),
     }
     match result.scores.get("DASH") {
-        Some(ScorerStatus::Skipped { reason }) => {
+        Some(info) if info.value.is_none() => {
+            let reason = info.explanation.as_ref().unwrap();
             assert!(reason.contains("sodium_mg"));
             assert!(reason.contains("energy_kcal"));
         }
@@ -354,20 +356,14 @@ fn all_fields_nv() -> NutritionVector {
 fn all_scores_skipped_when_no_input() {
     let nv = NutritionVector::default();
     let result = evaluate_allow_partial(&nv);
-    assert!(result
-        .scores
-        .values()
-        .all(|s| matches!(s, ScorerStatus::Skipped { .. })));
+    assert!(result.scores.values().all(|s| s.value.is_none()));
 }
 
 #[test]
 fn no_scores_skipped_when_all_fields_present() {
     let nv = all_fields_nv();
     let result = evaluate_allow_partial(&nv);
-    assert!(result
-        .scores
-        .values()
-        .all(|s| matches!(s, ScorerStatus::Complete(_))));
+    assert!(result.scores.values().all(|s| s.value.is_some()));
 }
 
 #[test]
@@ -382,8 +378,9 @@ fn skipped_reason_fields_are_required() {
         .map(|m| (m.name, m.required_fields.to_vec()))
         .collect();
 
-    for (name, status) in result.scores {
-        if let ScorerStatus::Skipped { reason } = status {
+    for (name, info) in result.scores {
+        if info.value.is_none() {
+            let reason = info.explanation.unwrap();
             let fields: Vec<&str> = reason
                 .trim_start_matches("missing fields: ")
                 .split(',')
@@ -415,7 +412,8 @@ fn skipped_reason_field_order() {
     let nv = NutritionVector::default();
     let result = evaluate_allow_partial(&nv);
     for status in result.scores.values() {
-        if let ScorerStatus::Skipped { reason } = status {
+        if status.value.is_none() {
+            let reason = status.explanation.as_ref().unwrap();
             let fields: Vec<&str> = reason
                 .trim_start_matches("missing fields: ")
                 .split(',')

@@ -1,9 +1,8 @@
 //! Available scorers: AHEI, HEI, DASH, aMED, DII, ACS2020, PHDI, DASHI, MIND.
 //!
 //! Partial evaluation is supported through [`evaluate_allow_partial`](crate::eval::evaluate_allow_partial).
-//! Each scorer returns a [`ScorerStatus`](crate::eval::ScorerStatus) indicating
-//! whether the score was computed or skipped. Skipped scores include a reason
-//! listing which input fields were missing. When running the CLI with
+//! Each scorer returns a [`ScoreInfo`](crate::eval::ScoreInfo) indicating
+//! the computed value and validation status. When running the CLI with
 //! `--allow-partial --verbose-partial`, skipped scores are grouped and printed
 //! in alphabetical order before the JSON result so missing fields are easy to
 //! spot.
@@ -27,16 +26,15 @@ pub fn capped_score(value: f64, max: f64) -> f64 {
     (value / max * 10.0).clamp(0.0, 10.0)
 }
 
-
+pub mod acs2020;
 pub mod ahei;
 pub mod amed;
 pub mod dash;
 pub mod dashi;
 pub mod dii;
 pub mod hei;
-pub mod acs2020;
-pub mod phdi;
 pub mod mind;
+pub mod phdi;
 pub mod registry;
 
 /// Available scorers: AHEI, HEI, DASH, aMED, DII, ACS2020, PHDI, DASHI, MIND
