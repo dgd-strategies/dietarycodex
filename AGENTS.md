@@ -83,3 +83,26 @@ Deliver a web page that runs entirely client side. Users should upload any CSV a
 ## UI Standard
 - Keep note of "AGENT_STYLE.md" particularly built for OpenAI Codex
 - This file keeps track and organizes the owner's central OKRs required in styling
+
+## Q3.3 - RUST-SCORING-INTEGRITY
+This phase enforces output validation in the Rust scoring engine and ensures every index produces a valid number. A new document [`docs/SCORING_CONTRACTS.md`](docs/SCORING_CONTRACTS.md) lists expected ranges and required fields.
+
+### Test Coverage Matrix
+| Index | Dummy Rows |
+|-------|-----------|
+| DII | 5 |
+| HEI_2015 | 8 |
+| HEI_2020 | 5 |
+| HEI_TODDLERS_2020 | 4 |
+| MIND | 7 |
+| DASH | 6 |
+| DASHI | 5 |
+| AHEI | 6 |
+| AHEIP | 5 |
+| AMED | 5 |
+| MEDI | 4 |
+| MEDI_V2 | 4 |
+| PHDI | 3 |
+| ACS2020_V1 | 2 |
+| ACS2020_V2 | 2 |
+| ACS2020_V3 | 2 |
