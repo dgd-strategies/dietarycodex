@@ -257,6 +257,14 @@
     let required = [];
     let scoredCsv = null;
     let summaryJson = null;
+    let defaultUnits = {};
+    let columnUnits = {};
+
+    async function loadDefaultUnits() {
+      if (Object.keys(defaultUnits).length) return;
+      const res = await fetch('./schema/default_units.json');
+      if (res.ok) defaultUnits = await res.json();
+    }
     async function loadWasm() {
       if (!wasmReady) {
         const load = () => import('./pkg/dietarycodex.js')
@@ -318,6 +326,56 @@
           }
         });
         return obj;
+      });
+    }
+
+    function detectUnits(headers, rows) {
+      columnUnits = {};
+      const renameMap = {};
+      headers.forEach(h => {
+        const m = h.toLowerCase().match(/_(mg|mcg|g|kcal|kj)$/);
+        let unit = m ? m[1] : (defaultUnits[h.toLowerCase()] || '');
+        let canon = m ? h.slice(0, -m[0].length) : h;
+        columnUnits[canon] = unit;
+        renameMap[h] = canon;
+      });
+      rows.forEach(r => {
+        for (const [src, dst] of Object.entries(renameMap)) {
+          if (src !== dst && src in r) { r[dst] = r[src]; delete r[src]; }
+        }
+      });
+      return Object.values(renameMap);
+    }
+
+    function convertValue(val, fromU, toU) {
+      if (val === null || isNaN(val)) return val;
+      const scale = {
+        'g_mg': 1000,
+        'mg_g': 0.001,
+        'mcg_mg': 0.001,
+        'mg_mcg': 1000,
+        'g_mcg': 1000000,
+        'mcg_g': 0.000001,
+        'kj_kcal': 1/4.184,
+        'kcal_kj': 4.184
+      };
+      const key = fromU + '_' + toU;
+      return key in scale ? val * scale[key] : val;
+    }
+
+    function prepareForScoring(rows) {
+      return rows.map(r => {
+        const out = { ...r };
+        for (const [field, unit] of Object.entries(columnUnits)) {
+          const target = defaultUnits[field] || unit;
+          if (unit && target && unit !== target) {
+            out[field] = convertValue(out[field], unit, target);
+          }
+          const name = field + '_' + target;
+          out[name] = out[field];
+          if (name !== field) delete out[field];
+        }
+        return out;
       });
     }
 
@@ -490,6 +548,7 @@
 
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
+      await loadDefaultUnits();
       try {
         const wasm = await loadWasm();
         required = wasm.required_fields();
@@ -530,20 +589,34 @@
       currentName = file.name;
       const text = await file.text();
       currentData = csvToJson(text);
-      const rows = text.trim().split('\n').map(r => r.split(','));
-      const headers = rows[0];
-      const sample = rows.slice(1,6);
+      const mapped = applyColumnMapping(currentData);
+      const headers = Object.keys(mapped[0] || {});
+      detectUnits(headers, mapped);
+      const sample = mapped.slice(0,5);
       let html = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
-      sample.forEach(r => html += '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>');
+      html += '<tr>' + headers.map(h => {
+        const canon = h.replace(/_(mg|mcg|g|kcal|kj)$/i, '');
+        const unit = columnUnits[canon] || '';
+        const exp = defaultUnits[canon] || '';
+        const warn = unit && unit !== exp ? ' class="bg-warning"' : '';
+        const opts = ['mcg','mg','g','kcal','kj'].map(u => `<option ${u===unit?'selected':''}>${u}</option>`).join('');
+        return `<td${warn}><select class='form-select form-select-sm unit-drop' data-field='${canon}'>${opts}</select></td>`;
+      }).join('') + '</tr>';
+      sample.forEach(r => html += '<tr>' + headers.map(h => `<td>${r[h] ?? ''}</td>`).join('') + '</tr>');
       previewTable.innerHTML = html;
+      document.querySelectorAll('.unit-drop').forEach(sel => {
+        sel.addEventListener('change', () => {
+          columnUnits[sel.dataset.field] = sel.value;
+        });
+      });
       previewTitle.style.display = 'block';
       clearBtn.style.display = 'inline-block';
       scoreBtn.disabled = false;
 
       const wasm = await loadWasm();
-      const mapped = applyColumnMapping(currentData);
       const audit = runSchemaAudit(mapped);
-      const missing = wasm.missing_fields(JSON.stringify(mapped[0]||{}));
+      const previewForMissing = prepareForScoring(mapped);
+      const missing = wasm.missing_fields(JSON.stringify(previewForMissing[0]||{}));
       const sugg = suggestMapping(missing, headers);
       let diag = `<div><b>Detected columns:</b> ${headers.join(', ')}</div>`;
       diag += `<div><b>Required columns:</b> ${required.join(', ')}</div>`;
@@ -591,7 +664,7 @@
       statusBox.textContent = 'Scoring...';
       statusBox.className = 'text-info';
       try {
-        const mapped = applyColumnMapping(data);
+        const mapped = prepareForScoring(applyColumnMapping(data));
         const wasm = await loadWasm();
         const missing = wasm.missing_fields(JSON.stringify(mapped[0]||{}));
         if (missing.length) {
