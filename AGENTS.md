@@ -95,6 +95,8 @@ This phase enforces output validation in the Rust scoring engine and ensures eve
   automatically translated using `schema/header_aliases.json`.
 * ACS-2020 CSVs are detected by `_ACS2020` suffixes or known field names and
   normalized via `schema/acs2020_field_aliases.json`.
+* HCSN files are recognized via `schema/hcsn_field_aliases.json` so their fields
+  map to canonical names automatically.
 
 ### Test Coverage Matrix
 | Index | Dummy Rows |

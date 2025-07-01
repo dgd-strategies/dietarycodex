@@ -28,3 +28,24 @@ The canonical list of contract rules, including ranges and required fields, live
 Canonical field names always override any aliases provided during CSV normalization. Aliases exist solely for convenience and never replace their canonical counterparts.
 Raw NHANES headers are supported through an additional translation layer so researchers can ingest the original variable names without manual mapping.
 ACS-2020 CSV exports from the Adventist Health Study-2 are likewise recognized. Fields ending in `_ACS2020` or matching the official variable list are automatically mapped to the canonical schema so scores compute without manual renaming.
+HCSN files follow the same pattern. Column aliases defined in `schema/hcsn_field_aliases.json` are applied on upload so the engine sees the canonical field names.
+
+### HCSN Field Mapping
+
+| HCSN Field | Canonical Field |
+|------------|-----------------|
+| `leafy_green_veg_servings` | `vegetables_g` |
+| `other_veg_servings` | `vegetables_g` |
+| `berry_servings` | `berries_g` |
+| `nut_servings` | `nuts_g` |
+| `bean_servings` | `legumes_g` |
+| `whole_grain_g` / `whole_grains_servings` | `whole_grains_g` |
+| `fish_servings` | `fish_g` |
+| `poultry_servings` | `poultry_g` |
+| `wine_servings` | `alcohol_g` |
+| `red_meat_servings` | `red_meat_g` |
+| `butter_servings` | `butter_g` |
+| `cheese_servings` | `cheese_g` |
+| `pastry_sweets_servings` | `sugar_g` |
+| `fried_food_servings` | `fast_food_g` |
+| `olive_oil_daily_use` | `mono_fat_g` |
