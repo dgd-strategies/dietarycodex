@@ -145,6 +145,29 @@ pub struct SchemaError {
     pub index_dependencies: HashMap<&'static str, Vec<&'static str>>,
 }
 
+#[derive(Debug, Default, Clone, Serialize, PartialEq)]
+pub struct InputTrace {
+    pub used_fields: Vec<&'static str>,
+    pub missing_fields: Vec<&'static str>,
+    pub aliases_applied: Vec<(String, &'static str)>,
+}
+
+impl InputTrace {
+    pub fn from_nv(nv: &NutritionVector) -> Self {
+        let missing = nv.missing_fields();
+        let used: Vec<&'static str> = NutritionVector::all_field_names()
+            .iter()
+            .copied()
+            .filter(|f| !missing.contains(f))
+            .collect();
+        InputTrace {
+            used_fields: used,
+            missing_fields: missing,
+            aliases_applied: Vec::new(),
+        }
+    }
+}
+
 impl SchemaError {
     pub fn new(missing: Vec<&'static str>, unmapped: Vec<String>) -> Self {
         use crate::scores::registry::all_score_metadata;
@@ -238,6 +261,34 @@ impl NutritionVector {
             return Err(SchemaError::new(missing, unmapped));
         }
         Ok(nv)
+    }
+
+    pub fn from_partial_map(data: &HashMap<String, Value>) -> (Self, InputTrace) {
+        let mut obj = serde_json::Map::new();
+        let mut aliases = Vec::new();
+        for (k, v) in data {
+            if let Some(canon) = canonical_field(k) {
+                if canon != k.as_str() {
+                    aliases.push((k.clone(), canon));
+                }
+                obj.insert(canon.to_string(), v.clone());
+            }
+        }
+        let nv: NutritionVector = serde_json::from_value(Value::Object(obj)).unwrap_or_default();
+        let missing = nv.missing_fields();
+        let used: Vec<&'static str> = NutritionVector::all_field_names()
+            .iter()
+            .copied()
+            .filter(|f| !missing.contains(f))
+            .collect();
+        (
+            nv,
+            InputTrace {
+                used_fields: used,
+                missing_fields: missing,
+                aliases_applied: aliases,
+            },
+        )
     }
 
     pub fn missing_fields(&self) -> Vec<&'static str> {
