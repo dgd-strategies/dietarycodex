@@ -27,3 +27,4 @@ These ranges are approximate based on published methods. The Rust engine will em
 The canonical list of contract rules, including ranges and required fields, lives in [../schema/contracts.json](../schema/contracts.json). This file is loaded by the Rust engine at runtime so tests and production builds share a single source of truth.
 Canonical field names always override any aliases provided during CSV normalization. Aliases exist solely for convenience and never replace their canonical counterparts.
 Raw NHANES headers are supported through an additional translation layer so researchers can ingest the original variable names without manual mapping.
+ACS-2020 CSV exports from the Adventist Health Study-2 are likewise recognized. Fields ending in `_ACS2020` or matching the official variable list are automatically mapped to the canonical schema so scores compute without manual renaming.

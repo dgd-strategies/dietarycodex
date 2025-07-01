@@ -1,6 +1,7 @@
 use crate::eval::evaluate_allow_partial;
 use crate::nutrition_vector::{InputTrace, NutritionVector};
 use crate::nhanes_ingest::{is_nhanes_sheet, resolve_nhanes_headers};
+use crate::acs2020_ingest::{is_acs2020_sheet, resolve_acs2020_headers};
 use serde_json::Value;
 use console_error_panic_hook;
 use serde_json;
@@ -18,7 +19,20 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
 
     if let Some(first) = records.first() {
         let headers: Vec<String> = first.keys().cloned().collect();
-        if is_nhanes_sheet(&headers) {
+        if is_acs2020_sheet(&headers) {
+            let map = resolve_acs2020_headers(&headers);
+            for row in &mut records {
+                let mut new_row = std::collections::HashMap::new();
+                for (k, v) in row.iter() {
+                    if let Some(&canon) = map.get(k) {
+                        new_row.insert(canon.to_string(), v.clone());
+                    } else {
+                        new_row.insert(k.clone(), v.clone());
+                    }
+                }
+                *row = new_row;
+            }
+        } else if is_nhanes_sheet(&headers) {
             let map = resolve_nhanes_headers(&headers);
             for row in &mut records {
                 let mut new_row = std::collections::HashMap::new();
