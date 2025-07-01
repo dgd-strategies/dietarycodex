@@ -41,11 +41,14 @@ scoring stops with an explicit error instead of guessing or substituting values.
 All data is converted to a canonical schema defined by
 [schema/default_units.json](schema/default_units.json) and
 [schema/required_columns.json](schema/required_columns.json).
-Every canonical field name includes its measurement unit as a suffix
-(e.g., `alcohol_g`, `sodium_mg`, `energy_kcal`). These files are
-non‑optional and must remain in sync with the Rust scoring engine.
-Any CSV lacking these columns is normalized by the unit conversion
-pipeline before scoring.
+Canonical names no longer carry the measurement suffix directly.
+Instead, each field’s unit is listed in `default_units.json` and the
+import pipeline separates the name from the unit. For example, a column
+`alcohol_g` or the pair `alcohol` with unit `g` both map to the canonical
+`alcohol` field measured in grams. The utilities in
+`compute.unit_conversion` infer units, convert values as needed, and
+`rename_for_scoring` appends the expected suffixes for the scoring
+modules.
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
