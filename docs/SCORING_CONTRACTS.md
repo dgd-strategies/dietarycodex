@@ -6,9 +6,9 @@ This document formalizes the expected output for each supported dietary index. F
 |-------|---------------|-----------------|-----------|
 | DII | ~-9 to +9 | `DII_PARAMETER_KEYS` | none |
 | MIND | 0–15 | `MIND_COMPONENT_KEYS` | none |
-| HEI_2015 | 0–100 | `HEI_COMPONENT_KEYS` + `energy_kcal` | none |
-| HEI_2020 | 0–100 | `HEI_COMPONENT_KEYS` + `energy_kcal` | none |
-| HEI_TODDLERS_2020 | 0–100 | `HEI_COMPONENT_KEYS` + `energy_kcal` | none |
+| HEI_2015 | 0–100 | `HEI_COMPONENT_KEYS` + `energy` | none |
+| HEI_2020 | 0–100 | `HEI_COMPONENT_KEYS` + `energy` | none |
+| HEI_TODDLERS_2020 | 0–100 | `HEI_COMPONENT_KEYS` + `energy` | none |
 | AHEI | 0–110 | `AHEI_COMPONENT_KEYS` + `gender` | none |
 | AHEIP | 0–90 | `AHEIP_COMPONENT_KEYS` | none |
 | AMED | 0–9 | `AMED_COMPONENT_KEYS` | none |
@@ -34,21 +34,21 @@ HCSN files follow the same pattern. Column aliases defined in `schema/hcsn_field
 
 | HCSN Field | Canonical Field |
 |------------|-----------------|
-| `leafy_green_veg_servings` | `vegetables_g` |
-| `other_veg_servings` | `vegetables_g` |
-| `berry_servings` | `berries_g` |
-| `nut_servings` | `nuts_g` |
-| `bean_servings` | `legumes_g` |
-| `whole_grain_g` / `whole_grains_servings` | `whole_grains_g` |
-| `fish_servings` | `fish_g` |
-| `poultry_servings` | `poultry_g` |
-| `wine_servings` | `alcohol_g` |
-| `red_meat_servings` | `red_meat_g` |
-| `butter_servings` | `butter_g` |
-| `cheese_servings` | `cheese_g` |
-| `pastry_sweets_servings` | `sugar_g` |
-| `fried_food_servings` | `fast_food_g` |
-| `olive_oil_daily_use` | `mono_fat_g` |
+| `leafy_green_veg_servings` | `vegetables` |
+| `other_veg_servings` | `vegetables` |
+| `berry_servings` | `berries` |
+| `nut_servings` | `nuts` |
+| `bean_servings` | `legumes` |
+| `whole_grain_g` / `whole_grains_servings` | `whole_grains` |
+| `fish_servings` | `fish` |
+| `poultry_servings` | `poultry` |
+| `wine_servings` | `alcohol` |
+| `red_meat_servings` | `red_meat` |
+| `butter_servings` | `butter` |
+| `cheese_servings` | `cheese` |
+| `pastry_sweets_servings` | `sugar` |
+| `fried_food_servings` | `fast_food` |
+| `olive_oil_daily_use` | `mono_fat` |
 
 The canonical contract rules consumed by the scoring engine are stored in
 [`schema/contracts.json`](../schema/contracts.json). The Intelligent

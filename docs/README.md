@@ -44,8 +44,10 @@ missing after mapping, the engine aborts with a clear error message; there is no
 silent fallback.
 
 Example: a user might provide a column called `ALCOHOL` instead of the expected
-`alcohol_g`. The normalization step recognizes this variant and maps it to
-`alcohol_g`, allowing the Rust scoring engine to compute without issue.
+`alcohol` field. The normalization step recognizes this variant, infers the
+units from a suffix or adjacent column, and stores the data under the base name
+`alcohol`. Suffixes like `_g` are stripped automatically. Validation fails only
+if any required base column remains missing after mapping.
 
 ---
 
@@ -125,10 +127,10 @@ An optional reference template is available: [template.csv](../data/template.csv
 It lists the canonical base field names derived from the scoring contracts.
 Default units for each field live in
 [`schema/default_units.json`](../schema/default_units.json). Uploaded
-columns may include the unit suffix (e.g., `alcohol_g`) or provide the
-unit separately. The import layer infers these units, converts to the
-canonical measurement, and finally appends the expected suffixes to
-match `[schema/required_columns.json](../schema/required_columns.json)`.
+columns may include a temporary unit suffix (e.g., `alcohol_g`) or a
+separate units column. The import layer removes any suffix after unit
+inference so the in-memory DataFrame uses only base names. Validation
+fails only if a required base column is missing after mapping.
 Use the template only for reference—the web app accepts any CSV and will
 prompt for column mapping if headers differ.
 

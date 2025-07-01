@@ -10,11 +10,10 @@ aliases and records proposed changes under `.codex/` so maintainers can
 review them. Following a user override, Codex may also spawn ephemeral,
 session-scoped ISA threads whenever the primary user initiates a session.
 
-`scripts/isa_state_pipeline.py` powers these updates. The state file is
-refreshed **before** pre-commit runs and committed if changes occur.
-Pre-commit only validates that `ISA_STATE.json` and `schema_todo.json`
-match the computed values; it will fail if they are outdated but will not
-write to disk.
+`scripts/isa_state_pipeline.py` powers these updates. The maintainer must
+run this script **before** invoking pre-commit. The hook now only checks
+that `ISA_STATE.json` and `schema_todo.json` match the computed values and
+fails if they are outdated.
 
 ## Last Update
 

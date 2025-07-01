@@ -10,6 +10,7 @@ Input CSV files are normalized via `compute.mapping.apply_mapping` before valida
 
 ## Intelligent System Agent
 A thin automation layer keeps the schema and contracts in sync with
-external datasets. The agent runs via `pre-commit` and writes proposed
-updates under `.codex/`. Maintainers review these suggestions before
-they are merged.
+external datasets. Maintainers run `scripts/isa_state_pipeline.py`
+before invoking pre-commit. The hook only checks that `ISA_STATE.json`
+and `schema_todo.json` are current. Proposed updates are written under
+`.codex/` for review.

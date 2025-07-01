@@ -13,7 +13,7 @@ and then routed into the Rust binary for scoring. This ensures a single,
 deterministic code path no matter where the data originates.
 
 The engine now recognizes common field aliases. For example,
-`alcohol_intake` is accepted as `alcohol_g` when parsing input
+`alcohol_intake` is accepted as `alcohol` when parsing input
 JSON or CSV data. This helps integrate real-world exports without
 manual column renaming.
 The WASM layer also detects raw NHANES dietary recall exports and
@@ -41,14 +41,13 @@ scoring stops with an explicit error instead of guessing or substituting values.
 All data is converted to a canonical schema defined by
 [schema/default_units.json](schema/default_units.json) and
 [schema/required_columns.json](schema/required_columns.json).
-Canonical names no longer carry the measurement suffix directly.
-Instead, each field’s unit is listed in `default_units.json` and the
-import pipeline separates the name from the unit. For example, a column
-`alcohol_g` or the pair `alcohol` with unit `g` both map to the canonical
-`alcohol` field measured in grams. The utilities in
-`compute.unit_conversion` infer units, convert values as needed, and
-`rename_for_scoring` appends the expected suffixes for the scoring
-modules.
+Canonical column names never include unit suffixes. Each field’s unit is
+recorded in `default_units.json` and the import pipeline infers the unit
+from either a dedicated column or a suffix like `_g`. The suffix is
+stripped after inference so the DataFrame columns remain base names such
+as `alcohol` or `energy`. Unit-suffixed headers are accepted but mapped
+to these base names. Validation fails only if any required base column
+is missing after mapping.
 
 This repository doubles as a high-quality corpus for exploring generative AI techniques in nutrition science. By openly documenting every algorithm and validation step, we hope future models can learn from these methods and foster collaborative research across disciplines.
 
