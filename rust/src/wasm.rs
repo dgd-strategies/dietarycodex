@@ -1,5 +1,6 @@
 use crate::eval::evaluate_allow_partial;
 use crate::nutrition_vector::{InputTrace, NutritionVector};
+use crate::unmapped_monitor::UNMAPPED_MONITOR;
 use crate::nhanes_ingest::{is_nhanes_sheet, resolve_nhanes_headers};
 use crate::acs2020_ingest::{is_acs2020_sheet, resolve_acs2020_headers};
 use crate::hcsn_ingest::{is_hcsn_sheet, resolve_hcsn_headers};
@@ -155,4 +156,10 @@ pub fn missing_fields(json: &str) -> Result<JsValue, JsValue> {
     let (nv, _) = NutritionVector::from_partial_map(&map);
     let missing = nv.missing_fields();
     serde_wasm_bindgen::to_value(&missing).map_err(|e| JsValue::from_str(&e.to_string()))
+}
+
+#[wasm_bindgen]
+pub fn unmapped_log() -> JsValue {
+    let snapshot = UNMAPPED_MONITOR.snapshot();
+    serde_wasm_bindgen::to_value(&snapshot).unwrap()
 }

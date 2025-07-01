@@ -6,7 +6,22 @@ use log::info;
 static FOOD_JSON: &str = include_str!("../../schema/food_components.json");
 
 #[derive(Debug, Deserialize)]
-struct RawMap(HashMap<String, HashMap<String, f64>>);
+struct RawItem {
+    #[serde(default)]
+    components: HashMap<String, f64>,
+    #[serde(default)]
+    #[allow(dead_code)]
+    source: Option<String>,
+    #[serde(default)]
+    #[allow(dead_code)]
+    last_updated: Option<String>,
+    #[serde(default)]
+    #[allow(dead_code)]
+    reviewed: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RawMap(HashMap<String, RawItem>);
 
 pub struct FoodItemResolver {
     map: HashMap<&'static str, HashMap<&'static str, f64>>,
@@ -14,13 +29,13 @@ pub struct FoodItemResolver {
 
 impl FoodItemResolver {
     fn load() -> Self {
-        let raw: HashMap<String, HashMap<String, f64>> = serde_json::from_str(FOOD_JSON)
-            .expect("invalid food_components.json");
+        let raw: HashMap<String, RawItem> =
+            serde_json::from_str(FOOD_JSON).expect("invalid food_components.json");
         let mut map = HashMap::new();
-        for (item, comps) in raw {
+        for (item, entry) in raw {
             let key: &'static str = Box::leak(item.to_ascii_lowercase().into_boxed_str());
             let mut inner = HashMap::new();
-            for (nut, val) in comps {
+            for (nut, val) in entry.components {
                 let nut_key: &'static str = Box::leak(nut.to_string().into_boxed_str());
                 inner.insert(nut_key, val);
             }
