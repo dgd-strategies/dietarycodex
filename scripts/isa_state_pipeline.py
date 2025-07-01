@@ -62,10 +62,15 @@ def compute_state() -> tuple[Dict[str, Any], Dict[str, Any]]:
 
 
 def update_state() -> None:
-    """Write the computed ISA state to disk."""
+    """Write the computed ISA state to disk if it changed."""
     state, todo = compute_state()
-    save_json(STATE_FILE, state)
-    save_json(TODO_FILE, todo)
+    current_state = load_json(STATE_FILE)
+    current_todo = load_json(TODO_FILE)
+    state_no_time = {k: v for k, v in state.items() if k != "timestamp"}
+    cur_no_time = {k: v for k, v in current_state.items() if k != "timestamp"}
+    if state_no_time != cur_no_time or todo != current_todo:
+        save_json(STATE_FILE, state)
+        save_json(TODO_FILE, todo)
 
 
 def run_background() -> None:
