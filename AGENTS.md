@@ -128,8 +128,9 @@ that records proposed schema updates under `.codex/`.  See
 recent activity.  Codex is authorized to initiate ephemeral, session-scoped
 ISA background threads during any execution initiated by the primary user.
 The ISA synchronizes field aliases, default units, and other schema artifacts
-so the Rust scoring engine stays current. These background updates must
-complete before pre-commit tests run.
+so the Rust scoring engine stays current. These updates run **before** the
+pre-commit hook executes and any changes should be committed ahead of time.
+Pre-commit only validates `ISA_STATE.json` and fails if it is stale.
 
 ### User Override: ISA Background Worker Permission
 The primary user has explicitly enabled ISA tasks to run during session

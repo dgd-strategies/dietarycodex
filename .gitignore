@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 *.log
+!.codex/session_directives.log
 .env
 *.sqlite3
 
@@ -13,3 +14,5 @@ rust/target/
 !/docs
 .session_cache/
 logs/
+!logs/codex_session_history/
+!logs/codex_session_history/*.log
