@@ -1,0 +1,18 @@
+{
+  "leafy_green_veg_servings": "vegetables_g",
+  "other_veg_servings": "vegetables_g",
+  "berry_servings": "berries_g",
+  "nut_servings": "nuts_g",
+  "bean_servings": "legumes_g",
+  "whole_grains_servings": "whole_grains_g",
+  "whole_grain_g": "whole_grains_g",
+  "fish_servings": "fish_g",
+  "poultry_servings": "poultry_g",
+  "olive_oil_daily_use": "mono_fat_g",
+  "wine_servings": "alcohol_g",
+  "red_meat_servings": "red_meat_g",
+  "butter_servings": "butter_g",
+  "cheese_servings": "cheese_g",
+  "pastry_sweets_servings": "sugar_g",
+  "fried_food_servings": "fast_food_g"
+}
