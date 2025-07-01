@@ -16,6 +16,9 @@ The engine now recognizes common field aliases. For example,
 `alcohol_intake` is accepted as `alcohol_g` when parsing input
 JSON or CSV data. This helps integrate real-world exports without
 manual column renaming.
+The WASM layer also detects raw NHANES dietary recall exports and
+automatically translates variables like `DR1TKCAL` or the human readable
+"Total Energy - Day 1" into the canonical fields used for scoring.
 
 For local debugging you can enable a `hot_reload_aliases` feature when
 building the Rust crate. This loads `schema/field_aliases.json` at
@@ -25,6 +28,8 @@ runtime so edits to the alias list take effect without rebuilding:
 cargo test --features hot_reload_aliases
 ```
 The regular release build still embeds the file at compile time.
+NHANES translation mirrors the mappings published in the upstream
+`dietaryindex` Python package so results remain consistent across languages.
 
 Production deployments run strictly through this Rust WebAssembly engine. The
 browser applies stored column mappings and the Python layer verifies the rename
