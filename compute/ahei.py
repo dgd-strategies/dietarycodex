@@ -9,14 +9,14 @@ _AHEI_COMPONENTS = [
     {"key": "veg_serv", "type": "positive", "min": 0.0, "max": 5.0},
     {"key": "fruit_serv", "type": "positive", "min": 0.0, "max": 4.0},
     {
-        "key": "whole_grain_g",
+        "key": "whole_grain",
         "type": "positive",
         "min": 0.0,
         "max_female": 75.0,
         "max_male": 90.0,
     },
     {"key": "nuts_legumes_serv", "type": "positive", "min": 0.0, "max": 1.0},
-    {"key": "n3_fat_mg", "type": "positive", "min": 0.0, "max": 250.0},
+    {"key": "n3_fat", "type": "positive", "min": 0.0, "max": 250.0},
     {"key": "pufa_pct_energy", "type": "positive", "min": 2.0, "max": 10.0},
     {"key": "ssb_fruit_juice_serv", "type": "negative", "min": 1.0, "max": 0.0},
     {"key": "red_processed_meat_serv", "type": "negative", "min": 1.5, "max": 0.0},
@@ -26,7 +26,7 @@ _AHEI_COMPONENTS = [
 
 # Expose component keys for validation
 AHEI_COMPONENT_KEYS = [c["key"] for c in _AHEI_COMPONENTS] + [
-    "sodium_mg",
+    "sodium",
     "total_kcal",
     "gender",
 ]
@@ -55,7 +55,7 @@ def calculate_ahei(df: pd.DataFrame) -> pd.Series:
         if comp["type"] == "positive":
             min_val = comp["min"]
             max_val = comp.get("max")
-            if key == "whole_grain_g":
+            if key == "whole_grain":
                 # Gender specific max
                 max_vals = np.where(
                     df["gender"] == 2, comp["max_female"], comp["max_male"]
@@ -86,7 +86,7 @@ def calculate_ahei(df: pd.DataFrame) -> pd.Series:
             scores[key] = score.clip(0, 10)
 
     # Sodium score based on deciles per 2000 kcal in the reference implementation
-    sodium_adj = df["sodium_mg"] / (df["total_kcal"] / 2000)
+    sodium_adj = df["sodium"] / (df["total_kcal"] / 2000)
     sodium_score = 11 - (sodium_adj / 400)
     scores["sodium"] = sodium_score.clip(0, 10)
 

@@ -10,7 +10,7 @@ from compute.hei import (
 
 def _prepare_common(df):
     mapping = {
-        "kcal": "energy_kcal",
+        "kcal": "energy",
         "total_fruit": "total_fruit_cup",
         "whole_fruit": "whole_fruit_cup",
         "total_vegetable": "total_veg_cup",
@@ -41,7 +41,7 @@ def _prepare_2015(df):
 
 def _prepare_2020(df):
     df = _prepare_common(df)
-    energy = df["energy_kcal"]
+    energy = df["energy"]
     df["added_sugars_g"] = df["added_sugars_g"] / 100 * energy / 4
     sat = df["saturated_fat_g"].astype(float) / 100 * energy / 9
     df["sodium_mg"] = df["sodium_mg"] * 1000

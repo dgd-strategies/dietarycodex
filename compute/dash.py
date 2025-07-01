@@ -7,14 +7,14 @@ from compute.base import validate_dataframe
 # df components should match these names exactly when validating
 # df parameters define grams or mg as listed below
 _DASH_COMPONENTS = [
-    {"name": "fruits_g", "type": "positive"},
-    {"name": "vegetables_g", "type": "positive"},
-    {"name": "whole_grains_g", "type": "positive"},
-    {"name": "low_fat_dairy_g", "type": "positive"},
-    {"name": "nuts_legumes_g", "type": "positive"},
-    {"name": "sodium_mg", "type": "reverse"},
-    {"name": "red_processed_meats_g", "type": "reverse"},
-    {"name": "sweetened_beverages_g", "type": "reverse"},
+    {"name": "fruits", "type": "positive"},
+    {"name": "vegetables", "type": "positive"},
+    {"name": "whole_grains", "type": "positive"},
+    {"name": "low_fat_dairy", "type": "positive"},
+    {"name": "nuts_legumes", "type": "positive"},
+    {"name": "sodium", "type": "reverse"},
+    {"name": "red_processed_meats", "type": "reverse"},
+    {"name": "sweetened_beverages", "type": "reverse"},
 ]
 
 # Expose component keys for API validation

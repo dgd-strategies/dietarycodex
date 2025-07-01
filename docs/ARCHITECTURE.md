@@ -14,3 +14,8 @@ external datasets. Maintainers run `scripts/isa_state_pipeline.py`
 before invoking pre-commit. The hook only checks that `ISA_STATE.json`
 and `schema_todo.json` are current. Proposed updates are written under
 `.codex/` for review.
+
+Canonical columns are stored without unit suffixes. Input headers may
+include suffixes like `_g` or `_mg` but these are stripped during
+normalization. Scoring contracts load the base names, and tests run the
+Rust model via `cargo test` to ensure consistency across languages.

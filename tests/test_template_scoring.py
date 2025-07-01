@@ -15,19 +15,17 @@ from compute.hei import (
 )
 from compute.medi import calculate_medi, calculate_medi_v2
 from compute.phdi import calculate_phdi, calculate_phdi_v2
-from compute.unit_conversion import rename_for_scoring
 
 
 def load_template():
     df = pd.read_csv("data/template.csv")
-    df = rename_for_scoring(df)
     df = df.loc[:, ~df.columns.duplicated()]
     if "gender" not in df:
         df["gender"] = 1
     if "total_kcal" not in df:
-        df["total_kcal"] = df.get("energy_kcal", 0)
+        df["total_kcal"] = df.get("energy", 0)
     if "totalkcal_phdi" not in df:
-        df["totalkcal_phdi"] = df.get("energy_kcal", 0)
+        df["totalkcal_phdi"] = df.get("energy", 0)
     missing = {col: 1 for col in REQUIRED_COLS if col not in df}
     if missing:
         df = df.assign(**missing)

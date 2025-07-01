@@ -165,6 +165,14 @@ before validation.
   pip install -r requirements.txt
   pre-commit install
   ```
+- **Refresh ISA state** before committing:
+  ```bash
+  python scripts/isa_state_pipeline.py
+  ```
+- **Run tests** including the Rust model:
+-  ```bash
+  cargo test --quiet
+  ```
 - **Formatting & Linting**: `make format`, `make lint`
 - **Testing**: `make test`
 - **Validation & Hooks**: `pre-commit run --all-files` will format, lint,

@@ -30,22 +30,22 @@ USDA_HEI_MAP: dict[str, str] = {
     "PF_NUTSDS": "seafood_plant_oz",
     "PF_SOY": "seafood_plant_oz",
     "PF_LEGUMES": "seafood_plant_oz",
-    "KCAL": "energy_kcal",
+    "KCAL": "energy",
     "SODIUM": "sodium_mg",
     "ADD_SUGARS": "added_sugars_g",
 }
 
 USDA_DASH_MAP: dict[str, str] = {
-    "F_TOTAL": "fruits_g",
-    "F_TOTAL_G": "fruits_g",
-    "V_TOTAL": "vegetables_g",
-    "V_TOTAL_G": "vegetables_g",
-    "G_WHOLE": "whole_grains_g",
-    "D_TOTAL": "low_fat_dairy_g",
-    "PF_LEGUMES": "nuts_legumes_g",
-    "SODIUM": "sodium_mg",
-    "PROC_MEAT": "red_processed_meats_g",
-    "SLD_BEV": "sweetened_beverages_g",
+    "F_TOTAL": "fruits",
+    "F_TOTAL_G": "fruits",
+    "V_TOTAL": "vegetables",
+    "V_TOTAL_G": "vegetables",
+    "G_WHOLE": "whole_grains",
+    "D_TOTAL": "low_fat_dairy",
+    "PF_LEGUMES": "nuts_legumes",
+    "SODIUM": "sodium",
+    "PROC_MEAT": "red_processed_meats",
+    "SLD_BEV": "sweetened_beverages",
 }
 
 USDA_DII_MAP: dict[str, str] = {
