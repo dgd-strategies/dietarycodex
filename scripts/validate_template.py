@@ -13,6 +13,7 @@ def main() -> None:
     from compute.ahei import AHEI_COMPONENT_KEYS, calculate_ahei
     from compute.aheip import AHEIP_COMPONENT_KEYS, calculate_aheip
     from compute.amed import calculate_amed
+    from compute.api import REQUIRED_COLS
     from compute.dash import calculate_dash
     from compute.dashi import calculate_dashi
     from compute.dii import calculate_dii
@@ -31,24 +32,30 @@ def main() -> None:
         df["total_kcal"] = df.get("energy_kcal", 0)
     if "totalkcal_phdi" not in df:
         df["totalkcal_phdi"] = df.get("energy_kcal", 0)
+    for col in REQUIRED_COLS:
+        if col not in df:
+            df[col] = 0
     results = {
-        "DII": calculate_dii(df).tolist(),
-        "DASH": calculate_dash(df).tolist(),
-        "DASHI": calculate_dashi(df).tolist(),
-        "AHEI": calculate_ahei(df[AHEI_COMPONENT_KEYS]).tolist(),
-        "AHEIP": calculate_aheip(df[AHEIP_COMPONENT_KEYS]).tolist(),
-        "AMED": calculate_amed(df).tolist(),
-        "MEDI": calculate_medi(df).tolist(),
-        "MEDI_V2": calculate_medi_v2(df).tolist(),
-        "HEI_2015": calculate_hei_2015(df).tolist(),
-        "HEI_2020": calculate_hei_2020(df).tolist(),
-        "HEI_TODDLERS_2020": calculate_hei_toddlers_2020(df).tolist(),
-        "PHDI": calculate_phdi(df).tolist(),
-        "PHDI_V2": calculate_phdi_v2(df).tolist(),
-        "ACS2020_V1": calculate_acs2020_v1(df).tolist(),
-        "ACS2020_V2": calculate_acs2020_v2(df).tolist(),
+        "DII": calculate_dii(df),
+        "DASH": calculate_dash(df),
+        "DASHI": calculate_dashi(df),
+        "AHEI": calculate_ahei(df[AHEI_COMPONENT_KEYS]),
+        "AHEIP": calculate_aheip(df[AHEIP_COMPONENT_KEYS]),
+        "AMED": calculate_amed(df),
+        "MEDI": calculate_medi(df),
+        "MEDI_V2": calculate_medi_v2(df),
+        "HEI_2015": calculate_hei_2015(df),
+        "HEI_2020": calculate_hei_2020(df),
+        "HEI_TODDLERS_2020": calculate_hei_toddlers_2020(df),
+        "PHDI": calculate_phdi(df),
+        "PHDI_V2": calculate_phdi_v2(df),
+        "ACS2020_V1": calculate_acs2020_v1(df),
+        "ACS2020_V2": calculate_acs2020_v2(df),
     }
-    print(json.dumps(results))
+    clean = {
+        k: [None if pd.isna(x) else float(x) for x in v] for k, v in results.items()
+    }
+    print(json.dumps(clean))
 
 
 if __name__ == "__main__":

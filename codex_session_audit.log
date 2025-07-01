@@ -1,0 +1,4 @@
+Python file modified: compute/unit_conversion.py
+Rust counterpart search: rust/src/* for unit conversion features (none found).
+Warning: No direct Rust analog for infer_units/convert_to_canonical_units/rename_for_scoring.
+Added TODO in compute/unit_conversion.py to migrate module to Rust.
