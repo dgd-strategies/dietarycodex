@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
+use once_cell::sync::Lazy;
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct NutritionVector {
@@ -41,41 +42,14 @@ pub struct NutritionVector {
     pub alcohol_g: Option<f64>,
 }
 
-static ALL_FIELD_NAMES: &[&str] = &[
-    "alcohol_g",
-    "berries_g",
-    "butter_g",
-    "calcium_mg",
-    "carbs_g",
-    "cheese_g",
-    "energy_kcal",
-    "fast_food_g",
-    "fat_g",
-    "fiber_g",
-    "fish_g",
-    "iron_mg",
-    "legumes_g",
-    "magnesium_mg",
-    "mono_fat_g",
-    "nuts_g",
-    "omega3_g",
-    "poultry_g",
-    "protein_g",
-    "red_meat_g",
-    "refined_grains_g",
-    "saturated_fat_g",
-    "selenium_mcg",
-    "sodium_mg",
-    "sugar_g",
-    "total_fruits_g",
-    "trans_fat_g",
-    "vegetables_g",
-    "vitamin_a_mcg",
-    "vitamin_c_mg",
-    "vitamin_e_mg",
-    "whole_grains_g",
-    "zinc_mg",
-];
+static REQUIRED_COLUMNS_JSON: &str = include_str!("../../schema/required_columns.json");
+static ALL_FIELD_NAMES: Lazy<Vec<&'static str>> = Lazy::new(|| {
+    let vals: Vec<String> = serde_json::from_str(REQUIRED_COLUMNS_JSON)
+        .expect("invalid required_columns.json");
+    vals.into_iter()
+        .map(|s| Box::leak(s.into_boxed_str()) as &'static str)
+        .collect()
+});
 
 impl NutritionVector {
     pub fn from_fdc_json(data: &str) -> anyhow::Result<Self> {
@@ -230,6 +204,6 @@ impl NutritionVector {
     }
 
     pub fn all_field_names() -> &'static [&'static str] {
-        ALL_FIELD_NAMES
+        ALL_FIELD_NAMES.as_slice()
     }
 }
