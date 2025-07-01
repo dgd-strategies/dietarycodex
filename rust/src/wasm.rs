@@ -1,5 +1,4 @@
 use wasm_bindgen::prelude::*;
-use serde::{Deserialize, Serialize};
 use serde_json;
 use console_error_panic_hook;
 use crate::nutrition_vector::NutritionVector;

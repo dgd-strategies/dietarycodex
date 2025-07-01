@@ -51,6 +51,43 @@ static ALL_FIELD_NAMES: Lazy<Vec<&'static str>> = Lazy::new(|| {
         .collect()
 });
 
+static FIELD_ALIASES_JSON: &str = include_str!("../../schema/field_aliases.json");
+static FIELD_ALIAS_MAP: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {
+    let raw: HashMap<String, String> =
+        serde_json::from_str(FIELD_ALIASES_JSON).expect("invalid field_aliases.json");
+    let mut map: HashMap<&'static str, &'static str> = HashMap::new();
+    for &field in ALL_FIELD_NAMES.iter() {
+        map.insert(field, field);
+    }
+    for (alias, canonical) in raw {
+        let canonical_static = ALL_FIELD_NAMES
+            .iter()
+            .copied()
+            .find(|f| *f == canonical)
+            .unwrap_or_else(|| panic!("alias {} refers to unknown field {}", alias, canonical));
+        map.insert(Box::leak(alias.to_ascii_lowercase().into_boxed_str()), canonical_static);
+    }
+    map
+});
+
+fn canonical_field(name: &str) -> Option<&'static str> {
+    FIELD_ALIAS_MAP.get(&name.to_ascii_lowercase() as &str).copied()
+}
+
+fn guess_canonical(name: &str) -> Option<&'static str> {
+    let lower = name.to_ascii_lowercase();
+    ALL_FIELD_NAMES
+        .iter()
+        .copied()
+        .find(|f| lower.contains(f.trim_end_matches("_g")))
+}
+
+#[derive(Debug, PartialEq)]
+pub struct SchemaError {
+    pub missing_fields: Vec<&'static str>,
+    pub suggestions: Vec<(String, &'static str)>,
+}
+
 impl NutritionVector {
     pub fn from_fdc_json(data: &str) -> anyhow::Result<Self> {
         let v: Value = serde_json::from_str(data)?;
@@ -95,6 +132,31 @@ impl NutritionVector {
             nv.magnesium_mg = map.get("Magnesium, Mg").map(|v| v * 1000.0);
             nv.trans_fat_g = map.get("Fatty acids, total trans").copied();
             nv.alcohol_g = map.get("Alcohol, ethyl").copied();
+        }
+        Ok(nv)
+    }
+
+    pub fn from_map(data: &HashMap<String, f64>) -> Result<Self, SchemaError> {
+        let mut obj = serde_json::Map::new();
+        let mut suggestions = Vec::new();
+        for (k, v) in data {
+            match canonical_field(k) {
+                Some(canon) => {
+                    obj.insert(canon.to_string(), serde_json::json!(v));
+                }
+                None => {
+                    if let Some(guess) = guess_canonical(k) {
+                        suggestions.push((k.clone(), guess));
+                    } else {
+                        suggestions.push((k.clone(), ""));
+                    }
+                }
+            }
+        }
+        let nv: NutritionVector = serde_json::from_value(Value::Object(obj)).unwrap_or_default();
+        let missing = nv.missing_fields();
+        if !missing.is_empty() || !suggestions.is_empty() {
+            return Err(SchemaError { missing_fields: missing, suggestions });
         }
         Ok(nv)
     }

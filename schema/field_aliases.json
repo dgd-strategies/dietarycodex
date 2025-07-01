@@ -1,0 +1,11 @@
+{
+  "alc": "alcohol_g",
+  "alcohol": "alcohol_g",
+  "alcohol_intake": "alcohol_g",
+  "alcohol_g": "alcohol_g",
+  "energy": "energy_kcal",
+  "kcal": "energy_kcal",
+  "calories": "energy_kcal",
+  "sodium": "sodium_mg",
+  "sodium_mg": "sodium_mg"
+}
