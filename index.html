@@ -77,12 +77,16 @@
                     <table id="previewTable">
                     </table>
                 </div>
+                <div id="diagnostics" class="my-3 small"></div>
+                <div id="statusBox" class="my-2"></div>
                 <div class="d-flex gap-2 mb-2">
                     <button id="scoreBtn" class="btn btn-primary" disabled>Score</button>
                     <button id="downloadBtn" class="btn btn-secondary" disabled>Download CSV</button>
                 </div>
                 <div id="loading">⏳ Scoring in progress...</div>
                 <div id="result"></div>
+                <div id="indexCards"
+                     class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3"></div>
                 <div id="charts"></div>
             </div>
         </main>
@@ -133,6 +137,57 @@
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="helpHeading">
+                        <button class="accordion-button collapsed"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#helpCollapse"
+                                aria-expanded="false"
+                                aria-controls="helpCollapse">Index Help</button>
+                    </h2>
+                    <div id="helpCollapse"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="helpHeading"
+                         data-bs-parent="#aboutAccordion">
+                        <div class="accordion-body">
+                            <p>
+                                <strong>DII:</strong> gauges inflammatory
+                                potential from nutrients.
+                            </p>
+                            <p>
+                                <strong>MIND:</strong> scores 15 food groups to
+                                encourage brain-healthy choices (0–15).
+                            </p>
+                            <p>
+                                <strong>HEI:</strong> evaluates diet quality per
+                                1,000 kcal; versions for 2015, 2020, and
+                                toddlers.
+                            </p>
+                            <p>
+                                <strong>AHEI &amp; AHEIP:</strong> emphasize
+                                healthy fats and whole foods, scaled to 110/90.
+                            </p>
+                            <p>
+                                <strong>AMED &amp; MEDI:</strong> measure
+                                Mediterranean-style eating patterns.
+                            </p>
+                            <p>
+                                <strong>DASH &amp; DASHI:</strong> assess
+                                adherence to low-sodium, heart‑healthy
+                                guidelines.
+                            </p>
+                            <p>
+                                <strong>PHDI &amp; ACS2020:</strong> reflect
+                                public health recommendations.
+                            </p>
+                            <p class="mb-0">
+                                A score may appear as <em>NaN</em> when required
+                                columns are missing.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <script type="module">
@@ -140,6 +195,9 @@
     const resultBox = document.getElementById('result');
     const previewTable = document.getElementById('previewTable');
     const previewTitle = document.getElementById('previewTitle');
+    const diagnostics = document.getElementById('diagnostics');
+    const statusBox = document.getElementById('statusBox');
+    const indexCards = document.getElementById('indexCards');
     const clearBtn = document.getElementById('clearBtn');
     const loading = document.getElementById('loading');
     const wasmStatus = document.getElementById('wasmStatus');
@@ -234,6 +292,34 @@
       });
     }
 
+    function normalize(str) {
+      return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    function suggestMapping(missing, headers) {
+      const normHeaders = headers.map(h => normalize(h));
+      const suggestions = {};
+      missing.forEach(m => {
+        const nm = normalize(m);
+        let best = null;
+        let bestDist = Infinity;
+        normHeaders.forEach((nh, idx) => {
+          if (nh.includes(nm) || nm.includes(nh)) {
+            best = headers[idx];
+            bestDist = 0;
+          } else {
+            const d = Math.abs(nh.length - nm.length);
+            if (d < bestDist && nh[0] === nm[0]) {
+              best = headers[idx];
+              bestDist = d;
+            }
+          }
+        });
+        if (best) suggestions[m] = best;
+      });
+      return suggestions;
+    }
+
     function showMappingUI(missing, headers) {
       const saved = JSON.parse(localStorage.getItem('colMap') || '{}');
       let html = '<h3>Map Columns</h3><form id="mapForm">';
@@ -318,11 +404,12 @@
       }
     });
 
-    async function handleFile(file) {
+   async function handleFile(file) {
       resultBox.innerHTML = '';
       previewTable.innerHTML = '';
       previewTitle.style.display = 'none';
       document.getElementById('charts').innerHTML = '';
+      indexCards.innerHTML = '';
       clearBtn.style.display = 'none';
       loading.style.display = 'none';
       if (!file.name.toLowerCase().endsWith('.csv')) {
@@ -341,10 +428,47 @@
       previewTitle.style.display = 'block';
       clearBtn.style.display = 'inline-block';
       scoreBtn.disabled = false;
-    }
+
+      const wasm = await loadWasm();
+      const mapped = applyColumnMapping(currentData);
+      const missing = wasm.missing_fields(JSON.stringify(mapped[0]||{}));
+      const sugg = suggestMapping(missing, headers);
+      let diag = `<div><b>Detected columns:</b> ${headers.join(', ')}</div>`;
+      diag += `<div><b>Required columns:</b> ${required.join(', ')}</div>`;
+      if (missing.length) {
+        diag += `<div class='text-warning mt-2'>Missing columns: ${missing.join(', ')}</div>`;
+        diag += `<form id='mapForm' class='mt-2'>`;
+        missing.forEach(col => {
+          diag += `<div class='mb-2'><label class='me-2'>${col}</label>`;
+          diag += `<select class='form-select d-inline w-auto' data-key='${col}'>`;
+          diag += "<option value=''>--</option>";
+          headers.forEach(h => {
+            const sel = sugg[col] === h ? 'selected' : '';
+            diag += `<option ${sel}>${h}</option>`;
+          });
+          diag += '</select></div>';
+        });
+        diag += "<button type='submit' class='btn btn-primary btn-sm'>Save Mapping</button></form>";
+      }
+      diagnostics.innerHTML = diag;
+      const form = document.getElementById('mapForm');
+      if (form) {
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+          const map = JSON.parse(localStorage.getItem('colMap') || '{}');
+          document.querySelectorAll('#mapForm select').forEach(sel => {
+            if (sel.value) map[sel.dataset.key] = sel.value;
+          });
+          localStorage.setItem('colMap', JSON.stringify(map));
+          handleFile(file);
+        });
+      }
+   }
 
     async function computeFile(data, name) {
       loading.style.display = 'block';
+      statusBox.textContent = 'Scoring...';
+      statusBox.className = 'text-info';
       try {
         const mapped = applyColumnMapping(data);
         const wasm = await loadWasm();
@@ -352,6 +476,8 @@
         if (missing.length) {
           resultBox.innerHTML = `<div class='error'>Missing columns: ${missing.join(', ')}</div>`;
           downloadBtn.disabled = true;
+          statusBox.textContent = 'Failed: missing columns';
+          statusBox.className = 'text-danger';
           return;
         }
         const rawRows = wasm.score_json(JSON.stringify(mapped));
@@ -360,23 +486,40 @@
         const csvText = jsonToCsv(combined);
         const scoreNames = Object.keys(scoreRows[0] || {});
         let summary = '<h3>Summary Statistics:</h3><ul>';
-        scoreNames.forEach(name => {
-          const vals = scoreRows.map(r => r[name]).filter(v => v !== null && !isNaN(v));
-          if (!vals.length) return;
-          const s = computeStats(vals);
-          summary += `<li><b>${name}</b> – mean: ${s.mean}, std: ${s.std}, min: ${s.min}, max: ${s.max}, median: ${s.median}, quintiles: ${s.quintiles.join(', ')}</li>`;
+        indexCards.innerHTML = '';
+        scoreNames.forEach(idxName => {
+          const vals = scoreRows.map(r => r[idxName]).filter(v => v !== null && !isNaN(v));
+          const card = document.createElement('div');
+          card.className = 'col';
+          let valText = 'NaN';
+          if (vals.length) {
+            const s = computeStats(vals);
+            valText = s.mean;
+            summary += `<li><b>${idxName}</b> – mean: ${s.mean}, std: ${s.std}, min: ${s.min}, max: ${s.max}, median: ${s.median}</li>`;
+          }
+          card.innerHTML = `<div class='card p-3 text-center'><h5>${idxName}</h5><p class='fs-4 fw-bold'>${valText}</p><div id='spark-${idxName}' class='sparkline'></div></div>`;
+          indexCards.appendChild(card);
+          if (vals.length) {
+            Plotly.newPlot(`spark-${idxName}`,[{y:vals,type:'scatter',mode:'lines',line:{color:'#1976D2'}}],{margin:{l:0,r:0,t:0,b:0}}, {displayModeBar:false});
+          }
           const chartDiv = document.createElement('div');
           document.getElementById('charts').append(chartDiv);
-          Plotly.newPlot(chartDiv,[{x:vals,type:'histogram',name}],{title:`${name} Distribution`,margin:{t:40}}, {responsive:true});
+          if (vals.length) {
+            Plotly.newPlot(chartDiv,[{x:vals,type:'histogram',name:idxName}],{title:`${idxName} Distribution`,margin:{t:40}}, {responsive:true});
+          }
         });
         summary += '</ul>';
         resultBox.innerHTML = summary;
         scoredCsv = csvText;
         downloadBtn.disabled = false;
+        statusBox.textContent = `Scoring complete at ${new Date().toLocaleTimeString()}`;
+        statusBox.className = 'text-success';
       } catch(err) {
         console.error('Scoring failed', err);
         let msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
         resultBox.innerHTML = `<div class='error'><b>${msg}</b></div>`;
+        statusBox.textContent = 'Scoring failed';
+        statusBox.className = 'text-danger';
       } finally {
         loading.style.display = 'none';
       }

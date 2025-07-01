@@ -143,3 +143,10 @@
       border: none;
     }
     .accordion-button { font-weight: 600; }
+    #statusBox {
+      font-weight: 600;
+    }
+    .sparkline {
+      width: 100%;
+      height: 40px;
+    }
