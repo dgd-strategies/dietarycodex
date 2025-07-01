@@ -11,3 +11,5 @@ data/detailed_dii_table_20240606.csv
 rust/target/
 /pkg
 !/docs
+.session_cache/
+logs/

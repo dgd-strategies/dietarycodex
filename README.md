@@ -128,6 +128,12 @@ pytest tests/ --cov
   ```
   Only the `.b64` file is committed to avoid binary diffs.
 
+- **Refresh canonical data** by running:
+  ```bash
+  python scripts/refresh_schema_model.py
+  ```
+  Cached results are written to `.session_cache/` for later merging.
+
 ---
 
 ## Validation
