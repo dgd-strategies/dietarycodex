@@ -16,9 +16,11 @@ import pandas as pd
 
 USDA_HEI_MAP: dict[str, str] = {
     "F_TOTAL": "total_fruit_cup",
+    "F_TOTAL_CUP": "total_fruit_cup",
     "F_CITMLB": "whole_fruit_cup",
     "F_OTHER": "whole_fruit_cup",
     "V_TOTAL": "total_veg_cup",
+    "V_TOTAL_CUP": "total_veg_cup",
     "V_LEGUMES": "greens_beans_cup",
     "G_WHOLE": "whole_grains_oz",
     "D_TOTAL": "dairy_cup",
@@ -35,7 +37,9 @@ USDA_HEI_MAP: dict[str, str] = {
 
 USDA_DASH_MAP: dict[str, str] = {
     "F_TOTAL": "fruits_g",
+    "F_TOTAL_G": "fruits_g",
     "V_TOTAL": "vegetables_g",
+    "V_TOTAL_G": "vegetables_g",
     "G_WHOLE": "whole_grains_g",
     "D_TOTAL": "low_fat_dairy_g",
     "PF_LEGUMES": "nuts_legumes_g",
@@ -46,8 +50,10 @@ USDA_DASH_MAP: dict[str, str] = {
 
 USDA_DII_MAP: dict[str, str] = {
     "ENERGY": "Energy",
+    "ENERGY_KCAL": "Energy",
     "PROTEIN": "Protein",
     "TOTALFAT": "Total fat",
+    "CARBS": "Carbohydrate",
     "CARBOHYDRATE": "Carbohydrate",
     "FIBER": "Fiber",
     "FOLATE": "Folic acid",
