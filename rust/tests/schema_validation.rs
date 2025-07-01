@@ -1,5 +1,7 @@
 use dietarycodex::nutrition_vector::NutritionVector;
 use std::collections::HashMap;
+use serde_json;
+use std::fs;
 
 fn full_map() -> HashMap<String, f64> {
     let mut m = HashMap::new();
@@ -38,6 +40,27 @@ fn unmapped_field_fails() {
     map.remove("alcohol_g");
     map.insert("alcohol_content".to_string(), 1.0);
     let err = NutritionVector::from_map(&map).unwrap_err();
-    assert!(err.missing_fields.contains(&"alcohol_g"));
-    assert!(err.suggestions.iter().any(|(a, c)| a == "alcohol_content" && *c == "alcohol_g"));
+    assert!(err.missing_canonical_fields.contains(&"alcohol_g"));
+    assert!(err.unmapped_aliases.contains(&"alcohol_content".to_string()));
+}
+
+#[test]
+fn alias_map_covers_all_fields() {
+    use std::fs;
+    let data = fs::read_to_string("../schema/field_aliases.json").expect("read aliases");
+    let raw: std::collections::HashMap<String, String> = serde_json::from_str(&data).expect("json");
+    let mut counts: std::collections::HashMap<&str, usize> = std::collections::HashMap::new();
+    for f in NutritionVector::all_field_names() {
+        counts.insert(*f, 0);
+    }
+    for (_, canonical) in raw {
+        if let Some(c) = counts.get_mut(canonical.as_str()) {
+            *c += 1;
+        } else {
+            panic!("alias refers to unknown field {}", canonical);
+        }
+    }
+    for (field, count) in counts {
+        assert!(count > 0, "canonical field {} missing alias", field);
+    }
 }

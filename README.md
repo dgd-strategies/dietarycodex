@@ -17,6 +17,15 @@ The engine now recognizes common field aliases. For example,
 JSON or CSV data. This helps integrate real-world exports without
 manual column renaming.
 
+For local debugging you can enable a `hot_reload_aliases` feature when
+building the Rust crate. This loads `schema/field_aliases.json` at
+runtime so edits to the alias list take effect without rebuilding:
+
+```bash
+cargo test --features hot_reload_aliases
+```
+The regular release build still embeds the file at compile time.
+
 Production deployments run strictly through this Rust WebAssembly engine. The
 browser applies stored column mappings and the Python layer verifies the rename
 step before handing data to the binary. If any required field remains unmapped,

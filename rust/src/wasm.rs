@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use serde_json;
 use console_error_panic_hook;
 use crate::nutrition_vector::NutritionVector;
-use crate::eval::{evaluate_allow_partial, ScorerStatus};
+use crate::eval::{evaluate_all_scores, evaluate_allow_partial, ScorerStatus};
 
 #[wasm_bindgen(start)]
 pub fn init() {
@@ -15,7 +15,9 @@ pub fn score_json(json: &str) -> Result<JsValue, JsValue> {
         .map_err(|e| JsValue::from_str(&e.to_string()))?;
     let mut out: Vec<std::collections::BTreeMap<String, Option<f64>>> = Vec::new();
     for nv in records {
-        let result = evaluate_allow_partial(&nv);
+        let result = evaluate_all_scores(&nv).map_err(|e| {
+            JsValue::from_str(&serde_json::to_string(&e).unwrap_or_else(|_| "{}".to_string()))
+        })?;
         let mut row = std::collections::BTreeMap::new();
         for name in result.ordered_names {
             let val = match result.scores.get(&name) {
