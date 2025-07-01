@@ -134,6 +134,14 @@ pytest tests/ --cov
   ```
   Cached results are written to `.session_cache/` for later merging.
 
+- **Run the background intelligence worker** to fetch additional food component
+  definitions:
+  ```bash
+  python scripts/codex_intelligence_worker.py
+  ```
+  New mappings are written to `schema/food_components.json` and a session log is
+  appended to `codex_session_enrichment.log`.
+
 ---
 
 ## Validation
