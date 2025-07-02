@@ -89,9 +89,13 @@ This phase enforces output validation in the Rust scoring engine and ensures eve
 
 ### Canonical Input Schema
 * `data/template.csv` defines the authoritative header names and order.
-* All canonical columns include a unit suffix (`_g`, `_mg`, `_kcal`).
-* `schema/default_units.json` and `schema/required_columns.json` enumerate these
-  fields and are mandatory for both Rust and Python implementations.
+* Canonical columns use base names without unit suffixes. Examples include
+  `alcohol` and `sodium` rather than `alcohol_g` or `sodium_mg`.
+* Default units for each field live in `schema/default_units.json`. Headers with
+  suffixes like `_g` are accepted and mapped back to the base names during
+  import.
+* `schema/required_columns.json` lists the mandatory columns that every CSV must
+  provide.
 * All aliases listed in `schema/field_aliases.json` are resolved once at ingest
   time, producing this canonical set.
 * Raw NHANES headers from either the variable names or Excel labels are
