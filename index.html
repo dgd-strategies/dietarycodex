@@ -556,6 +556,13 @@
 
     // Load bundled template on startup
     window.addEventListener('DOMContentLoaded', async () => {
+      if (location.protocol === 'file:') {
+        wasmStatus.textContent = 'Serve via http://';
+        wasmStatus.className = 'ms-auto small text-danger';
+        statusBox.textContent = 'Run `python -m http.server` and reload.';
+        statusBox.className = 'text-danger';
+        return;
+      }
       await loadDefaultUnits();
       try {
         const wasm = await loadWasm();
@@ -579,6 +586,8 @@
         handleFile(file);
       } catch (err) {
         console.error('Could not preload template', err);
+        statusBox.textContent = 'Sample template failed to load.';
+        statusBox.className = 'text-warning';
       }
     });
 

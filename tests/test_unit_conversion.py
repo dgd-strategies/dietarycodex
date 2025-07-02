@@ -1,10 +1,7 @@
 import pandas as pd
 import pytest
 
-from compute.unit_conversion import (
-    convert_to_canonical_units,
-    infer_units,
-)
+from compute.unit_conversion import convert_to_canonical_units, infer_units
 
 
 def test_infer_and_convert_units():
