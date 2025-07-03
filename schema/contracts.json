@@ -1,11 +1,138 @@
 {
-  "AHEI": {"range": [0, 110], "required": ["fat_g", "fiber_g", "saturated_fat_g"]},
-  "HEI": {"range": [0, 100], "required": ["sodium_mg", "total_fruits_g", "whole_grains_g"]},
-  "DASH": {"range": [8, 40], "required": ["energy_kcal", "saturated_fat_g", "sodium_mg", "total_fruits_g", "vegetables_g", "whole_grains_g"]},
-  "DASHI": {"range": [0, 8], "required": ["calcium_mg", "sodium_mg", "total_fruits_g", "vegetables_g", "whole_grains_g"]},
-  "aMED": {"range": [0, 9], "required": ["fish_g", "legumes_g", "mono_fat_g", "red_meat_g", "total_fruits_g", "vegetables_g", "whole_grains_g"]},
-  "DII": {"range": [-9, 9], "required": ["fiber_g", "magnesium_mg", "omega3_g", "saturated_fat_g", "selenium_mcg", "sugar_g", "trans_fat_g", "vitamin_a_mcg", "vitamin_c_mg", "vitamin_e_mg", "zinc_mg"]},
-  "PHDI": {"range": [0, 15], "required": ["energy_kcal", "fat_g", "legumes_g", "red_meat_g", "refined_grains_g", "saturated_fat_g", "sugar_g", "trans_fat_g", "vegetables_g", "whole_grains_g"]},
-  "ACS2020": {"range": [0, 15], "required": ["alcohol_g", "legumes_g", "red_meat_g", "sugar_g", "total_fruits_g", "vegetables_g", "whole_grains_g"]},
-  "MIND": {"range": [0, 15], "required": ["berries_g", "butter_g", "cheese_g", "fast_food_g", "fish_g", "mono_fat_g", "nuts_g", "poultry_g", "red_meat_g", "sugar_g", "vegetables_g", "whole_grains_g"]}
+  "AHEI": {
+    "range": [
+      0,
+      110
+    ],
+    "required": [
+      "fat",
+      "fiber",
+      "saturated_fat"
+    ]
+  },
+  "HEI": {
+    "range": [
+      0,
+      100
+    ],
+    "required": [
+      "sodium",
+      "total_fruits",
+      "whole_grains"
+    ]
+  },
+  "DASH": {
+    "range": [
+      8,
+      40
+    ],
+    "required": [
+      "energy",
+      "saturated_fat",
+      "sodium",
+      "total_fruits",
+      "vegetables",
+      "whole_grains"
+    ]
+  },
+  "DASHI": {
+    "range": [
+      0,
+      8
+    ],
+    "required": [
+      "calcium",
+      "sodium",
+      "total_fruits",
+      "vegetables",
+      "whole_grains"
+    ]
+  },
+  "aMED": {
+    "range": [
+      0,
+      9
+    ],
+    "required": [
+      "fish",
+      "legumes",
+      "mono_fat",
+      "red_meat",
+      "total_fruits",
+      "vegetables",
+      "whole_grains"
+    ]
+  },
+  "DII": {
+    "range": [
+      -9,
+      9
+    ],
+    "required": [
+      "fiber",
+      "magnesium",
+      "omega3",
+      "saturated_fat",
+      "selenium",
+      "sugar",
+      "trans_fat",
+      "vitamin_a",
+      "vitamin_c",
+      "vitamin_e",
+      "zinc"
+    ]
+  },
+  "PHDI": {
+    "range": [
+      0,
+      15
+    ],
+    "required": [
+      "energy",
+      "fat",
+      "legumes",
+      "red_meat",
+      "refined_grains",
+      "saturated_fat",
+      "sugar",
+      "trans_fat",
+      "vegetables",
+      "whole_grains"
+    ]
+  },
+  "ACS2020": {
+    "range": [
+      0,
+      15
+    ],
+    "required": [
+      "alcohol",
+      "legumes",
+      "red_meat",
+      "sugar",
+      "total_fruits",
+      "vegetables",
+      "whole_grains"
+    ]
+  },
+  "MIND": {
+    "range": [
+      0,
+      15
+    ],
+    "required": [
+      "berries",
+      "butter",
+      "cheese",
+      "fast_food",
+      "fish",
+      "mono_fat",
+      "nuts",
+      "poultry",
+      "red_meat",
+      "sugar",
+      "vegetables",
+      "whole_grains"
+    ]
+  }
 }

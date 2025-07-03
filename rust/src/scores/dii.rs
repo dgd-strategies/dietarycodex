@@ -19,18 +19,18 @@ impl DietScore for DiiScorer {
         // Placeholder weighted scoring reflecting inflammatory potential.
         let mut score = 0.0;
         // pro-inflammatory components
-        score += nv.saturated_fat_g.unwrap_or(0.0) * 0.1;
-        score += nv.trans_fat_g.unwrap_or(0.0) * 0.3;
-        score += nv.sugar_g.unwrap_or(0.0) * 0.05;
+        score += nv.saturated_fat.unwrap_or(0.0) * 0.1;
+        score += nv.trans_fat.unwrap_or(0.0) * 0.3;
+        score += nv.sugar.unwrap_or(0.0) * 0.05;
         // anti-inflammatory components
-        score -= nv.fiber_g.unwrap_or(0.0) * 0.1;
-        score -= nv.vitamin_c_mg.unwrap_or(0.0) * 0.005;
-        score -= nv.vitamin_a_mcg.unwrap_or(0.0) * 0.0001;
-        score -= nv.vitamin_e_mg.unwrap_or(0.0) * 0.02;
-        score -= nv.omega3_g.unwrap_or(0.0) * 0.3;
-        score -= nv.zinc_mg.unwrap_or(0.0) * 0.05;
-        score -= nv.selenium_mcg.unwrap_or(0.0) * 0.003;
-        score -= nv.magnesium_mg.unwrap_or(0.0) * 0.01;
+        score -= nv.fiber.unwrap_or(0.0) * 0.1;
+        score -= nv.vitamin_c.unwrap_or(0.0) * 0.005;
+        score -= nv.vitamin_a.unwrap_or(0.0) * 0.0001;
+        score -= nv.vitamin_e.unwrap_or(0.0) * 0.02;
+        score -= nv.omega3.unwrap_or(0.0) * 0.3;
+        score -= nv.zinc.unwrap_or(0.0) * 0.05;
+        score -= nv.selenium.unwrap_or(0.0) * 0.003;
+        score -= nv.magnesium.unwrap_or(0.0) * 0.01;
         score
     }
 

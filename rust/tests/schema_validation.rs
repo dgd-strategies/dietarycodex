@@ -23,9 +23,9 @@ fn load_with_aliases() {
     let mut map = HashMap::new();
     for field in NutritionVector::all_field_names() {
         let key = match *field {
-            "alcohol_g" => "alc",
-            "energy_kcal" => "kcal",
-            "sodium_mg" => "sodium",
+            "alcohol" => "alc",
+            "energy" => "kcal",
+            "sodium" => "sodium",
             _ => field,
         };
         map.insert(key.to_string(), 1.0);
@@ -37,10 +37,10 @@ fn load_with_aliases() {
 #[test]
 fn unmapped_field_fails() {
     let mut map = full_map();
-    map.remove("alcohol_g");
+    map.remove("alcohol");
     map.insert("alcohol_content".to_string(), 1.0);
     let err = NutritionVector::from_map(&map).unwrap_err();
-    assert!(err.missing_canonical_fields.contains(&"alcohol_g"));
+    assert!(err.missing_canonical_fields.contains(&"alcohol"));
     assert!(err
         .unmapped_aliases
         .contains(&"alcohol_content".to_string()));
@@ -50,9 +50,9 @@ fn unmapped_field_fails() {
 fn canonical_and_alias_conflict() {
     let mut map = HashMap::new();
     map.insert("alc".to_string(), 5.0);
-    map.insert("alcohol_g".to_string(), 10.0);
+    map.insert("alcohol".to_string(), 10.0);
     let err = NutritionVector::from_map(&map).unwrap_err();
-    assert!(err.conflicting_aliases.contains(&("alc".to_string(), "alcohol_g")));
+    assert!(err.conflicting_aliases.contains(&("alc".to_string(), "alcohol")));
 }
 
 #[test]

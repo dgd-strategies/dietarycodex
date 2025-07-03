@@ -9,8 +9,8 @@ fn resolve_headers_maps_known_fields() {
         "DR1TPROT".to_string(),
     ];
     let map = resolve_nhanes_headers(&headers);
-    assert_eq!(map.get("DR1TKCAL"), Some(&"energy_kcal"));
-    assert_eq!(map.get("DR1TPROT"), Some(&"protein_g"));
+    assert_eq!(map.get("DR1TKCAL"), Some(&"energy"));
+    assert_eq!(map.get("DR1TPROT"), Some(&"protein"));
     assert!(is_nhanes_sheet(&headers));
 }
 
@@ -23,11 +23,11 @@ fn build_vector_averages_days() {
     row.insert("DR2TPROT".to_string(), 80.0);
     // Provide zeros for remaining canonical fields
     for field in dietarycodex::nutrition_vector::NutritionVector::all_field_names() {
-        if *field != "energy_kcal" && *field != "protein_g" {
+        if *field != "energy" && *field != "protein" {
             row.insert(field.to_string(), 0.0);
         }
     }
     let nv = build_nutrition_vector_from_nhanes(&row).unwrap();
-    assert_eq!(nv.energy_kcal, Some(1900.0));
-    assert_eq!(nv.protein_g, Some(70.0));
+    assert_eq!(nv.energy, Some(1900.0));
+    assert_eq!(nv.protein, Some(70.0));
 }

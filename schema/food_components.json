@@ -1,15 +1,17 @@
 {
   "beef": {
     "components": {
-      "protein_g": 26.0,
-      "saturated_fat_g": 6.0,
-      "iron_mg": 2.1,
-      "red_meat_g": 100.0,
-      "animal_protein_g": 100.0
+      "protein": 26.0,
+      "saturated_fat": 6.0,
+      "iron": 2.1,
+      "red_meat": 100.0,
+      "animal_protein": 100.0
     },
     "source": "manual",
     "last_updated": "2024-01-01T00:00:00Z",
     "reviewed": true
   },
-  "pending_review": {}
+  "pending_review": {
+    "components": {}
+  }
 }
