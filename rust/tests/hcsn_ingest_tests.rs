@@ -8,9 +8,9 @@ fn resolve_headers_maps_known_fields() {
         "whole_grain_g".to_string(),
     ];
     let map = resolve_hcsn_headers(&headers);
-    assert_eq!(map.get("leafy_green_veg_servings"), Some(&"vegetables_g"));
-    assert_eq!(map.get("butter_servings"), Some(&"butter_g"));
-    assert_eq!(map.get("whole_grain_g"), Some(&"whole_grains_g"));
+    assert_eq!(map.get("leafy_green_veg_servings"), Some(&"vegetables"));
+    assert_eq!(map.get("butter_servings"), Some(&"butter"));
+    assert_eq!(map.get("whole_grain_g"), Some(&"whole_grains"));
     assert!(is_hcsn_sheet(&headers));
 }
 

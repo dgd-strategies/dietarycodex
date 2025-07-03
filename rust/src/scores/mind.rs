@@ -16,21 +16,21 @@ impl FieldDeps for MindScorer {
 
 impl DietScore for MindScorer {
     fn evaluate(&self, nv: &NutritionVector) -> f64 {
-        let leafy = capped_score(nv.vegetables_g.unwrap_or(0.0), 100.0) / 10.0;
-        let berries = capped_score(nv.berries_g.unwrap_or(0.0), 50.0) / 10.0;
-        let nuts = capped_score(nv.nuts_g.unwrap_or(0.0), 30.0) / 10.0;
-        let grains = capped_score(nv.whole_grains_g.unwrap_or(0.0), 60.0) / 10.0;
-        let fish = capped_score(nv.fish_g.unwrap_or(0.0), 100.0) / 10.0;
-        let poultry = capped_score(nv.poultry_g.unwrap_or(0.0), 100.0) / 10.0;
-        let olive_oil = capped_score(nv.mono_fat_g.unwrap_or(0.0), 20.0) / 10.0;
+        let leafy = capped_score(nv.vegetables.unwrap_or(0.0), 100.0) / 10.0;
+        let berries = capped_score(nv.berries.unwrap_or(0.0), 50.0) / 10.0;
+        let nuts = capped_score(nv.nuts.unwrap_or(0.0), 30.0) / 10.0;
+        let grains = capped_score(nv.whole_grains.unwrap_or(0.0), 60.0) / 10.0;
+        let fish = capped_score(nv.fish.unwrap_or(0.0), 100.0) / 10.0;
+        let poultry = capped_score(nv.poultry.unwrap_or(0.0), 100.0) / 10.0;
+        let olive_oil = capped_score(nv.mono_fat.unwrap_or(0.0), 20.0) / 10.0;
 
         let red_meat =
-            (1.0 - capped_score(nv.red_meat_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
+            (1.0 - capped_score(nv.red_meat.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
         let fast_food =
-            (1.0 - capped_score(nv.fast_food_g.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
-        let sweets = (1.0 - capped_score(nv.sugar_g.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
-        let cheese = (1.0 - capped_score(nv.cheese_g.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
-        let butter = (1.0 - capped_score(nv.butter_g.unwrap_or(0.0), 20.0) / 10.0).clamp(0.0, 1.0);
+            (1.0 - capped_score(nv.fast_food.unwrap_or(0.0), 100.0) / 10.0).clamp(0.0, 1.0);
+        let sweets = (1.0 - capped_score(nv.sugar.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
+        let cheese = (1.0 - capped_score(nv.cheese.unwrap_or(0.0), 50.0) / 10.0).clamp(0.0, 1.0);
+        let butter = (1.0 - capped_score(nv.butter.unwrap_or(0.0), 20.0) / 10.0).clamp(0.0, 1.0);
 
         leafy
             + berries

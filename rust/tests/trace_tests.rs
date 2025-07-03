@@ -7,11 +7,11 @@ use std::collections::HashMap;
 fn trace_consistency() {
     let mut map = HashMap::new();
     map.insert("kcal".to_string(), Value::from(2000.0));
-    map.insert("fat_g".to_string(), Value::from(70.0));
+    map.insert("fat".to_string(), Value::from(70.0));
     let (nv, trace) = NutritionVector::from_partial_map(&map);
     assert!(trace
         .aliases_applied
-        .contains(&("kcal".to_string(), "energy_kcal")));
+        .contains(&("kcal".to_string(), "energy")));
 
     let mut result = evaluate_allow_partial(&nv);
     result.trace.aliases_applied = trace.aliases_applied;
@@ -31,16 +31,16 @@ fn trace_consistency() {
         .explanation
         .as_ref()
         .unwrap();
-    assert!(dash_reason.contains("saturated_fat_g"));
+    assert!(dash_reason.contains("saturated_fat"));
 }
 
 #[test]
 fn partial_map_conflicting_alias() {
     let mut map = HashMap::new();
-    map.insert("alcohol_g".to_string(), Value::from(10.0));
+    map.insert("alcohol".to_string(), Value::from(10.0));
     map.insert("alc".to_string(), Value::from(5.0));
     let (_nv, trace) = NutritionVector::from_partial_map(&map);
     assert!(trace
         .conflicting_aliases
-        .contains(&("alc".to_string(), "alcohol_g")));
+        .contains(&("alc".to_string(), "alcohol")));
 }
